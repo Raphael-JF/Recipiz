@@ -1,29 +1,54 @@
 <template>
-  <div>
-    <h1>Recipiz 🍲</h1>
+  <main>
+    <h1>📖 Recettes 📖</h1>
 
-    <RecipeCard
-      v-for="r in recettes"
-      :key="r.id"
-      :recette="r"
+    <!-- Barre de recherche -->
+    <input
+      type="text"
+      v-model="search"
+      placeholder="Rechercher une recette..."
     />
-  </div>
+
+    <!-- Spinner -->
+    <div v-if="loading">
+      Chargement...
+    </div>
+
+    <!-- Liste -->
+    <ul v-else>
+      <li v-for="r in filteredRecipes" :key="r.id">
+        <router-link :to="`/recipe/${r.id}`">
+          {{ r.title }}
+        </router-link>
+      </li>
+    </ul>
+  </main>
 </template>
 
 <script>
-import RecipeCard from '../components/RecipeCard.vue'
-
+import api from '../services/api'
 export default {
-  components: {
-    RecipeCard
-  },
-  data() {
-    return {
-      recettes: [
-        { id: 1, nom: 'Pâtes carbo', temps: 20 },
-        { id: 2, nom: 'Riz curry', temps: 30 }
-      ]
+    data() {
+        return {
+            loading: true,
+            search: '',
+            recipes: []
+        }
+    },
+
+    computed: {
+        filteredRecipes() {
+            return this.recipes.filter(r =>
+                r.title.toLowerCase().includes(this.search.toLowerCase())
+            )
+        }
+    },
+
+    mounted() {
+        api.get('/recipes').then(res => {
+            this.recipes = res.data
+            this.loading = false
+        })
     }
-  }
 }
 </script>
