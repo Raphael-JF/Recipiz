@@ -1,82 +1,50 @@
 <template>
   <div>
-    <header>
-      <button @click="$router.back()">Retour</button>
-
-      <div>
-        <h1>{{ recipe.title }}</h1>
-        <p>{{ recipe.description }}</p>
-      </div>
-    </header>
+    <button @click="$router.push('/')">← Retour</button>
+    <button @click="$router.push(`/recipe/${recipe.id}/edit`)">Modifier</button>
+    <button @click="deleteRecipe" style="color: red">Supprimer</button>
 
     <div v-if="loading">Chargement...</div>
 
-    <main v-else>
-      <section>
-        <h2>Ingrédients</h2>
-        <ul>
-          <li v-for="i in recipe.ingredients" :key="i.name">
-            {{ i.quantity }} {{ i.name }}
-          </li>
-        </ul>
-      </section>
-
-      <section>
-        <h2>Instructions</h2>
-        <ol>
-          <li v-for="(step, idx) in recipe.instructions" :key="idx">
-            {{ step }}
-          </li>
-        </ol>
-      </section>
-    </main>
+    <div v-else>
+      <h1>{{ recipe.title }}</h1>
+      <p>{{ recipe.description }}</p>
+    </div>
   </div>
 </template>
 
 <script>
-import { useRoute } from 'vue-router'
+import api from '../services/api'
 
 export default {
-  setup() {
-    const route = useRoute()
+    data() {
+        return {
+        recipe: null,
+        loading: true
+        }
+    },
+    methods: {
+        async deleteRecipe() {
+            if (!confirm('Supprimer cette recette ?')) return
+            
+            const id = this.$route.params.id
+            
+            await api.delete(`/recipes/${id}`)
+            
+            this.$router.push('/')
+        }
+    },
 
-    const recipe = {
-      title: 'Chargement...',
-      description: '',
-      ingredients: [],
-      instructions: []
+    mounted() {
+        const id = this.$route.params.id
+        
+        api.get(`/recipes/${id}`).then(res => {
+            this.recipe = res.data
+            this.loading = false
+        }).catch(() => {
+            this.loading = false
+            alert('Recette introuvable')
+        })
     }
-
-    return { route, recipe }
-  },
-
-  data() {
-    return {
-      loading: true,
-      recipe: {}
-    }
-  },
-
-  mounted() {
-    const id = this.$route.params.id
-
-    // Simulation backend
-    setTimeout(() => {
-      this.recipe = {
-        title: 'Pâtes carbo',
-        description: 'Une recette simple et efficace',
-        ingredients: [
-          { name: 'Pâtes', quantity: '200g' },
-          { name: 'Lardons', quantity: '150g' }
-        ],
-        instructions: [
-          'Faire cuire les pâtes',
-          'Faire revenir les lardons',
-          'Mélanger'
-        ]
-      }
-      this.loading = false
-    }, 500)
-  }
 }
 </script>

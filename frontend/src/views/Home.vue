@@ -15,13 +15,30 @@
     </div>
 
     <!-- Liste -->
-    <ul v-else>
-      <li v-for="r in filteredRecipes" :key="r.id">
-        <router-link :to="`/recipe/${r.id}`">
-          {{ r.title }}
-        </router-link>
-      </li>
+    <ul>
+        <li v-for="r in filteredRecipes" :key="r.id">
+            <router-link :to="`/recipe/${r.id}`">
+            {{ r.title }}
+            </router-link>
+        </li>
     </ul>
+
+    <form @submit.prevent="addRecipe">
+        <input
+            type="text"
+            placeholder="Titre"
+            v-model="newTitle"
+            required
+        />
+
+        <textarea
+            placeholder="Description"
+            v-model="newDescription"
+        ></textarea>
+
+        <button type="submit">Ajouter</button>
+    </form>
+
   </main>
 </template>
 
@@ -30,9 +47,11 @@ import api from '../services/api'
 export default {
     data() {
         return {
+            recipes: [],
             loading: true,
             search: '',
-            recipes: []
+            newTitle: '',
+            newDescription: ''
         }
     },
 
@@ -43,12 +62,35 @@ export default {
             )
         }
     },
+    methods: {
+        async addRecipe() {
+        const res = await api.post('/recipes', {
+            title: this.newTitle,
+            description: this.newDescription
+        })
+
+        // ajout immédiat côté front
+        this.recipes.push(res.data)
+        this.recipes.sort((a, b) =>
+                a.title.localeCompare(b.title)
+        )
+
+        // reset formulaire
+        this.newTitle = ''
+        this.newDescription = ''
+        }
+    },
 
     mounted() {
         api.get('/recipes').then(res => {
             this.recipes = res.data
+            // sort alphabetically by title
+            this.recipes.sort((a, b) =>
+                a.title.localeCompare(b.title)
+            )
             this.loading = false
         })
     }
 }
+
 </script>
