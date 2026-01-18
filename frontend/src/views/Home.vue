@@ -1,6 +1,7 @@
 <template>
   <main>
     <h1>📖 Recettes 📖</h1>
+    <button @click="$router.push(`/recipe/new`)">Ajouter</button>
 
     <!-- Barre de recherche -->
     <input
@@ -23,35 +24,20 @@
         </li>
     </ul>
 
-    <form @submit.prevent="addRecipe">
-        <input
-            type="text"
-            placeholder="Titre"
-            v-model="newTitle"
-            required
-        />
-
-        <textarea
-            placeholder="Description"
-            v-model="newDescription"
-        ></textarea>
-
-        <button type="submit">Ajouter</button>
-    </form>
+    
 
   </main>
 </template>
 
 <script>
 import api from '../services/api'
+
 export default {
     data() {
         return {
             recipes: [],
             loading: true,
             search: '',
-            newTitle: '',
-            newDescription: ''
         }
     },
 
@@ -63,23 +49,7 @@ export default {
         }
     },
     methods: {
-        async addRecipe() {
-        const res = await api.post('/recipes', {
-            title: this.newTitle,
-            description: this.newDescription
-        })
-
-        // ajout immédiat côté front
-        this.recipes.push(res.data)
-        this.recipes.sort((a, b) =>
-                a.title.localeCompare(b.title)
-        )
-
-        // reset formulaire
-        this.newTitle = ''
-        this.newDescription = ''
-        }
-    },
+    }, 
 
     mounted() {
         api.get('/recipes').then(res => {

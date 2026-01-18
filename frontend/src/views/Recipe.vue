@@ -8,15 +8,27 @@
 
     <div v-else>
       <h1>{{ recipe.title }}</h1>
-      <p>{{ recipe.description }}</p>
+      <h2>Ingrédients</h2>
+        <ul>
+            <li v-for="(ing, i) in recipe.ingredients" :key="i">
+            {{ ing.name }} : {{ ing.quantity }} {{ ing.unit }}
+            </li>
+        </ul>
+        <h2>Instructions</h2>
+        <MarkdownRenderer v-if="recipe?.instructions" :content="recipe.instructions"/>
     </div>
   </div>
 </template>
 
 <script>
 import api from '../services/api'
+import MarkdownRenderer from '../components/MarkdownRenderer.vue'
+
 
 export default {
+    components: {
+        MarkdownRenderer
+    },
     data() {
         return {
         recipe: null,

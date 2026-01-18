@@ -7,8 +7,8 @@ export default createRouter({
   routes: [
     { path: '/', component: Home },
     { path: '/recipe/:id', component: () => import('../views/Recipe.vue') },
-    { path: '/recipe/:id/edit', component: () => import('../views/EditRecipe.vue')
-}
+    { path: '/recipe/:id/edit', name: "recipe-edit", component: () => import('../views/EditRecipe.vue')},
+    { path: '/recipe/new', name : "recipe-new", component: () => import('../views/EditRecipe.vue')},
 
   ]
 })
