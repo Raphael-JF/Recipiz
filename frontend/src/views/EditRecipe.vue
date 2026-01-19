@@ -5,7 +5,7 @@
         <div v-if="loading">Chargement...</div>
         
         <form v-else @submit.prevent="save">
-            <h1><input type="text" v-model="newRecipe.title" caption="titre" required></h1>
+            <input type="text" v-model="newRecipe.title" placeholder="Titre" required>
             <h2>Ingrédients</h2>
                 <div v-for="(ing, i) in newRecipe.ingredients" :key="i">
                     <input v-model="ing.name" placeholder="Ingrédient">
@@ -60,8 +60,8 @@ export default {
     methods: {
         async save() {
             const id = this.$route.params.id
-
-            if (id === 'new') {
+            console.log(id)
+            if (this.$route.name === 'recipe-new') {
                 await api.post('/recipes/new', {
                     title: this.newRecipe.title,
                     instructions: this.newRecipe.instructions,
