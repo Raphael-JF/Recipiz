@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h1>Modifier la recette</h1>
+        <h1 v-if="isNewRecipe">Créer une recette</h1>
+        <h1 v-else>Modifier la recette</h1>
         
         <div v-if="loading">Chargement...</div>
         
@@ -11,9 +12,9 @@
                     <input v-model="ing.name" placeholder="Ingrédient">
                     <input v-model="ing.quantity" type="number">
                     <input v-model="ing.unit" placeholder="g, ml, pièces">
-                    <button @click="removeIngredient(i)">❌</button>
+                    <button type="button" @click="removeIngredient(i)">❌</button>
                 </div>
-                <button @click="addIngredient">➕ ingrédient</button>
+                <button type="button" @click="addIngredient">➕ ingrédient</button>
                 
             <h2>Instructions</h2>
             <!-- <MarkdownRenderer v-if="newRecipe?.instructions" :content="newRecipe.instructions"/> -->
@@ -38,13 +39,15 @@ export default {
     data() {
         return {
             newRecipe: createEmptyRecipe(),
-            loading: true
+            loading: true,
+            isNewRecipe: false // Add a new data property
         }
     },
     mounted() {
         const id = this.$route.params.id
-        console.log(id)
-        if (this.$route.name !== 'recipe-new') {
+        this.isNewRecipe = this.$route.name === 'recipe-new';
+
+        if (!this.isNewRecipe) {
             api.get(`/recipes/${id}`).then(res => {
                 this.newRecipe.title = res.data.title
                 this.newRecipe.instructions = res.data.instructions
@@ -60,8 +63,7 @@ export default {
     methods: {
         async save() {
             const id = this.$route.params.id
-            console.log(id)
-            if (this.$route.name === 'recipe-new') {
+            if (this.isNewRecipe) {
                 await api.post('/recipes/new', {
                     title: this.newRecipe.title,
                     instructions: this.newRecipe.instructions,

@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: recipiz
+      POSTGRES_PASSWORD: recipiz
+      POSTGRES_DB: recipiz
+    ports:
+      - "5432:5432"
+    volumes:
+        - db_data:/var/lib/postgresql/data
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  db_data:

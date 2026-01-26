@@ -13,10 +13,9 @@ export default function registerPutRoutes(fastify) {
     }
 
     await client.query('BEGIN')
-    
     // 1️⃣ update recette
-    fields = []
-    values = []
+    let fields = []
+    let values = []
     let i = 1
 
     if (title) {
@@ -24,10 +23,14 @@ export default function registerPutRoutes(fastify) {
       values.push(title)
     }
 
+
+
     if (instructions) {
       fields.push(`instructions = $${i++}`)
       values.push(instructions)
     }
+
+
 
 
         
