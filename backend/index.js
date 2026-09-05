@@ -9,7 +9,7 @@ import registerDeleteRoutes from './routes/delete.js'
 const fastify = Fastify({ logger: true })
 
 fastify.register(cors, {
-    origin: 'http://localhost:5173',
+    origin: process.env.RECIPIZ_CORS_ORIGIN ?? 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 })
 
@@ -19,10 +19,9 @@ registerPostRoutes(fastify)
 registerPutRoutes(fastify)
 registerDeleteRoutes(fastify)
 
-fastify.listen({ port: 3000 }, err => {
+fastify.listen({ port: Number(process.env.RECIPIZ_BACKEND_PORT ?? 3000) }, err => {
     if (err) {
         fastify.log.error(err)
         process.exit(1)
     }
 })
-
