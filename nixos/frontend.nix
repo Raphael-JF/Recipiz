@@ -13,7 +13,7 @@ let
       "sha256-6J2TN4wfxZPzXZf+Dds0Q/dXgxijwIHDAJS6KVjmYoI=";
 
     buildPhase = ''
-      VITE_API_URL=http://localhost:3000 npm run build
+      npm run build
     '';
 
     installPhase = ''
@@ -23,29 +23,18 @@ let
   };
 in
 {
-  systemd.services.recipiz-frontend = lib.mkIf cfg.enable {
-    description = "Recipiz frontend";
+  services.nginx.virtualHosts."recipiz.82.126.172.121.nip.io" = {
+    enableACME = true;
+    forceSSL = true;
 
-    after = [
-      "network-online.target"
-    ];
+    root = frontend;
 
-    wants = [
-      "network-online.target"
-    ];
+    locations."/" = {
+      tryFiles = "$uri $uri/ /index.html";
+    };
 
-    wantedBy = [
-      "multi-user.target"
-    ];
-
-    serviceConfig = {
-      ExecStart =
-        "${pkgs.nodePackages.serve}/bin/serve " +
-        "-s ${frontend} " +
-        "-l tcp://0.0.0.0:${toString cfg.frontendPort}";
-
-      Restart = "always";
-      RestartSec = 2;
+    locations."/api/" = {
+      proxyPass = "http://127.0.0.1:3000/";
     };
   };
 }
