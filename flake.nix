@@ -9,7 +9,7 @@
     nixosModules = {
       Recipiz = {
         imports = [
-          ./nixos/recipiz.nix
+          ./nixos/options.nix
           ./nixos/backend.nix
           ./nixos/frontend.nix
           ./nixos/postgresql.nix
