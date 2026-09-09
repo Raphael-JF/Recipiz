@@ -17,13 +17,14 @@
         packages = with pkgs; [
           nodejs
           postgresql_18
+          tmux
         ];
 
         shellHook = ''
           set -e
 
           export PGDATA="$PWD/.postgres"
-          export PGPORT=5433
+          export PGPORT=5432
           export PGDATABASE=recipiz
           export PGHOST="$PGDATA"
 
@@ -51,7 +52,6 @@
               start
           fi
 
-          # Vérification réelle du serveur
           if ! pg_isready \
               -h "$PGHOST" \
               -p "$PGPORT" \
@@ -69,71 +69,94 @@
             exit 1
           fi
 
-          # Création de la DB si nécessaire
+          # ─────────────────────────────────────
+          # Role
+          # ─────────────────────────────────────
+
+          if ! psql -d postgres -tAc \
+              "SELECT 1 FROM pg_roles WHERE rolname = 'recipiz'" |
+              grep -q 1; then
+
+            echo "Creating role 'recipiz'..."
+            createuser recipiz
+          fi
+
+          # ─────────────────────────────────────
+          # Database
+          # ─────────────────────────────────────
+
           if ! psql -d postgres -tAc \
               "SELECT 1 FROM pg_database WHERE datname = '$PGDATABASE'" |
               grep -q 1; then
 
             echo "Creating database '$PGDATABASE'..."
-            createdb "$PGDATABASE"
+            createdb -O recipiz "$PGDATABASE"
           fi
+
+          echo "Initializing database '$PGDATABASE'..."
+          psql -d "$PGDATABASE" -f ./nixos/init_dev.sql
 
           export DATABASE_URL="postgresql:///$PGDATABASE?host=$PGHOST&port=$PGPORT"
 
-          echo "PostgreSQL ready on $PGHOST:$PGPORT"
-
-
-          # ─────────────────────────────────────
-          # Backend
-          # ─────────────────────────────────────
-
-          (
-            echo "Installing backend dependencies..."
-            cd backend
-            npm install
-
-            echo "Starting backend..."
-            node --watch index.js
-          ) &
-          BACKEND_PID=$!
-
-
-          # ─────────────────────────────────────
-          # Frontend
-          # ─────────────────────────────────────
-
-          (
-            echo "Installing frontend dependencies..."
-            cd frontend
-            npm install
-
-            echo "Starting frontend..."
-            npm run dev
-          ) &
-          FRONTEND_PID=$!
-
+          echo
+          echo "PostgreSQL ready on $PGHOST:$PGPORT as host '$PGHOST'."
+          echo
 
           # ─────────────────────────────────────
           # Cleanup
           # ─────────────────────────────────────
 
           cleanup() {
-          echo
-          echo "Stopping Recipiz..."
+            echo
+            echo "Stopping Recipiz..."
 
-          kill "$FRONTEND_PID" "$BACKEND_PID" 2>/dev/null || true
+            if tmux has-session -t recipiz 2>/dev/null; then
+              tmux kill-session -t recipiz
+            fi
 
-          if pg_ctl status -D "$PGDATA" >/dev/null 2>&1; then
-            pg_ctl -D "$PGDATA" stop -m fast
-          fi
+            if pg_ctl status -D "$PGDATA" >/dev/null 2>&1; then
+              pg_ctl -D "$PGDATA" stop -m fast
+            fi
 
-          rm -rf "$PGDATA"
+            rm -rf "$PGDATA"
 
-          echo "Development database removed."
-        }
+            echo "Development database removed."
+          }
 
           trap cleanup EXIT INT TERM
 
+          # ─────────────────────────────────────
+          # tmux
+          # ─────────────────────────────────────
+
+          if tmux has-session -t recipiz 2>/dev/null; then
+            echo "Attaching to existing Recipiz tmux session..."
+            tmux attach-session -t recipiz
+            exit
+          fi
+
+          tmux new-session -d \
+            -s recipiz \
+            -n dev \
+            "cd '$PWD/backend' && echo '=== BACKEND ===' && npm install && node --watch index.js"
+
+          tmux split-window -h \
+            -t recipiz:dev \
+            "cd '$PWD/frontend' && echo '=== FRONTEND ===' && npm install && npm run dev"
+
+          tmux split-window -v \
+            -t recipiz:dev.0 \
+            "echo '=== PSQL ===' && psql '$PGDATABASE'"
+
+          tmux split-window -v \
+            -t recipiz:dev.1 \
+            "echo '=== POSTGRESQL LOG ===' && tail -F '$PGDATA/postgres.log'"
+
+          # Remet le layout en grille 2x2
+          tmux select-layout -t recipiz:dev tiled
+
+          # Commence sur le backend
+          tmux select-pane -t recipiz:dev.0
 
           echo
           echo "Recipiz development environment"
@@ -143,7 +166,7 @@
           echo "  Backend:    http://localhost:3000"
           echo
 
-          wait
+          tmux attach-session -t recipiz
         '';
       };
 

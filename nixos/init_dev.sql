@@ -1,27 +1,16 @@
 -- Connexion à la base recipiz
 \c recipiz
+ALTER DATABASE recipiz OWNER TO recipiz;
 
--- Tables
-CREATE TABLE IF NOT EXISTS recipes (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    instructions TEXT
-);
+-- Tables deletion
+DROP TABLE IF EXISTS recipes CASCADE;
+DROP TABLE IF EXISTS ingredients CASCADE;
+DROP TABLE IF EXISTS recipe_ingredients CASCADE;
 
-CREATE TABLE IF NOT EXISTS ingredients (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
-);
+-- Tables creation
+\i ./init_prod.sql
 
-CREATE TABLE IF NOT EXISTS recipe_ingredients (
-    id SERIAL PRIMARY KEY,
-    quantity NUMERIC,
-    unit VARCHAR(50),
-    recipe_id INT NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
-    ingredient_id INT NOT NULL REFERENCES ingredients(id) ON DELETE CASCADE
-);
-
--- Données initiales
+-- data test set
 INSERT INTO recipes (title, instructions) VALUES
 ('Pancakes', 'Mélanger les ingrédients et cuire à la poêle.'),
 ('Salade de tomates', 'Couper les tomates et ajouter de l''huile d''olive.'),
