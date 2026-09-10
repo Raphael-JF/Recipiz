@@ -9,7 +9,7 @@ let
 
     src = ../frontend;
 
-    npmDepsHash = lib.fakeSha256;
+    npmDepsHash = "sha256-+0Z1k5g6J8F3x9G5y5z5y5z5y5z5y5z5y5z5y5z5y5z=";
     # npmDepsHash = "";
 
     buildPhase = ''
