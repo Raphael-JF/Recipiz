@@ -16,9 +16,17 @@
   systemd.services.recipizInitDatabase = {
     description = "Initialize Recipiz database";
 
-    after = [ "postgresql.service" ];
-    requires = [ "postgresql.service" ];
-    wantedBy = [ "multi-user.target" ];
+    after = [
+      "postgresql-setup.service"
+    ];
+
+    requires = [
+      "postgresql-setup.service"
+    ];
+
+    wantedBy = [
+      "multi-user.target"
+    ];
 
     serviceConfig = {
       Type = "oneshot";
