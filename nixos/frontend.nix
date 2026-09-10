@@ -9,8 +9,8 @@ let
 
     src = ../frontend;
 
-    npmDepsHash = "sha256-+0Z1k5g6J8F3x9G5y5z5y5z5y5z5y5z5y5z5y5z5y5z=";
-    # npmDepsHash = "";
+    # npmDepsHash = "sha256-+0Z1k5g6J8F3x9G5y5z5y5z5y5z5y5z5y5z5y5z5y5z=";
+    npmDepsHash = "sha256-XtNFEOXUm/0R4rCEquOrK6iMaTOIkOBg4rokNtdQNGQ=";
 
     buildPhase = ''
       npm run build
