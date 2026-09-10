@@ -34,8 +34,7 @@ in
 
     serviceConfig = {
       Type = "oneshot";
-      User = "postgres";
-      RemainAfterExit = true;
+      User = "recipiz";
     };
 
     script = ''
