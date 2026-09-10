@@ -5,9 +5,6 @@ let
 in
 {
   services.postgresql = lib.mkIf cfg.enable {
-    enable = true;
-    package = pkgs.postgresql_18;
-
     ensureDatabases = [
       cfg.database.name
     ];
