@@ -27,7 +27,6 @@
 
     script = ''
       ${pkgs.postgresql_18}/bin/psql \
-        -U recipiz \
         -d recipiz \
         -f ${./init_prod.sql}
     '';
