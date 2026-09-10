@@ -30,7 +30,7 @@
 
     serviceConfig = {
       Type = "oneshot";
-      User = "postgres";
+      User = "recipiz";
     };
 
     script = ''
