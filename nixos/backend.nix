@@ -8,8 +8,8 @@ let
 
     src = ../backend;
 
-    npmDepsHash = "sha256-+0Z1k5g6J8F3x9G5y5z5y5z5y5z5y5z5y5z5y5z5y5z=";
-    # npmDepsHash = "";
+    # npmDepsHash = "sha256-+0Z1k5g6J8F3x9G5y5z5y5z5y5z5y5z5y5z5y5z5y5z=";
+    npmDepsHash = "sha256-7LwTGMLsHQaM1olmUShk6YM0jxZiKQQHKWf99GM7lp0=";
 
     dontNpmBuild = true;
 
