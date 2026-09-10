@@ -12,31 +12,6 @@
         ensureDBOwnership = true;
       }
     ];
-  };
-  systemd.services.recipizInitDatabase = {
-    description = "Initialize Recipiz database";
-
-    after = [
-      "postgresql-setup.service"
-    ];
-
-    requires = [
-      "postgresql-setup.service"
-    ];
-
-    wantedBy = [
-      "multi-user.target"
-    ];
-
-    serviceConfig = {
-      Type = "oneshot";
-      User = "postgres";
-    };
-
-    script = ''
-      ${pkgs.postgresql_18}/bin/psql \
-        -d recipiz \
-        -f ${./init_prod.sql}
-    '';
+    initialScript = ./init_prod.sql;
   };
 }

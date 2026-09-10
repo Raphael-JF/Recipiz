@@ -1,4 +1,5 @@
 SET ROLE recipiz;
+\c recipiz
 
 CREATE TABLE IF NOT EXISTS recipes (
     id SERIAL PRIMARY KEY,
