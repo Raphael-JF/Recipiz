@@ -8,8 +8,8 @@ let
 
     src = ../backend;
 
-    npmDepsHash =
-      "sha256-UP6nPJOib8rLnlwkmCdpEgo9Eb7xuPLcYRoFdzYmw2Y=";
+    npmDepsHash = lib.fakeSha256;
+    # npmDepsHash = "";
 
     dontNpmBuild = true;
 
