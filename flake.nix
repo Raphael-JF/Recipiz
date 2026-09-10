@@ -8,6 +8,7 @@
   outputs = { self, nixpkgs }:
     let
       system = "x86_64-linux";
+
       pkgs = import nixpkgs {
         inherit system;
       };
@@ -23,13 +24,19 @@
         shellHook = ''
           set -e
 
+          # ─────────────────────────────────────
+          # PostgreSQL environment
+          # ─────────────────────────────────────
+
           export PGDATA="$PWD/.postgres"
           export PGPORT=5432
           export PGDATABASE=recipiz
           export PGHOST="$PGDATA"
 
+
+
           # ─────────────────────────────────────
-          # PostgreSQL
+          # PostgreSQL initialization
           # ─────────────────────────────────────
 
           if [ ! -f "$PGDATA/PG_VERSION" ]; then
@@ -41,9 +48,12 @@
               "$PGDATA"
           fi
 
+          # ─────────────────────────────────────
+          # PostgreSQL server
+          # ─────────────────────────────────────
+
           if ! pg_ctl status -D "$PGDATA" >/dev/null 2>&1; then
             echo "Starting PostgreSQL..."
-
             pg_ctl \
               -D "$PGDATA" \
               -o "-p $PGPORT -k $PGHOST" \
@@ -73,33 +83,44 @@
           # Role
           # ─────────────────────────────────────
 
-          if ! psql -d postgres -tAc \
+          if ! psql -U "$USER" -d postgres -tAc \
               "SELECT 1 FROM pg_roles WHERE rolname = 'recipiz'" |
               grep -q 1; then
 
             echo "Creating role 'recipiz'..."
-            createuser recipiz
+            createuser -U "$USER" recipiz
           fi
 
           # ─────────────────────────────────────
           # Database
           # ─────────────────────────────────────
 
-          if ! psql -d postgres -tAc \
+          if ! psql -U "$USER" -d postgres -tAc \
               "SELECT 1 FROM pg_database WHERE datname = '$PGDATABASE'" |
               grep -q 1; then
 
             echo "Creating database '$PGDATABASE'..."
-            createdb -O recipiz "$PGDATABASE"
+            createdb -U "$USER" -O recipiz "$PGDATABASE"
           fi
 
-          echo "Initializing database '$PGDATABASE'..."
-          psql -d "$PGDATABASE" -f ./nixos/init_dev.sql
+          # ─────────────────────────────────────
+          # Database schema
+          # ─────────────────────────────────────
 
-          export DATABASE_URL="postgresql:///$PGDATABASE?host=$PGHOST&port=$PGPORT"
+          echo "Initializing database '$PGDATABASE'..."
+
+          psql \
+            -U recipiz \
+            -d "$PGDATABASE" \
+            -v ON_ERROR_STOP=1 \
+            -f "$PWD/nixos/init_dev.sql"
+
+          export DATABASE_URL="postgresql://recipiz@/$PGDATABASE?host=$PGHOST&port=$PGPORT"
 
           echo
-          echo "PostgreSQL ready on $PGHOST:$PGPORT as host '$PGHOST'."
+          echo "PostgreSQL ready on $PGHOST:$PGPORT"
+          echo "Database:   $PGDATABASE"
+          echo "User:       recipiz"
           echo
 
           # ─────────────────────────────────────
@@ -146,21 +167,19 @@
 
           tmux split-window -v \
             -t recipiz:dev.0 \
-            "echo '=== PSQL ===' && psql '$PGDATABASE'"
+            "echo '=== PSQL ===' && psql -U recipiz '$PGDATABASE'"
 
           tmux split-window -v \
             -t recipiz:dev.1 \
             "echo '=== POSTGRESQL LOG ===' && tail -F '$PGDATA/postgres.log'"
 
-          # Remet le layout en grille 2x2
           tmux select-layout -t recipiz:dev tiled
 
-          # Commence sur le backend
           tmux select-pane -t recipiz:dev.0
 
           echo
           echo "Recipiz development environment"
-          echo "  PostgreSQL: localhost:$PGPORT"
+          echo "  PostgreSQL: $PGHOST:$PGPORT"
           echo "  Database:   $PGDATABASE"
           echo "  Frontend:   http://localhost:5173"
           echo "  Backend:    http://localhost:3000"

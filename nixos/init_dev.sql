@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS ingredients CASCADE;
 DROP TABLE IF EXISTS recipe_ingredients CASCADE;
 
 -- Tables creation
-\i ./init_prod.sql
+\ir init_prod.sql
 
 -- data test set
 INSERT INTO recipes (title, instructions) VALUES
