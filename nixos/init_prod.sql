@@ -1,4 +1,4 @@
--- \c recipiz recipiz
+\c recipiz
 SET ROLE recipiz;
 
 CREATE TABLE IF NOT EXISTS recipes (
