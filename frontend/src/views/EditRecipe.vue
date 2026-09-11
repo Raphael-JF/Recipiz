@@ -1,92 +1,164 @@
 <template>
-    <div>
-        <h1 v-if="isNewRecipe">Créer une recette</h1>
-        <h1 v-else>Modifier la recette</h1>
-        
-        <div v-if="loading">Chargement...</div>
-        
-        <form v-else @submit.prevent="save">
-            <input type="text" v-model="newRecipe.title" placeholder="Titre" required>
-            <h2>Ingrédients</h2>
-                <div v-for="(ing, i) in newRecipe.ingredients" :key="i">
-                    <input v-model="ing.name" placeholder="Ingrédient">
-                    <input v-model="ing.quantity" type="number">
-                    <input v-model="ing.unit" placeholder="g, ml, pièces">
-                    <button type="button" @click="removeIngredient(i)">❌</button>
-                </div>
-                <button type="button" @click="addIngredient">➕ ingrédient</button>
-                
-            <h2>Instructions</h2>
-            <!-- <MarkdownRenderer v-if="newRecipe?.instructions" :content="newRecipe.instructions"/> -->
-            <textarea placeholder="Instructions" v-model="newRecipe.instructions"></textarea>
-            
-            
-            
+  <PageShell>
+    <h1>{{ isNewRecipe ? 'Créer une recette' : 'Modifier la recette' }}</h1>
 
-            <br/>
-            <button type="submit">Enregistrer</button>
-            <button type="button" @click="$router.back()">Annuler</button>
-            </form>
-    </div>
+    <p v-if="loading">Chargement...</p>
+
+    <form v-else class="recipe-form" @submit.prevent="save">
+      <label>
+        <span>Titre</span>
+        <input type="text" v-model="newRecipe.title" placeholder="Titre" required>
+      </label>
+
+      <section>
+        <h2>Ingrédients</h2>
+        <datalist id="ingredient-options">
+          <option v-for="ingredient in ingredientOptions" :key="ingredient.id" :value="ingredient.name" />
+        </datalist>
+
+        <div class="ingredient-grid">
+          <IngredientEditorRow
+            v-for="(ingredient, index) in newRecipe.ingredients"
+            :key="index"
+            :ingredient="ingredient"
+            datalist-id="ingredient-options"
+            @update="updateIngredient(index, $event)"
+            @remove="removeIngredient(index)"
+          />
+        </div>
+
+        <button type="button" class="secondary" @click="addIngredient">➕ ingrédient</button>
+      </section>
+
+      <label>
+        <span>Instructions</span>
+        <textarea placeholder="Instructions" v-model="newRecipe.instructions"></textarea>
+      </label>
+
+      <section class="actions">
+        <button type="submit">Enregistrer</button>
+        <button type="button" class="secondary" @click="$router.back()">Annuler</button>
+      </section>
+    </form>
+  </PageShell>
 </template>
 
 <script>
 import api from '../services/api'
 import { createEmptyRecipe } from '../models/emptyRecipe'
-import { createEmptyIngredient } from '../models/emptyIngredient';
+import { createEmptyIngredient } from '../models/emptyIngredient'
+import IngredientEditorRow from '../components/IngredientEditorRow.vue'
+import PageShell from '../components/PageShell.vue'
 
 export default {
-    data() {
-        return {
-            newRecipe: createEmptyRecipe(),
-            loading: true,
-            isNewRecipe: false // Add a new data property
-        }
-    },
-    mounted() {
-        const id = this.$route.params.id
-        this.isNewRecipe = this.$route.name === 'recipe-new';
-
-        if (!this.isNewRecipe) {
-            api.get(`/recipes/${id}`).then(res => {
-                this.newRecipe.title = res.data.title
-                this.newRecipe.instructions = res.data.instructions
-                this.newRecipe.ingredients = res.data.ingredients
-            })
-        } else {
-            this.newRecipe = createEmptyRecipe()
-        }
-        this.loading = false
-
-    },
-
-    methods: {
-        async save() {
-            const id = this.$route.params.id
-            if (this.isNewRecipe) {
-                await api.post('/recipes/new', {
-                    title: this.newRecipe.title,
-                    instructions: this.newRecipe.instructions,
-                    ingredients: this.newRecipe.ingredients,
-                })
-                this.$router.push('/')
-            } else {
-                await api.put(`/recipes/${id}`, {
-                    title: this.newRecipe.title,
-                    instructions: this.newRecipe.instructions,
-                    ingredients: this.newRecipe.ingredients,
-                })
-                this.$router.push(`/recipe/${id}`)
-            }
-        },
-
-        addIngredient() {
-            this.newRecipe.ingredients.push(createEmptyIngredient())
-        },
-        removeIngredient(index) {
-            this.newRecipe.ingredients.splice(index, 1)
-        }
-
+  components: {
+    IngredientEditorRow,
+    PageShell
+  },
+  data() {
+    return {
+      newRecipe: createEmptyRecipe(),
+      ingredientOptions: [],
+      loading: true,
+      isNewRecipe: false
     }
+  },
+  async mounted() {
+    const id = this.$route.params.id
+    this.isNewRecipe = this.$route.name === 'recipe-new'
+
+    const ingredientPromise = api.get('/ingredients').then((res) => {
+      this.ingredientOptions = res.data
+    }).catch(() => {
+      this.ingredientOptions = []
+    })
+
+    if (!this.isNewRecipe) {
+      await api.get(`/recipes/${id}`).then((res) => {
+        this.newRecipe.title = res.data.title
+        this.newRecipe.instructions = res.data.instructions
+        this.newRecipe.ingredients = res.data.ingredients
+      }).catch(() => {
+        alert('Recette introuvable')
+        this.$router.push('/')
+      })
+    } else {
+      this.newRecipe = createEmptyRecipe()
+    }
+
+    await ingredientPromise
+    this.loading = false
+  },
+  methods: {
+    async save() {
+      const id = this.$route.params.id
+      const payload = {
+        title: this.newRecipe.title,
+        instructions: this.newRecipe.instructions,
+        ingredients: this.newRecipe.ingredients
+      }
+
+      if (this.isNewRecipe) {
+        await api.post('/recipes/new', payload)
+        this.$router.push('/')
+      } else {
+        await api.put(`/recipes/${id}`, payload)
+        this.$router.push(`/recipe/${id}`)
+      }
+    },
+    addIngredient() {
+      this.newRecipe.ingredients.push(createEmptyIngredient())
+    },
+    updateIngredient(index, updatedIngredient) {
+      this.newRecipe.ingredients.splice(index, 1, updatedIngredient)
+    },
+    removeIngredient(index) {
+      this.newRecipe.ingredients.splice(index, 1)
+    }
+  }
 }
 </script>
+
+<style scoped>
+h1 {
+  margin-top: 0;
+  color: #0f172a;
+}
+
+.recipe-form {
+  display: grid;
+  gap: 1.1rem;
+}
+
+label {
+  display: grid;
+  gap: 0.45rem;
+  text-align: left;
+  font-weight: 600;
+  color: #334155;
+}
+
+input,
+textarea {
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.65rem;
+  border: 1px solid #cbd5e1;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+textarea {
+  min-height: 180px;
+}
+
+.ingredient-grid {
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
+}
+</style>
