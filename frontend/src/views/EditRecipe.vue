@@ -1,6 +1,7 @@
 <template>
   <PageShell>
-    <h1>{{ isNewRecipe ? 'Créer une recette' : 'Modifier la recette' }}</h1>
+    <h1 v-if="id">Modifier une recette</h1>
+    <h1 v-else>Nouvelle recette</h1>
 
     <p v-if="loading">Chargement...</p>
 
@@ -65,7 +66,6 @@ export default {
       newRecipe: createEmptyRecipe(),
       ingredientOptions: [],
       loading: true,
-      isNewRecipe: false
     }
   },
   async mounted() {
@@ -84,9 +84,8 @@ export default {
       }).catch(() => {
         alert('Recette introuvable')
       })
-    } else {
-      this.newRecipe = createEmptyRecipe()
     }
+    
 
     await ingredientPromise
     this.loading = false
