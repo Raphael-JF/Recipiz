@@ -7,7 +7,6 @@
 
     <SearchBar
       v-model="search"
-      label="Recherche"
       placeholder="Rechercher une recette..."
     />
 
@@ -15,7 +14,7 @@
     <RecipeList
       v-else
       :recipes="filteredRecipes"
-      empty-message="Aucune recette ne correspond à ta recherche."
+      empty-message="Aucune recette trouvée."
     />
   </PageShell>
 </template>
@@ -53,7 +52,9 @@ export default {
   },
   mounted() {
     api.get('/recipes').then((res) => {
-      this.recipes = [...res.data].sort((a, b) => a.title.localeCompare(b.title))
+      console.log(res.data);
+      this.recipes = res.data.sort((a, b) => a.title.localeCompare(b.title))
+      console.log(this.recipes);
       this.loading = false
     }).catch(() => {
       this.loading = false

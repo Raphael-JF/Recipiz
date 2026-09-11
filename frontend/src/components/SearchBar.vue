@@ -1,6 +1,4 @@
 <template>
-  <label class="search-bar">
-    <span class="search-bar__label">{{ label }}</span>
     <input
       class="search-bar__input"
       type="text"
@@ -8,7 +6,6 @@
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
     >
-  </label>
 </template>
 
 <script>
