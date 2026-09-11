@@ -1,5 +1,6 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
+import rateLimit from '@fastify/rate-limit'
 import pool from './db.js'
 import registerGetRoutes from './routes/get.js'
 import registerPostRoutes from './routes/post.js'
@@ -11,6 +12,12 @@ const fastify = Fastify({ logger: true })
 fastify.register(cors, {
     origin: process.env.RECIPIZ_CORS_ORIGIN ?? 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+})
+
+fastify.register(rateLimit, {
+    global: true,
+    max: Number(process.env.RECIPIZ_RATE_LIMIT_MAX ?? 200),
+    timeWindow: process.env.RECIPIZ_RATE_LIMIT_WINDOW ?? '1 minute'
 })
 
 // Enregistrer les routes
