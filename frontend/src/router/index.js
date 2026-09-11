@@ -7,10 +7,35 @@ import Ingredient from '../views/Ingredient.vue'
 export default createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: Home },
-    { path: '/recipe/:id', component: Recipe },
-    { path: '/recipe/:id/edit', name: 'recipe-edit', component: EditRecipe },
-    { path: '/recipe/new', name: 'recipe-new', component: EditRecipe },
-    { path: '/ingredients/:id', name: 'ingredient', component: Ingredient }
+    { 
+      path: '/', 
+      name: "Home",
+      component: Home 
+    },
+    { 
+      path: '/recipe/:id',
+      name: 'ShowRecipe',
+      component: Recipe 
+    },
+    { 
+      path: '/recipe/:id/edit', 
+      name: 'EditRecipe', 
+      component: EditRecipe,
+      props: route => ({
+        id: route.params.id,
+      })
+    },
+    { 
+      path: '/recipe/new', 
+      name: 'NewRecipe', 
+      component: EditRecipe,
+      props: {
+        id: null,
+      }
+    },
+    { path: '/ingredients/:id', 
+      name: 'ShowIngredient', 
+      component: Ingredient 
+    }
   ]
 })

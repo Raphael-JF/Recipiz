@@ -55,6 +55,11 @@ export default {
     IngredientEditorRow,
     PageShell
   },
+  props: {
+    id: {
+      type: String,
+    }
+  },
   data() {
     return {
       newRecipe: createEmptyRecipe(),
@@ -64,8 +69,6 @@ export default {
     }
   },
   async mounted() {
-    const id = this.$route.params.id
-    this.isNewRecipe = this.$route.name === 'recipe-new'
 
     const ingredientPromise = api.get('/ingredients').then((res) => {
       this.ingredientOptions = res.data
@@ -73,14 +76,13 @@ export default {
       this.ingredientOptions = []
     })
 
-    if (!this.isNewRecipe) {
-      await api.get(`/recipes/${id}`).then((res) => {
+    if (this.id) {
+      await api.get(`/recipes/${this.id}`).then((res) => {
         this.newRecipe.title = res.data.title
         this.newRecipe.instructions = res.data.instructions
         this.newRecipe.ingredients = res.data.ingredients
       }).catch(() => {
         alert('Recette introuvable')
-        this.$router.push('/')
       })
     } else {
       this.newRecipe = createEmptyRecipe()
