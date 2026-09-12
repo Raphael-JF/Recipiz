@@ -52,9 +52,7 @@ export default {
   },
   mounted() {
     api.get('/recipes').then((res) => {
-      console.log(res.data);
       this.recipes = res.data.sort((a, b) => a.title.localeCompare(b.title))
-      console.log(this.recipes);
       this.loading = false
     }).catch(() => {
       this.loading = false

@@ -1,15 +1,13 @@
-import pool from '../db.js'
+import * as db from '../db.js'
+import * as utils from '../utils.js'
 
-function normalizeIngredientName(value) {
-  return value?.trim()
-}
 
 export default function registerPutRoutes(fastify) {
   fastify.put('/recipes/:id', async (request, reply) => {
     const { id } = request.params
     const { title, instructions, ingredients } = request.body
 
-    const client = await pool.connect()
+    const client = await db.pool.connect()
 
     try {
       if (!title && !instructions && !ingredients) {
@@ -51,7 +49,7 @@ export default function registerPutRoutes(fastify) {
         )
 
         for (const ingredient of ingredients) {
-          const ingredientName = normalizeIngredientName(ingredient.name)
+          const ingredientName = utils.normalizeIngredientName(ingredient.name)
           if (!ingredientName) {
             continue
           }

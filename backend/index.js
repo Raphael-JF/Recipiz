@@ -1,13 +1,14 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import rateLimit from '@fastify/rate-limit'
-import pool from './db.js'
+import * as db from './db.js'
 import registerGetRoutes from './routes/get.js'
 import registerPostRoutes from './routes/post.js'
 import registerPutRoutes from './routes/put.js'
 import registerDeleteRoutes from './routes/delete.js'
 
 const fastify = Fastify({ logger: true })
+
 
 fastify.register(cors, {
     origin: process.env.RECIPIZ_CORS_ORIGIN ?? 'http://localhost:5173',
@@ -32,3 +33,5 @@ fastify.listen({ port: Number(process.env.RECIPIZ_BACKEND_PORT ?? 3000) }, err =
         process.exit(1)
     }
 })
+
+

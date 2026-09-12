@@ -99,12 +99,12 @@ export default {
         ingredients: this.newRecipe.ingredients
       }
 
-      if (this.isNewRecipe) {
-        await api.post('/recipes/new', payload)
-        this.$router.push('/')
-      } else {
+      if (this.id) {
         await api.put(`/recipes/${id}`, payload)
         this.$router.push(`/recipe/${id}`)
+      } else {
+        await api.post('/recipes/new', payload)
+        this.$router.push('/')
       }
     },
     addIngredient() {

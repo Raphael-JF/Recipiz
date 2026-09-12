@@ -1,15 +1,15 @@
-import pool from '../db.js'
+import * as db from '../db.js'
 
 export default function registerGetRoutes(fastify) {
   fastify.get('/recipes', async () => {
-    const result = await pool.query('SELECT * FROM recipes ORDER BY id')
+    const result = await db.pool.query('SELECT * FROM recipes ORDER BY id')
     return result.rows
   })
 
   fastify.get('/recipes/:id', async (request, reply) => {
     const { id } = request.params
 
-    const result = await pool.query(
+    const result = await db.pool.query(
       `SELECT
         r.id,
         r.title,
@@ -42,14 +42,14 @@ export default function registerGetRoutes(fastify) {
   })
 
   fastify.get('/ingredients', async () => {
-    const result = await pool.query('SELECT id, name FROM ingredients ORDER BY name ASC')
+    const result = await db.pool.query('SELECT id, name FROM ingredients ORDER BY name ASC')
     return result.rows
   })
 
   fastify.get('/ingredients/:id', async (request, reply) => {
     const { id } = request.params
 
-    const result = await pool.query(
+    const result = await db.pool.query(
       `SELECT
         i.id,
         i.name,

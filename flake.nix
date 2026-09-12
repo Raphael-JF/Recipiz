@@ -158,11 +158,11 @@
           tmux new-session -d \
             -s recipiz \
             -n dev \
-            "cd '$PWD/backend' && echo '=== BACKEND ===' && npm install && node --watch index.js"
+            "cd '$PWD/backend' && echo '=== BACKEND ===' &&  node --watch-path=. index.js "
 
           tmux split-window -h \
             -t recipiz:dev \
-            "cd '$PWD/frontend' && echo '=== FRONTEND ===' && npm install && npm run dev"
+            "cd '$PWD/frontend' && echo '=== FRONTEND ===' &&  npm run dev"
 
           tmux split-window -v \
             -t recipiz:dev.0 \

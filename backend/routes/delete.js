@@ -1,10 +1,10 @@
-import pool from '../db.js'
+import * as db from '../db.js'
 
 export default function registerDeleteRoutes(fastify) {
     fastify.delete('/recipes/:id', async (request, reply) => {
         const { id } = request.params
 
-        const result = await pool.query(
+        const result = await db.pool.query(
             'DELETE FROM recipes WHERE id = $1 RETURNING *',
             [id]
         )
