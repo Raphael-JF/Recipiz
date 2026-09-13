@@ -9,38 +9,55 @@ export const pool = new Pool({
   port: Number(process.env.RECIPIZ_DB_PORT ?? 5432)
 })
 
-// Returns the id of the created recipe
-export async function insertRecipe(title, instructions) { 
-  const dbClient = await  pool.connect()
+// returns the id of the newly inserted recipe
+export async function insertRecipe(client, title, instructions) {
+  const recipeRes = await client.query(
+    `INSERT INTO recipes (title, instructions)
+     VALUES ($1, $2)
+     RETURNING id`,
+    [title, instructions]
+  )
 
-  try {
-    const recipeRes = await dbClient.query (
-      'INSERT INTO recipes (title, instructions) VALUES ($1, $2) RETURNING recipes.id',
-      [title, instructions]
-    )
-    return recipeRes.rows[0].id
-
-  } finally {
-    dbClient.release()
-  }
+  return recipeRes.rows[0].id
 }
 
-// Returns the ID of the created ingredient. If the ingredient already exists, it returns the existing ID.
-export async function insertIngredient(ingredientName) {
-  const dbClient = await pool.connect()
+// returns the id of the ingredient, whether it was newly inserted or already existed
+export async function upsertIngredient(client, ingredientName) {
+  const ingredientRes = await client.query(
+    `INSERT INTO ingredients (name)
+     VALUES ($1)
+     ON CONFLICT (name)
+     DO UPDATE SET name = EXCLUDED.name
+     RETURNING id`,
+    [ingredientName]
+  )
 
-  try  {
-    const ingredientRes = await dbClient.query(
-      `INSERT INTO ingredients (name)
-       VALUES ($1)
-       ON CONFLICT (name)
-       DO UPDATE SET name = EXCLUDED.name
-       RETURNING id`,
-      [ingredientName]
-    )
-    console.log(ingredientRes.rows[0].id)
-    return ingredientRes.rows[0].id
-  } finally {
-    dbClient.release()
-  }
+  return ingredientRes.rows[0].id
 }
+
+export async function bindRecipeIngredient(client, recipeId, ingredientId, quantity, unit) {
+  await client.query(
+    `INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit)
+     VALUES ($1, $2, $3, $4)`,
+    [recipeId, ingredientId, quantity, unit]
+  )
+}   
+
+
+
+export async function unbindRecipeIngredient(client, recipeId, ingredientId) {
+  await client.query(
+    `DELETE FROM recipe_ingredients WHERE recipe_id = $1 AND ingredient_id = $2`,
+    [recipeId, ingredientId]
+  )
+}
+
+
+export async function deleteRecipe(client, recipeId) {
+  await client.query(
+    `DELETE FROM recipes WHERE id = $1`,
+    [recipeId]
+  )
+}
+
+

@@ -13,9 +13,9 @@ CREATE TABLE IF NOT EXISTS ingredients (
 );
 
 CREATE TABLE IF NOT EXISTS recipe_ingredients (
-    id SERIAL PRIMARY KEY,
     quantity NUMERIC,
     unit VARCHAR(50),
     recipe_id INT NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
-    ingredient_id INT NOT NULL REFERENCES ingredients(id) ON DELETE CASCADE
+    ingredient_id INT NOT NULL REFERENCES ingredients(id) ON DELETE CASCADE,
+    PRIMARY KEY (recipe_id, ingredient_id)
 );

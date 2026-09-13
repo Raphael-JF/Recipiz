@@ -101,7 +101,7 @@ export default {
 
       if (this.id) {
         await api.put(`/recipes/${id}`, payload)
-        this.$router.push(`/recipe/${id}`)
+        this.$router.push('/')
       } else {
         await api.post('/recipes/new', payload)
         this.$router.push('/')

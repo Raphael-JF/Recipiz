@@ -1,19 +1,10 @@
 import * as db from '../db.js'
+import * as utils from '../utils.js'
 
 export default function registerDeleteRoutes(fastify) {
-    fastify.delete('/recipes/:id', async (request, reply) => {
-        const { id } = request.params
-
-        const result = await db.pool.query(
-            'DELETE FROM recipes WHERE id = $1 RETURNING *',
-            [id]
-        )
-
-        if (result.rowCount === 0) {
-            reply.code(404)
-            return { error: 'Recipe not found' }
-        }
-
-        return { success: true }
-    })
+    
+  fastify.delete('/recipes/:id', utils.templateAlterRoute(async (req, reply, client) => { 
+    const { id } = req.params
+    await db.deleteRecipe(client, id);
+  }))
 }
