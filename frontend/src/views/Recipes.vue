@@ -4,8 +4,13 @@
       <h1>📖 Mes recettes</h1>
       <button @click="$router.push('/recipe/new')">Ajouter</button>
     </section>
-
-    <RecipeSearch :recipes="recipes" />
+    <SearchBar 
+      :items="recipes" 
+      :keys="['title']" 
+      placeholder="Rechercher une recette..." 
+      @search="filteredRecipes()"
+    />
+    <!-- <RecipeSearch :recipes="recipes" /> -->
     <!-- <SearchBar -->
     <!--   v-model="search" -->
     <!--   placeholder="Rechercher une recette..." -->

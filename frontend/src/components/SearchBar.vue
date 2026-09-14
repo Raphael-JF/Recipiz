@@ -1,57 +1,151 @@
 <template>
+  <div class="search-bar">
+
     <input
-      class="search-bar__input"
+      ref="input"
+      v-model="search"
       type="text"
       :placeholder="placeholder"
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @keydown="handleKeydown"
     >
+
+    <!-- Suggestions -->
+    <div
+      v-if="search && suggestions.length"
+      class="suggestions"
+    >
+      <button
+        v-for="(item, index) in suggestions"
+        :key="item.id"
+        :class="{ selected: index === selectedIndex }"
+        @mousedown.prevent="selectSuggestion(index)"
+      >
+        {{ getLabel(item) }}
+      </button>
+    </div>
+
+  </div>
 </template>
 
+
+
 <script>
+import Fuse from 'fuse.js'
+
 export default {
   name: 'SearchBar',
+
   props: {
-    modelValue: {
-      type: String,
-      default: ''
+    items: {
+      type: Array,
+      default: () => []
     },
-    label: {
-      type: String,
-      default: 'Recherche'
+
+    keys: {
+      type: Array,
+      default: () => []
     },
+
     placeholder: {
       type: String,
       default: 'Rechercher...'
     }
   },
-  emits: ['update:modelValue']
+
+  data() {
+    return {
+      search: '',
+      selectedIndex: -1
+    }
+  },
+
+  computed: {
+    fuse() {
+      return new Fuse(this.items, {
+        keys: this.keys,
+        threshold: 0.4
+      })
+    },
+
+    suggestions() {
+      if (!this.search.trim()) {
+        return []
+      }
+
+      return this.fuse
+        .search(this.search)
+        .map(result => result.item)
+        .slice(0, 5)
+    }
+  },
+
+  watch: {
+    search() {
+      this.selectedIndex = -1
+    }
+  },
+
+  methods: {
+    getLabel(item) {
+      return item.title ?? item.name ?? item.id
+    },
+
+    handleKeydown(event) {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault()
+
+        if (!this.suggestions.length) {
+          return
+        }
+
+        this.selectedIndex =
+          (this.selectedIndex + 1) % this.suggestions.length
+
+        this.search = this.getLabel(
+          this.suggestions[this.selectedIndex]
+        )
+      }
+
+      else if (event.key === 'ArrowUp') {
+        event.preventDefault()
+
+        if (!this.suggestions.length) {
+          return
+        }
+
+        this.selectedIndex =
+          this.selectedIndex <= 0
+            ? this.suggestions.length - 1
+            : this.selectedIndex - 1
+
+        this.search = this.getLabel(
+          this.suggestions[this.selectedIndex]
+        )
+      }
+
+      else if (event.key === 'Enter') {
+        event.preventDefault()
+
+        this.$emit('search', this.search)
+      }
+
+      else if (event.key === 'Escape') {
+        this.selectedIndex = -1
+      }
+    },
+
+    selectSuggestion(index) {
+      const item = this.suggestions[index]
+
+      if (!item) {
+        return
+      }
+
+      this.selectedIndex = index
+      this.search = this.getLabel(item)
+
+      this.$emit('search', this.search)
+    }
+  }
 }
 </script>
-
-<style scoped>
-.search-bar {
-  display: grid;
-  gap: 0.4rem;
-}
-
-.search-bar__label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #475569;
-}
-
-.search-bar__input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0.7rem 0.85rem;
-  border-radius: 0.7rem;
-  border: 1px solid #cbd5e1;
-  font-size: 1rem;
-}
-
-.search-bar__input:focus {
-  outline: 2px solid #93c5fd;
-  border-color: #60a5fa;
-}
-</style>
