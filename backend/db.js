@@ -9,6 +9,10 @@ export const pool = new Pool({
   port: Number(process.env.RECIPIZ_DB_PORT ?? 5432)
 })
 
+
+// =============== creation =================
+
+
 // returns the id of the newly inserted recipe
 export async function insertRecipe(client, title, instructions) {
   const recipeRes = await client.query(
@@ -43,7 +47,15 @@ export async function bindRecipeIngredient(client, recipeId, ingredientId, quant
   )
 }   
 
+export async function insertRecipeWithIngredients(client, title, instructions, ingredients) {
+  const recipeId = await insertRecipe(client, title, instructions)
+  for (const { name, quantity, unit } of ingredients) {
+    const ingredientId = await upsertIngredient(client, name)
+    await bindRecipeIngredient(client, recipeId, ingredientId, quantity, unit)
+  }
+}
 
+// ================ destruction ============
 
 export async function unbindRecipeIngredient(client, recipeId, ingredientId) {
   await client.query(
@@ -51,7 +63,6 @@ export async function unbindRecipeIngredient(client, recipeId, ingredientId) {
     [recipeId, ingredientId]
   )
 }
-
 
 export async function deleteRecipe(client, recipeId) {
   await client.query(

@@ -8,6 +8,6 @@ export default function registerPutRoutes(fastify) {
     const { title, instructions, ingredients } = req.body
     console.log('PUT /recipes/:id', recipeId, title, instructions, ingredients);
     await db.deleteRecipe(client, recipeId);
-    await db.insertRecipe(client, title, instructions);
+    await db.insertRecipeWithIngredients(client, title, instructions, ingredients);
   }))
 }

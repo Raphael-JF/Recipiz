@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import Recipes from '../views/Recipes.vue'
 import EditRecipe from '../views/EditRecipe.vue'
 import Recipe from '../views/Recipe.vue'
 import Ingredient from '../views/Ingredient.vue'
@@ -9,8 +9,8 @@ export default createRouter({
   routes: [
     { 
       path: '/', 
-      name: "Home",
-      component: Home 
+      name: "Recipes",
+      component: Recipes
     },
     { 
       path: '/recipe/:id',
@@ -33,6 +33,10 @@ export default createRouter({
         id: null,
       }
     },
+    // { path: '/ingredients',
+    //   name: 'Ingredients',
+    //   component: Ingredients
+    // },
     { path: '/ingredients/:id', 
       name: 'ShowIngredient', 
       component: Ingredient 

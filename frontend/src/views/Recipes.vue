@@ -5,17 +5,18 @@
       <button @click="$router.push('/recipe/new')">Ajouter</button>
     </section>
 
-    <SearchBar
-      v-model="search"
-      placeholder="Rechercher une recette..."
-    />
-
-    <p v-if="loading">Chargement...</p>
-    <RecipeList
-      v-else
-      :recipes="filteredRecipes"
-      empty-message="Aucune recette trouvée."
-    />
+    <RecipeSearch :recipes="recipes" />
+    <!-- <SearchBar -->
+    <!--   v-model="search" -->
+    <!--   placeholder="Rechercher une recette..." -->
+    <!-- /> -->
+    <!---->
+    <!-- <p v-if="loading">Chargement...</p> -->
+    <!-- <RecipeList -->
+    <!--   v-else -->
+    <!--   :recipes="filteredRecipes" -->
+    <!--   empty-message="Aucune recette trouvée." -->
+    <!-- /> -->
   </PageShell>
 </template>
 
@@ -24,12 +25,14 @@ import api from '../services/api'
 import PageShell from '../components/PageShell.vue'
 import RecipeList from '../components/RecipeList.vue'
 import SearchBar from '../components/SearchBar.vue'
+import RecipeSearch from '../components/RecipeSearch.vue'
 
 export default {
   components: {
     PageShell,
     RecipeList,
-    SearchBar
+    SearchBar,
+    RecipeSearch
   },
   data() {
     return {

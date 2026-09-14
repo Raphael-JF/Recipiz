@@ -5,6 +5,7 @@
     </div>
 
     <div class="navbar-right">
+      <RouterLink to="/ingredients">Ingrédients</RouterLink>
       <RouterLink to="/">Recettes</RouterLink>
       <RouterLink to="/recipe/new" class="cta">➕ Nouvelle</RouterLink>
     </div>
