@@ -72,3 +72,13 @@ export async function deleteRecipe(client, recipeId) {
 }
 
 
+// ==================== retrieval =================
+export async function getMatchingRecipes(client, searchTerm, limit) {
+  const res = await client.query(
+    `SELECT title, similarity(title, $1) AS score
+     FROM recipes
+     WHERE title % $1
+     ORDER BY score DESC
+     LIMIT $2`,
+    [searchTerm, limit]
+  )

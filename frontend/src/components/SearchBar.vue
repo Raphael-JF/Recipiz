@@ -55,6 +55,7 @@ export default {
   data() {
     return {
       search: '',
+      suggestionSearch: '',
       selectedIndex: -1
     }
   },
@@ -73,7 +74,7 @@ export default {
       }
 
       return this.fuse
-        .search(this.search)
+        .search(this.suggestionSearch)
         .map(result => result.item)
         .slice(0, 5)
     }
@@ -131,6 +132,9 @@ export default {
 
       else if (event.key === 'Escape') {
         this.selectedIndex = -1
+      }
+      else {
+        this.suggestionSearch = this.search
       }
     },
 
