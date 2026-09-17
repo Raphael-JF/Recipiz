@@ -1,13 +1,27 @@
 import * as db from '../../db.js'
 
 export default function registerIngredientGetRoutes(fastify) {
-  fastify.get('/ingredients', async () => {
-    const result = await db.pool.query(
-      'SELECT id, name FROM ingredients ORDER BY name ASC'
+  fastify.get('/recipes', async (request, reply) => {
+    const search = request.query.search ?? ''
+    const page = Number(request.query.page ?? 1)
+
+    const pageSize = 10
+
+    const res = await db.getRecipesPage(
+      search,
+      page,
+      pageSize
     )
 
-    return result.rows
+    return res
   })
+  // fastify.get('/ingredients', async () => {
+  //   const result = await db.pool.query(
+  //     'SELECT id, name FROM ingredients ORDER BY name ASC'
+  //   )
+  //
+  //   return result.rows
+  // })
 
   fastify.get('/ingredients/:id', async (request, reply) => {
     const { id } = request.params

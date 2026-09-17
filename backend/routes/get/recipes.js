@@ -1,6 +1,7 @@
 import * as db from '../../db.js'
 
 export default function registerRecipeGetRoutes(fastify) {
+
   fastify.get('/recipes', async () => {
     const result = await db.pool.query(
       'SELECT * FROM recipes ORDER BY id'

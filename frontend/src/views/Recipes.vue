@@ -8,7 +8,7 @@
       :items="recipes" 
       :keys="['title']" 
       placeholder="Rechercher une recette..." 
-      @search="filteredRecipes()"
+      @search="getMatchingRecipes()"
     />
     <!-- <RecipeSearch :recipes="recipes" /> -->
     <!-- <SearchBar -->
@@ -19,7 +19,7 @@
     <!-- <p v-if="loading">Chargement...</p> -->
     <!-- <RecipeList -->
     <!--   v-else -->
-    <!--   :recipes="filteredRecipes" -->
+    <!--   :recipes="getMatchingRecipes" -->
     <!--   empty-message="Aucune recette trouvée." -->
     <!-- /> -->
   </PageShell>
@@ -43,11 +43,12 @@ export default {
     return {
       recipes: [],
       loading: true,
-      search: ''
+      search: '',
+      page: 1,
     }
   },
   computed: {
-    filteredRecipes() {
+    getMatchingRecipes() {
       const searchLower = this.search.trim().toLowerCase()
       if (!searchLower) {
         return this.recipes
@@ -57,6 +58,15 @@ export default {
         recipe.title.toLowerCase().includes(searchLower)
       )
     }
+    getRecipesPage() {
+      api.get('/recipes?search=' + this.search + '&page=' + this.page).then((res) => {
+        this.recipes = res.data.recipes 
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+        alert('Impossible de charger les recettes')
+      }) 
+      return 
   },
   mounted() {
     api.get('/recipes').then((res) => {
