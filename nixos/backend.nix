@@ -9,7 +9,7 @@ let
     src = ../backend;
 
     # npmDepsHash = "sha256-+0Z1k5g6J8F3x9G5y5z5y5z5y5z5y5z5y5z5y5z5y5z=";
-    npmDepsHash = "sha256-7LwTGMLsHQaM1olmUShk6YM0jxZiKQQHKWf99GM7lp0=";
+    npmDepsHash = "sha256-iak+4zuOaX7jh/bCYLlQ0v+jLK0mUtE3wWxOfPMN1CU=";
 
     dontNpmBuild = true;
 
