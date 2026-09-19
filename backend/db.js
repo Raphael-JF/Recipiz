@@ -72,3 +72,61 @@ export async function deleteRecipe(client, recipeId) {
 }
 
 
+// ==================== retrieval =================
+export async function getMatchingRecipes(client, searchTerm, limit) {
+  const res = await client.query(
+    `SELECT title, similarity(title, $1) AS score
+     FROM recipes
+     WHERE title % $1
+     ORDER BY score DESC
+     LIMIT $2`,
+    [searchTerm, limit]
+  )
+  return res.rows
+}
+
+
+export async function getRecipesPage(search, page, pageSize) {
+  const offset = (page - 1) * pageSize
+
+  if (search.length == 0) {
+    const res = await client.query(
+      `SELECT *,
+              COUNT(*) OVER() AS total
+       FROM recipes
+       ORDER BY title
+       LIMIT $1
+       OFFSET $2`,
+      [pageSize, offset]
+    )
+  }
+  else if (search.length < 2 ) {
+    const res = await client.query(
+      `SELECT *,
+              COUNT(*) OVER() AS total
+       FROM recipes
+       WHERE title ILIKE $1
+       ORDER BY title
+       LIMIT $1
+       OFFSET $2`,
+      [pageSize, offset]
+    )
+  }
+  else {
+    const res = await client.query(
+      `SELECT *,
+              COUNT(*) OVER() AS total
+       FROM recipes
+       WHERE title % $1
+       ORDER BY similarity(title, $1) DESC
+       LIMIT $2
+       OFFSET $3`,
+      [search, pageSize, offset]
+    )
+  }
+
+  return {
+    recipes: res.rows,
+    total: res.rows.length,
+  }
+}
