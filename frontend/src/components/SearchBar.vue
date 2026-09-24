@@ -7,6 +7,7 @@
       type="text"
       :placeholder="placeholder"
       @keydown="handleKeydown"
+      @input="updateSuggestions"
     >
 
     <!-- Suggestions -->
@@ -87,6 +88,9 @@ export default {
   },
 
   methods: {
+    updateSuggestions() {
+      this.suggestionSearch = this.search
+    },
     getLabel(item) {
       return item.title ?? item.name ?? item.id
     },
@@ -132,9 +136,6 @@ export default {
 
       else if (event.key === 'Escape') {
         this.selectedIndex = -1
-      }
-      else {
-        this.suggestionSearch = this.search
       }
     },
 

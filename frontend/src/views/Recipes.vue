@@ -57,7 +57,9 @@ export default {
       return this.recipes.filter((recipe) =>
         recipe.title.toLowerCase().includes(searchLower)
       )
-    }
+    },
+  },
+  methods: {
     getRecipesPage() {
       api.get('/recipes?search=' + this.search + '&page=' + this.page).then((res) => {
         this.recipes = res.data.recipes 
@@ -67,6 +69,7 @@ export default {
         alert('Impossible de charger les recettes')
       }) 
       return 
+    }
   },
   mounted() {
     api.get('/recipes').then((res) => {

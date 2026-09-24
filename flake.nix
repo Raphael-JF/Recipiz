@@ -137,6 +137,9 @@
             if pg_ctl status -D "$PGDATA" >/dev/null 2>&1; then
               pg_ctl -D "$PGDATA" stop -m fast
             fi
+            pkill postgres || true
+            pkill psql || true
+            pkill postgresql || true
 
             rm -rf "$PGDATA"
 
