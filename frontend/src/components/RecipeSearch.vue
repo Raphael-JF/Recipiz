@@ -1,6 +1,5 @@
 <template>
   <div class="recipe-search">
-
     <input
       v-model="search"
       type="text"
@@ -8,42 +7,23 @@
     >
 
     <!-- Suggestions -->
-    <div v-if="search && suggestions.length" class="suggestions">
-      <button
+    <ul v-if="search && suggestions.length" class="suggestions-list">
+      <li
         v-for="recipe in suggestions"
         :key="recipe.id"
         @click="selectRecipe(recipe)"
       >
         {{ recipe.title }}
-      </button>
-    </div>
-
-    <!-- Résultats -->
-    <div v-if="search">
-      <RecipeCard
-        v-for="recipe in results"
-        :key="recipe.id"
-        :recipe="recipe"
-      />
-
-      <p v-if="!results.length">
-        Aucune recette trouvée.
-      </p>
-    </div>
-
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-import RecipeCard from './RecipeCard.vue'
 import Fuse from 'fuse.js'
 
 export default {
   name: 'RecipeSearch',
-
-  components: {
-    RecipeCard
-  },
 
   props: {
     recipes: {
@@ -88,3 +68,27 @@ export default {
   }
 }
 </script>
+
+
+ <style>
+  .suggestions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #dfe2e5;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .suggestions-list li {
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+
+  .suggestions-list li:hover {
+    background-color: #f7f7f7;
+  }
+</style>
+
