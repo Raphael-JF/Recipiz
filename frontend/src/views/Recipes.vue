@@ -4,12 +4,13 @@
       <h1>📖 Mes recettes</h1>
       <button @click="$router.push('/recipe/new')">Ajouter</button>
     </section>
-    <SearchBar 
-      :items="recipes" 
-      :keys="['title']" 
-      placeholder="Rechercher une recette..." 
-      @search="getMatchingRecipes"
-    />
+<SearchBar ref="searchRef"
+       :items="recipes" 
+       :keys="['title']"
+       placeholder="Rechercher une recette..."
+       @search="getMatchingRecipes"
+       @
+     />
     <!-- <RecipeSearch :recipes="recipes" /> -->
     <!-- <SearchBar -->
     <!--   v-model="search" -->
@@ -61,6 +62,7 @@ export default {
   },
   methods: {
     getRecipesPage() {
+      console.log('getRecipesPage', this.search, this.page)
       api.get('/recipes?search=' + this.search + '&page=' + this.page).then((res) => {
         this.recipes = res.data.recipes 
         this.loading = false
@@ -75,6 +77,9 @@ export default {
     api.get('/recipes').then((res) => {
       this.recipes = res.data.sort((a, b) => a.title.localeCompare(b.title))
       this.loading = false
+      this.$nextTick(() => {
+        this.$refs.searchRef.focus()
+      })
     }).catch(() => {
       this.loading = false
       alert('Impossible de charger les recettes')

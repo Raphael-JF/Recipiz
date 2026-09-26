@@ -24,9 +24,9 @@
         {{ getLabel(item) }}
         <div
           class="insert-suggestion"
-          @mousedown.prevent="selectSuggestion(index)"
+          @mousedown.stop.prevent="insertSuggestion(index)"
         >
-          ↖️
+        ↖
         </div>
       </li>
     </ul>
@@ -87,16 +87,16 @@ export default {
     }
   },
 
-  watch: {
-    search() {
-      this.selectedIndex = -1
-    }
-  },
 
   methods: {
+    focus() {
+      this.$refs.input.focus()
+    },
+
     updateSuggestions() {
       this.suggestionSearch = this.search
     },
+
     getLabel(item) {
       return item.title ?? item.name ?? item.id
     },
@@ -145,18 +145,22 @@ export default {
       }
     },
 
-    selectSuggestion(index) {
+    insertSuggestion(index) {
       const item = this.suggestions[index]
 
       if (!item) {
         return
       }
 
-      this.selectedIndex = index
       this.search = this.getLabel(item)
+    },
 
+    selectSuggestion(index) {
+      this.insertSuggestion(index);
+
+      this.selectedIndex = index
       this.$emit('search', this.search)
-    }
+    },
   }
 }
 </script>
@@ -199,6 +203,7 @@ export default {
   .suggestions-list li {
     padding: 6px 16px;
     display: block;
+    cursor:  default;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -209,14 +214,30 @@ export default {
   .suggestions-list li:hover,
   .suggestions-list li.selected {
     background-color: #f0f2ff;
-    color: #1a73e8;
+    /* color: #1a73e8; */
   }
 
 
   .insert-suggestion {
-    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #1a73e8;
+    border-radius: 50%;
+    background: transparent;
+
     color: #1a73e8;
+    font-size: 14px;
+    line-height: 1;
     cursor: pointer;
   }
-</style>
 
+  .insert-suggestion:hover {
+    background: #e8f0fe;
+  }
+</style>
