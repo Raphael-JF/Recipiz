@@ -22,11 +22,12 @@
         @mousedown.prevent="selectSuggestion(index)"
       >
         {{ getLabel(item) }}
-        <button
+        <div
+          class="insert-suggestion"
           @mousedown.prevent="selectSuggestion(index)"
         >
           ↖️
-        </button>
+        </div>
       </li>
     </ul>
 
@@ -160,10 +161,15 @@ export default {
 }
 </script>
 <style>
+  .search-bar {
+    --search-border-radius: 24px;
+  }
+
+
   .search-bar input {
     width: 100%;
     padding: 12px 16px;
-    border-radius: 24px;
+    border-radius: var(--search-border-radius);
     border: 1px solid #dfe2e5;
     font-size: 16px;
     outline: none;
@@ -176,34 +182,41 @@ export default {
   /* } */
 
   .search-bar input.has-suggestions {
-    border-radius: 24px 24px 0 0;
+    border-radius: var(--search-border-radius) var(--search-border-radius) 0 0;
   }
 
   .suggestions-list {
     list-style: none;
-    padding: 0;
+    padding: 0 0 4px 0;
     margin: 0;
     max-height: 300px;
     overflow-y: auto;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 0px 0px var(--search-border-radius) var(--search-border-radius);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-top: 8px;
   }
 
   .suggestions-list li {
-    padding: 12px 16px;
-    cursor: pointer;
+    padding: 6px 16px;
     display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    justify-content: space-between;
   }
 
   .suggestions-list li:hover,
   .suggestions-list li.selected {
     background-color: #f0f2ff;
     color: #1a73e8;
+  }
+
+
+  .insert-suggestion {
+    font-size: 14px;
+    color: #1a73e8;
+    cursor: pointer;
   }
 </style>
 

@@ -8,7 +8,7 @@
       :items="recipes" 
       :keys="['title']" 
       placeholder="Rechercher une recette..." 
-      @search="getMatchingRecipes()"
+      @search="getMatchingRecipes"
     />
     <!-- <RecipeSearch :recipes="recipes" /> -->
     <!-- <SearchBar -->
@@ -30,14 +30,14 @@ import api from '../services/api'
 import PageShell from '../components/PageShell.vue'
 import RecipeList from '../components/RecipeList.vue'
 import SearchBar from '../components/SearchBar.vue'
-import RecipeSearch from '../components/RecipeSearch.vue'
+// import RecipeSearch from '../components/RecipeSearch.vue'
 
 export default {
   components: {
     PageShell,
     RecipeList,
     SearchBar,
-    RecipeSearch
+    // RecipeSearch
   },
   data() {
     return {
