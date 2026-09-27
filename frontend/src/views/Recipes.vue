@@ -1,29 +1,23 @@
 <template>
-  <PageShell>
-    <section class="home-header">
-      <h1>📖 Mes recettes</h1>
-      <button @click="$router.push('/recipe/new')">Ajouter</button>
-    </section>
-<SearchBar ref="searchRef"
+  <section class="home-header">
+    <h1>📖 Mes recettes</h1>
+    <button @click="$router.push('/recipe/new')">Ajouter</button>
+  </section> 
+
+  <section class="search-bar">
+    <SearchBar 
+       ref="SearchBar"
        :items="recipes" 
        :keys="['title']"
+       apiURL = "/matchingRecipes"
        placeholder="Rechercher une recette..."
-       @search="getMatchingRecipes"
-       @
-     />
-    <!-- <RecipeSearch :recipes="recipes" /> -->
-    <!-- <SearchBar -->
-    <!--   v-model="search" -->
-    <!--   placeholder="Rechercher une recette..." -->
-    <!-- /> -->
-    <!---->
-    <!-- <p v-if="loading">Chargement...</p> -->
-    <!-- <RecipeList -->
-    <!--   v-else -->
-    <!--   :recipes="getMatchingRecipes" -->
-    <!--   empty-message="Aucune recette trouvée." -->
-    <!-- /> -->
-  </PageShell>
+       @search="getRecipesPage"
+    />
+  </section>
+  
+  <section class="recipe-list">
+    <RecipeList :recipes="recipes" :loading="loading" />
+  </section>
 </template>
 
 <script>
@@ -31,14 +25,12 @@ import api from '../services/api'
 import PageShell from '../components/PageShell.vue'
 import RecipeList from '../components/RecipeList.vue'
 import SearchBar from '../components/SearchBar.vue'
-// import RecipeSearch from '../components/RecipeSearch.vue'
 
 export default {
   components: {
     PageShell,
     RecipeList,
     SearchBar,
-    // RecipeSearch
   },
   data() {
     return {
@@ -48,22 +40,15 @@ export default {
       page: 1,
     }
   },
-  computed: {
-    getMatchingRecipes() {
-      const searchLower = this.search.trim().toLowerCase()
-      if (!searchLower) {
-        return this.recipes
-      }
-
-      return this.recipes.filter((recipe) =>
-        recipe.title.toLowerCase().includes(searchLower)
-      )
-    },
-  },
   methods: {
-    getRecipesPage() {
-      console.log('getRecipesPage', this.search, this.page)
-      api.get('/recipes?search=' + this.search + '&page=' + this.page).then((res) => {
+    getRecipesPage(search) {
+      this.search = search
+      api.get('/recipes', {
+        params: {
+          search: this.search,
+          page: this.page
+        }
+      }).then((res) => {
         this.recipes = res.data.recipes 
         this.loading = false
       }).catch(() => {
@@ -74,32 +59,31 @@ export default {
     }
   },
   mounted() {
-    api.get('/recipes').then((res) => {
-      this.recipes = res.data.sort((a, b) => a.title.localeCompare(b.title))
-      this.loading = false
-      this.$nextTick(() => {
-        this.$refs.searchRef.focus()
-      })
-    }).catch(() => {
-      this.loading = false
-      alert('Impossible de charger les recettes')
-    })
+    this.$refs.SearchBar.focus()
   }
 }
 </script>
 
 <style scoped>
-.home-header {
+section.home-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 4vh;
+  margin-top: 4vh;
 }
 
-.home-header h1 {
+section.home-header h1 {
   margin: 0;
   font-size: clamp(1.6rem, 3vw, 2rem);
   color: #0f172a;
 }
+
+section.search-bar {
+  width: 40%;
+  margin-bottom: 8vh;
+
+}
+
 </style>

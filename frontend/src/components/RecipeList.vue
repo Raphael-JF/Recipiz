@@ -1,12 +1,10 @@
 <template>
   <div>
-    <ul v-if="recipes.length" class="recipe-list">
+    <ul class="recipe-list">
       <li v-for="recipe in recipes" :key="recipe.id">
         <RecipeCard :recipe="recipe" />
       </li>
     </ul>
-
-    <p v-else class="recipe-list__empty">{{ emptyMessage }}</p>
   </div>
 </template>
 
@@ -21,10 +19,6 @@ export default {
       type: Array,
       default: () => []
     },
-    emptyMessage: {
-      type: String,
-      default: 'Aucune recette trouvée.'
-    }
   }
 }
 </script>

@@ -1,5 +1,3 @@
 to do list :
-- "Modifier" ne modfiie pas 
-- changer les classes de boutons
-- finir le truc de boutons mobiles
-- arranger les suggestions
+- s'occuper de recipeList et recipeCards : généralisation de List possible ?
+- "Modifier" ne modifie pas 

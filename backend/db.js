@@ -73,13 +73,21 @@ export async function deleteRecipe(client, recipeId) {
 
 
 // ==================== retrieval =================
-export async function getMatchingRecipes(client, searchTerm, limit) {
-  const res = await client.query(
-    `SELECT title, similarity(title, $1) AS score
-     FROM recipes
-     WHERE title % $1
-     ORDER BY score DESC
-     LIMIT $2`,
+export async function getMatchingRecipes(searchTerm, limit) {
+  const res = await pool.query(
+  `
+SELECT title
+FROM recipes
+WHERE title ILIKE '%' || $1 || '%'
+   OR similarity(title, $1) > 0.2
+ORDER BY
+  CASE
+    WHEN title ILIKE '%' || $1 || '%' THEN 0
+    ELSE 1
+  END,
+  similarity(title, $1) DESC
+LIMIT $2;
+`,
     [searchTerm, limit]
   )
   return res.rows
@@ -88,9 +96,10 @@ export async function getMatchingRecipes(client, searchTerm, limit) {
 
 export async function getRecipesPage(search, page, pageSize) {
   const offset = (page - 1) * pageSize
+  let res = undefined
 
   if (search.length == 0) {
-    const res = await client.query(
+    res = await pool.query(
       `SELECT *,
               COUNT(*) OVER() AS total
        FROM recipes
@@ -101,7 +110,7 @@ export async function getRecipesPage(search, page, pageSize) {
     )
   }
   else if (search.length < 2 ) {
-    const res = await client.query(
+    res = await pool.query(
       `SELECT *,
               COUNT(*) OVER() AS total
        FROM recipes
@@ -113,7 +122,7 @@ export async function getRecipesPage(search, page, pageSize) {
     )
   }
   else {
-    const res = await client.query(
+    res = await pool.query(
       `SELECT *,
               COUNT(*) OVER() AS total
        FROM recipes

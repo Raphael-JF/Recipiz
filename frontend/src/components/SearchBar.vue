@@ -2,24 +2,26 @@
   <div class="search-bar">
     <input
       ref="input"
-      v-model="search"
+      :value="search"
       type="text"
       :placeholder="placeholder"
       @keydown="handleKeydown"
-      @input="updateSuggestions"
-      :class="{ 'has-suggestions': suggestions.length > 0 }"
+      @input="handleInput"
+      @blur="selectedIndex = 0; showSuggestions = false"
+      @focus="showSuggestions = true"
+      :class="{ 'has-suggestions': showSuggestions && suggestions.length && search.length }"
     >
 
     <!-- Suggestions -->
     <ul
-      v-if="search && suggestions.length"
+      v-if="showSuggestions && suggestions.length && search.length"
       class="suggestions-list"
     >
       <li
         v-for="(item, index) in suggestions"
         :key="item.id"
         :class="{ selected: index === selectedIndex }"
-        @mousedown.prevent="selectSuggestion(index)"
+        @mousedown.prevent="clickSuggestion(index)"
       >
         {{ getLabel(item) }}
         <div
@@ -37,53 +39,21 @@
 
 
 <script>
-import Fuse from 'fuse.js'
+import api from '../services/api'
 
 export default {
   name: 'SearchBar',
 
-  props: {
-    items: {
-      type: Array,
-      default: () => []
-    },
-
-    keys: {
-      type: Array,
-      default: () => []
-    },
-
-    placeholder: {
-      type: String,
-      default: 'Rechercher...'
-    }
-  },
+  props: ['apiURL', 'placeholder'],
+  emits: ['search'],
 
   data() {
     return {
       search: '',
       suggestionSearch: '',
-      selectedIndex: -1
-    }
-  },
-
-  computed: {
-    fuse() {
-      return new Fuse(this.items, {
-        keys: this.keys,
-        threshold: 0.4
-      })
-    },
-
-    suggestions() {
-      if (!this.search.trim()) {
-        return []
-      }
-
-      return this.fuse
-        .search(this.suggestionSearch)
-        .map(result => result.item)
-        .slice(0, 5)
+      suggestions: [],
+      selectedIndex: 0,
+      showSuggestions: true
     }
   },
 
@@ -93,8 +63,16 @@ export default {
       this.$refs.input.focus()
     },
 
-    updateSuggestions() {
+    handleInput(event) {
+      this.search = event.target.value
       this.suggestionSearch = this.search
+      api.get(this.apiURL, {
+        params: {
+          suggestionSearch: this.suggestionSearch
+        }
+      }).then((res) => {
+        this.suggestions = res.data
+      })
     },
 
     getLabel(item) {
@@ -119,13 +97,12 @@ export default {
 
       else if (event.key === 'ArrowUp') {
         event.preventDefault()
-
         if (!this.suggestions.length) {
           return
         }
 
         this.selectedIndex =
-          this.selectedIndex <= 0
+          this.selectedIndex == 0
             ? this.suggestions.length - 1
             : this.selectedIndex - 1
 
@@ -136,72 +113,72 @@ export default {
 
       else if (event.key === 'Enter') {
         event.preventDefault()
-
-        this.$emit('search', this.search)
+        this.clickSuggestion(this.selectedIndex) 
       }
-
-      else if (event.key === 'Escape') {
-        this.selectedIndex = -1
-      }
+      
     },
 
     insertSuggestion(index) {
-      const item = this.suggestions[index]
-
-      if (!item) {
-        return
-      }
-
-      this.search = this.getLabel(item)
+      this.search = this.getLabel(this.suggestions[index])
+      this.focus()
     },
 
-    selectSuggestion(index) {
-      this.insertSuggestion(index);
-
+    clickSuggestion(index) {
+      this.search = this.getLabel(this.suggestions[index])
       this.selectedIndex = index
+      this.showSuggestions = false
       this.$emit('search', this.search)
+      this.$refs.input.blur()
     },
   }
 }
 </script>
 <style>
   .search-bar {
-    --search-border-radius: 24px;
+    --search-border-radius: 25px;
+    position: relative;
   }
 
 
   .search-bar input {
     width: 100%;
-    padding: 12px 16px;
+    padding: 13px 16px;
     border-radius: var(--search-border-radius);
-    border: 1px solid #dfe2e5;
-    font-size: 16px;
+    border: 2px solid #dfe2e5;
+    font-size: 17px;
     outline: none;
-    transition: box-shadow 0.3s ease;
+    transition: box-shadow 1.3s ease;
   }
 
   /* .search-bar input:focus { */
-  /*   box-shadow: 0 0 0 2px rgba(72, 146, 255, 0.2); */
-  /*   border-color: #4892ff; */
+  /*   box-shadow: 1 0 0 2px rgba(72, 146, 255, 0.2); */
+  /*   border-color: #4893ff; */
   /* } */
 
   .search-bar input.has-suggestions {
-    border-radius: var(--search-border-radius) var(--search-border-radius) 0 0;
+    border-radius: var(--search-border-radius) var(--search-border-radius) 0px 0px;
   }
 
+    
   .suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+
     list-style: none;
-    padding: 0 0 4px 0;
-    margin: 0;
+    padding: 0px 0px 4px 0px;
+    margin: 0px;
     max-height: 300px;
     overflow-y: auto;
     background-color: white;
     border-radius: 0px 0px var(--search-border-radius) var(--search-border-radius);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .suggestions-list li {
-    padding: 6px 16px;
+    padding: 7px 16px;
     display: block;
     cursor:  default;
     white-space: nowrap;
@@ -213,31 +190,31 @@ export default {
 
   .suggestions-list li:hover,
   .suggestions-list li.selected {
-    background-color: #f0f2ff;
-    /* color: #1a73e8; */
+    background-color: #f1f2ff;
+    /* color: #2a73e8; */
   }
 
 
   .insert-suggestion {
-    width: 24px;
-    height: 24px;
-    padding: 0;
+    width: 25px;
+    height: 25px;
+    padding: 1;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    border: 1px solid #1a73e8;
-    border-radius: 50%;
+    border: 2px solid #1a73e8;
+    border-radius: 51%;
     background: transparent;
 
-    color: #1a73e8;
-    font-size: 14px;
-    line-height: 1;
+    color: #2a73e8;
+    font-size: 15px;
+    line-height: 2;
     cursor: pointer;
   }
 
   .insert-suggestion:hover {
-    background: #e8f0fe;
+    background: #e9f0fe;
   }
 </style>

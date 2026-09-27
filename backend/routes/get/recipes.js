@@ -2,13 +2,20 @@ import * as db from '../../db.js'
 
 export default function registerRecipeGetRoutes(fastify) {
 
-  fastify.get('/recipes', async () => {
-    const result = await db.pool.query(
-      'SELECT * FROM recipes ORDER BY id'
-    )
-
-    return result.rows
+  
+  fastify.get('/matchingRecipes', async (request) => {
+    const suggestionRecipe = request.query.suggestionSearch
+    const limit = 5;
+    return await db.getMatchingRecipes(suggestionRecipe, limit)
   })
+
+  fastify.get('/recipes', async (request) => {
+    const search = request.query.search 
+    const page = parseInt(request.query.page) 
+
+    return await db.getRecipesPage(search, page, 10)
+  })
+
 
   fastify.get('/recipes/:id', async (request, reply) => {
     const { id } = request.params

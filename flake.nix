@@ -47,6 +47,11 @@
               "$PGDATA"
           fi
 
+          # Log all SQL queries
+          cat >> "$PGDATA/postgresql.conf" <<EOF
+          log_statement = 'all'
+          log_min_duration_statement = 0
+          EOF
           # ─────────────────────────────────────
           # PostgreSQL server
           # ─────────────────────────────────────
