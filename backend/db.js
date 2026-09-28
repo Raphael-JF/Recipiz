@@ -109,16 +109,16 @@ export async function getRecipesPage(search, page, pageSize) {
       [pageSize, offset]
     )
   }
-  else if (search.length < 2 ) {
+  else if (search.length <= 2 ) {
     res = await pool.query(
       `SELECT *,
               COUNT(*) OVER() AS total
        FROM recipes
        WHERE title ILIKE $1
        ORDER BY title
-       LIMIT $1
-       OFFSET $2`,
-      [pageSize, offset]
+       LIMIT $2
+       OFFSET $3`,
+      [`%${search}%`, pageSize, offset]    
     )
   }
   else {

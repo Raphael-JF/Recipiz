@@ -7,7 +7,7 @@
       :placeholder="placeholder"
       @keydown="handleKeydown"
       @input="handleInput"
-      @blur="selectedIndex = 0; showSuggestions = false"
+      @blur="selectedIndex = -1; showSuggestions = false"
       @focus="showSuggestions = true"
       :class="{ 'has-suggestions': showSuggestions && suggestions.length && search.length }"
     >
@@ -52,7 +52,7 @@ export default {
       search: '',
       suggestionSearch: '',
       suggestions: [],
-      selectedIndex: 0,
+      selectedIndex: -1,
       showSuggestions: true
     }
   },
@@ -102,7 +102,7 @@ export default {
         }
 
         this.selectedIndex =
-          this.selectedIndex == 0
+          this.selectedIndex <= 0
             ? this.suggestions.length - 1
             : this.selectedIndex - 1
 
@@ -113,7 +113,11 @@ export default {
 
       else if (event.key === 'Enter') {
         event.preventDefault()
-        this.clickSuggestion(this.selectedIndex) 
+        if (this.selectedIndex === -1) {
+          this.sendSearch()
+        } else {
+          this.clickSuggestion(this.selectedIndex)
+        }
       }
       
     },
@@ -127,9 +131,13 @@ export default {
       this.search = this.getLabel(this.suggestions[index])
       this.selectedIndex = index
       this.showSuggestions = false
+      this.sendSearch()
+    },
+
+    sendSearch() {
       this.$emit('search', this.search)
       this.$refs.input.blur()
-    },
+    }
   }
 }
 </script>
