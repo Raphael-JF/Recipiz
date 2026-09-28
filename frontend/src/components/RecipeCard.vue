@@ -1,7 +1,6 @@
 <template>
-  <RouterLink class="card" :to="`/recipe/${recipe.id}`">
-    <h3>{{ recipe.title }}</h3>
-    <p v-if="recipe.temps">{{ recipe.temps }} min</p>
+  <RouterLink class="card" :to="`/recipe/${this.id}`">
+    <h3>{{ this.title }}</h3>
   </RouterLink>
 </template>
 
@@ -14,8 +13,12 @@ export default {
     RouterLink
   },
   props: {
-    recipe: {
-      type: Object,
+    id: {
+      type: Number,
+      required: true
+    },
+    title: {
+      type: String,
       required: true
     }
   }

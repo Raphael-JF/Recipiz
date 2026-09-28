@@ -16,26 +16,29 @@
   </section>
   
   <section class="recipe-list">
-    <RecipeList :recipes="recipes" :loading="loading" />
+    <List :component="RecipeCardComponent" :items="recipes" />
   </section>
 </template>
 
 <script>
 import api from '../services/api'
 import PageShell from '../components/PageShell.vue'
-import RecipeList from '../components/RecipeList.vue'
+import List from '../components/List.vue'
 import SearchBar from '../components/SearchBar.vue'
+import RecipeCard from '../components/RecipeCard.vue'
 
 export default {
   components: {
     PageShell,
-    RecipeList,
+    List,
     SearchBar,
+    // RecipeCard
   },
   data() {
     return {
       recipes: [],
       loading: true,
+      RecipeCardComponent: RecipeCard,
       search: '',
       page: 1,
     }
