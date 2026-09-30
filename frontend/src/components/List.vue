@@ -24,9 +24,17 @@ export default {
 <style scoped>
 .list {
   list-style: none;
-  margin: 0;
   padding: 0;
-  display: grid;
-  gap: 0.8rem;
+  margin: 1rem auto;
+  width: min(95vw, 1200px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.8rem;
+  justify-content: center;
 }
+.list li {
+  flex: 1 1 calc(33% - 1.8rem);
+  min-width: 0;
+}
+
 </style>

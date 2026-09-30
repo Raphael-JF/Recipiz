@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { markRaw } from 'vue'
 import api from '../services/api'
 import PageShell from '../components/PageShell.vue'
 import List from '../components/List.vue'
@@ -32,13 +33,12 @@ export default {
     PageShell,
     List,
     SearchBar,
-    // RecipeCard
   },
   data() {
     return {
       recipes: [],
       loading: true,
-      RecipeCardComponent: RecipeCard,
+      RecipeCardComponent: markRaw(RecipeCard),
       search: '',
       page: 1,
     }

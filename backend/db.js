@@ -108,7 +108,7 @@ export async function getRecipesPage(search, page, pageSize) {
       [pageSize, offset]
     )
   }
-  else if (search.length <= 2 ) {
+  else if (search.length <= 3 ) {
     res = await pool.query(
       `SELECT id, title
        FROM recipes

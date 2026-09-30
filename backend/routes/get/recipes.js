@@ -13,7 +13,7 @@ export default function registerRecipeGetRoutes(fastify) {
     const search = request.query.search 
     const page = parseInt(request.query.page) 
 
-    return await db.getRecipesPage(search, page, 10)
+    return await db.getRecipesPage(search, page, 50)
   })
 
 
