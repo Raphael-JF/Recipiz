@@ -2,22 +2,8 @@
 
 let
   cfg = config.services.recipiz;
-  backend = pkgs.buildNpmPackage {
-    pname = "recipiz-backend";
-    version = "0.1.0";
-
-    src = ../backend;
-
-    # npmDepsHash = "sha256-+0Z1k5g6J8F3x9G5y5z5y5z5y5z5y5z5y5z5y5z5y5z=";
-    npmDepsHash = "sha256-iak+4zuOaX7jh/bCYLlQ0v+jLK0mUtE3wWxOfPMN1CU=";
-
-    dontNpmBuild = true;
-
-    installPhase = ''
-      mkdir -p $out
-      cp -r . $out/
-    '';
-  };
+  backendDir = "/var/lib/recipiz/backend";
+  src = ../backend;
 in
 {
   users.groups.recipiz = {};
@@ -27,16 +13,36 @@ in
     group = "recipiz";
   };
 
+  systemd.services.recipiz-backend-install = {
+    description = "Install Recipiz backend";
+
+    postStop = ''
+      ${pkgs.systemd}/bin/systemctl restart recipiz-backend.service
+    '';
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = "recipiz";
+    };
+
+    script = ''
+      rm -rf ${backendDir}
+      mkdir -p ${backendDir}
+
+      cp -r ${src}/* ${backendDir}/
+
+      cd ${backendDir}
+      ${pkgs.nodejs}/bin/npm install --omit=dev
+    '';
+  };
+
+
   systemd.services.recipiz-backend = lib.mkIf cfg.enable {
     description = "Recipiz backend";
 
     after = [
       "network-online.target"
       "postgresql.service"
-    ];
-
-    wants = [
-      "network-online.target"
     ];
 
     requires = [
@@ -48,30 +54,22 @@ in
     ];
 
     environment = {
-      RECIPIZ_BACKEND_PORT =
-        toString cfg.backendPort;
+      RECIPIZ_BACKEND_PORT = toString cfg.backendPort;
+      RECIPIZ_CORS_ORIGIN = cfg.corsOrigin;
 
-      RECIPIZ_CORS_ORIGIN =
-        cfg.corsOrigin;
-
-      RECIPIZ_DB_USER =
-        cfg.database.user;
-
-      RECIPIZ_DB_HOST =
-        cfg.database.host;
-
-      RECIPIZ_DB_NAME =
-        cfg.database.name;
+      RECIPIZ_DB_USER = cfg.database.user;
+      RECIPIZ_DB_HOST = cfg.database.host;
+      RECIPIZ_DB_NAME = cfg.database.name;
     };
 
     serviceConfig = {
       User = "recipiz";
       Group = "recipiz";
 
-      WorkingDirectory = backend;
+      WorkingDirectory = backendDir;
 
       ExecStart =
-        "${pkgs.nodejs}/bin/node ${backend}/index.js";
+        "${pkgs.nodejs}/bin/node ${backendDir}/index.js";
 
       Restart = "always";
       RestartSec = 2;
