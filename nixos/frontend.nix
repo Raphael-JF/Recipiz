@@ -20,6 +20,9 @@ in
       Type = "oneshot";
       User = "recipiz";
       RemainAfterExit = true;
+      Environment = [
+        "PATH=${lib.makeBinPath [ pkgs.nodejs pkgs.bash pkgs.coreutils ]}"
+      ];
     };
 
     script = ''
