@@ -1,7 +1,7 @@
 { pkgs, config, ... }:
 
 let
-  cfg = config.services.recipiz 
+  cfg = config.services.recipiz;
   frontendDir = "${cfg.packageDirectory}/frontend";
   frontendSrc = ../frontend;
 in
