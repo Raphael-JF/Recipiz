@@ -14,7 +14,7 @@ in
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
 
-    restartTriggers = [ frontendSrc ];
+    restartTriggers = [ backendSrc ];
 
     serviceConfig = {
       Type = "oneshot";
