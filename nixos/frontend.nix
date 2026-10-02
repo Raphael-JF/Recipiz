@@ -38,7 +38,8 @@ in
       tmp=$(mktemp -d)
 
       cp -r ${frontendSrc}/* $tmp/
-
+      chown -R recipiz:nginx $tmp
+      chmod -R u+rwX $tmp
       cd $tmp
 
       ${pkgs.nodejs}/bin/npm install
