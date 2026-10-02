@@ -9,7 +9,7 @@ in
   systemd.services.recipiz-frontend-build = {
     description = "Build Recipiz frontend";
 
-  wantedBy = [ "multi-user.target" ];
+    wantedBy = [ "multi-user.target" ];
     before = [ "recipiz-backend.service" ];
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
@@ -19,16 +19,20 @@ in
     serviceConfig = {
       Type = "oneshot";
       User = "recipiz";
+      Group = "nginx";
       RemainAfterExit = true;
+
       Environment = [
+        "HOME=/var/lib/recipiz"
         "PATH=${lib.makeBinPath [ pkgs.nodejs pkgs.bash pkgs.coreutils ]}"
       ];
     };
 
     script = ''
       stamp=${frontendDir}/.installed-from
+
       if [ -f "$stamp" ] && [ "$(cat "$stamp")" = "${frontendSrc}" ]; then
-        echo "Backend already installed from ${frontendSrc}, skipping"
+        echo "Frontend already installed from ${frontendSrc}, skipping"
         exit 0
       fi
 
@@ -36,25 +40,23 @@ in
       mkdir -p ${frontendDir}
 
       tmp=$(mktemp -d)
+      trap 'rm -rf "$tmp"' EXIT
 
-      cp -r ${frontendSrc}/* $tmp/
-      chown -R recipiz:nginx $tmp
-      chmod -R u+rwX $tmp
-      cd $tmp
+      cp -r ${frontendSrc}/. "$tmp"/
+      chmod -R u+rwX "$tmp"
+
+      cd "$tmp"
 
       ${pkgs.nodejs}/bin/npm install
       ${pkgs.nodejs}/bin/npm run build
 
-      cp -r dist/* ${frontendDir}/
+      cp -r dist/. ${frontendDir}/
 
-      rm -rf $tmp
+      chmod -R u=rwX,g=rX,o= ${frontendDir}
 
-      chown -R recipiz:nginx /var/lib/recipiz/frontend
-      chmod -R u=rwX,g=rX,o= /var/lib/recipiz/frontend
       echo "${frontendSrc}" > "$stamp"
     '';
   };
-
 
   services.nginx.virtualHosts."recipiz.82.126.172.121.nip.io" = {
     enableACME = true;

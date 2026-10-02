@@ -9,6 +9,7 @@
     isSystemUser = true;
     home = config.services.recipiz.packageDirectory ;
     group = "recipiz";
+    extraGroups = [ "nginx" ];
   };
 
 }
