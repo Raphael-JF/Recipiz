@@ -32,10 +32,11 @@ in
       rm -rf ${backendDir}
       mkdir -p ${backendDir}
       cp -r ${backendSrc}/* ${backendDir}/
+      chmod -R u+rwX ${backendDir}
+
       cd ${backendDir}
       ${pkgs.nodejs}/bin/npm install --omit=dev
 
-      chown -R recipiz:recipiz /var/lib/recipiz/backend
 
       echo "${backendSrc}" > "$stamp"
     '';
