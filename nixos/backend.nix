@@ -21,7 +21,7 @@ in
       RemainAfterExit = true;
       User = "recipiz";
       Environment = [
-        "PATH=${lib.makeBinPath [ pkgs.nodejs pkgs.bash pkgs.coreutils ]}";
+        "PATH=${lib.makeBinPath [ pkgs.nodejs pkgs.bash pkgs.coreutils ]}"
       ]
     };
 
