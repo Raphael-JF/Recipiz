@@ -51,6 +51,7 @@ in
     ];
 
     requires = [
+      "network-online.target"
       "recipiz-backend-install.service"
       "postgresql.service"
     ];
