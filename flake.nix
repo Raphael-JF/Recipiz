@@ -203,6 +203,7 @@
             ./nixos/backend.nix
             ./nixos/frontend.nix
             ./nixos/postgresql.nix
+            ./nixos/users.nix
           ];
         };
 

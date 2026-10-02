@@ -2,25 +2,19 @@
 
 let
   cfg = config.services.recipiz;
-  backendDir = "/var/lib/recipiz/backend";
+  backendDir = "${cfg.packageDirectory}/backend";
   backendSrc = ../backend;
 in
 {
-  users.groups.recipiz = {};
-
-  users.users.recipiz = {
-    isSystemUser = true;
-    group = "recipiz";
-  };
-
   systemd.services.recipiz-backend-install = {
     description = "Install Recipiz backend";
+
     wantedBy = [ "multi-user.target" ];
     before = [ "recipiz-backend.service" ];
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
 
-    restartTriggers = [ backendSrc ];
+    restartTriggers = [ frontendSrc ];
 
     serviceConfig = {
       Type = "oneshot";
@@ -40,6 +34,9 @@ in
       cp -r ${backendSrc}/* ${backendDir}/
       cd ${backendDir}
       ${pkgs.nodejs}/bin/npm install --omit=dev
+
+      chown -R recipiz:recipiz /var/lib/recipiz/backend
+      chmod -R u=rwX,g=rX,o= /var/lib/recipiz/backend
       echo "${backendSrc}" > "$stamp"
     '';
   };
