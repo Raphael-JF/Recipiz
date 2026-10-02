@@ -6,7 +6,7 @@ let
   backendSrc = ../backend;
 in
 {
-  systemd.services.recipiz-backend-install = {
+  systemd.services.recipiz-backend-install = lib.mkIf cfg.enable {
     description = "Install Recipiz backend";
 
     wantedBy = [ "multi-user.target" ];
@@ -36,7 +36,7 @@ in
       ${pkgs.nodejs}/bin/npm install --omit=dev
 
       chown -R recipiz:recipiz /var/lib/recipiz/backend
-      chmod -R u=rwX,g=rX,o= /var/lib/recipiz/backend
+
       echo "${backendSrc}" > "$stamp"
     '';
   };
