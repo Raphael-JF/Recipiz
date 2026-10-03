@@ -44,7 +44,7 @@ in
            "$PSQL" \
         -d "recipiz" \
         -v ON_ERROR_STOP=1 \
-        -f "${./init_prod.sql}"
+        -f "${../sql/init_prod.sql}"
     '';
   };
 }
