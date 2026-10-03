@@ -1,5 +1,3 @@
-\c recipiz
-SET ROLE recipiz;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 CREATE TABLE IF NOT EXISTS recipes (

@@ -1,6 +1,5 @@
 -- Connexion à la base recipiz
 \c recipiz
-ALTER DATABASE recipiz OWNER TO recipiz;
 
 -- Tables deletion
 DROP TABLE IF EXISTS recipes CASCADE;
