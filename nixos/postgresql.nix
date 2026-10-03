@@ -2,6 +2,7 @@
 
 let
   cfg = config.services.recipiz;
+  sql = ../sql;
 in
 {
   services.postgresql = {
@@ -44,7 +45,7 @@ in
            "$PSQL" \
         -d "recipiz" \
         -v ON_ERROR_STOP=1 \
-        -f "${../sql/init_prod.sql}"
+        -f "${sql}/init_prod.sql}"
     '';
   };
 }
