@@ -9,6 +9,10 @@ export PGPORT=5432
 export PGDATABASE=recipiz
 export PGHOST="$PGDATA"
 
+export RECIPIZ_FRONTEND_URL='http://localhost:5173'
+export RECIPIZ_BACKEND_PORT=3000;
+      
+      
 
 
 # ─────────────────────────────────────
@@ -165,8 +169,8 @@ echo
 echo "Recipiz development environment"
 echo "  PostgreSQL: $PGHOST:$PGPORT"
 echo "  Database:   $PGDATABASE"
-echo "  Frontend:   http://localhost:5173"
-echo "  Backend:    http://localhost:3000"
+echo "  Frontend:   ${RECIPIZ_FRONTEND_URL}"
+echo "  Backend:    http://localhost:${RECIPIZ_BACKEND_PORT}"
 echo
 
 tmux attach-session -t recipiz

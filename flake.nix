@@ -20,7 +20,7 @@
           tmux
         ];
 
-        shellHook = builtins.readFile ./shell-hook.sh;
+        shellHook = builtins.readFile ./devShell.sh;
       };
 
       nixosModules = {

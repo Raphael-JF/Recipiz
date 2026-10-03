@@ -11,14 +11,14 @@ const fastify = Fastify({ logger: true })
 
 
 fastify.register(cors, {
-    origin: process.env.RECIPIZ_CORS_ORIGIN ?? 'http://localhost:5173',
+    origin: process.env.RECIPIZ_FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 })
 
 fastify.register(rateLimit, {
     global: true,
-    max: Number(process.env.RECIPIZ_RATE_LIMIT_MAX ?? 200),
-    timeWindow: process.env.RECIPIZ_RATE_LIMIT_WINDOW ?? '1 minute'
+    max: 200,
+    timeWindow: '1 minute'
 })
 
 // Enregistrer les routes
@@ -27,7 +27,7 @@ registerPostRoutes(fastify)
 registerPutRoutes(fastify)
 registerDeleteRoutes(fastify)
 
-fastify.listen({ port: Number(process.env.RECIPIZ_BACKEND_PORT ?? 3000) }, err => {
+fastify.listen({ port: Number(process.env.RECIPIZ_BACKEND_PORT) }, err => {
     if (err) {
         fastify.log.error(err)
         process.exit(1)

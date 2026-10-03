@@ -64,12 +64,13 @@ in
     restartTriggers = [ backendSrc ];
 
     environment = {
+      RECIPIZ_FRONTEND_URL = cfg.frontendUrl;
       RECIPIZ_BACKEND_PORT = toString cfg.backendPort;
-      RECIPIZ_CORS_ORIGIN = cfg.corsOrigin;
-
-      RECIPIZ_DB_USER = cfg.database.user;
-      RECIPIZ_DB_HOST = cfg.database.host;
-      RECIPIZ_DB_NAME = cfg.database.name;
+      
+      PGUSER = "recipiz";
+      PGNAME = "recipiz";
+      PGHOST = "/run/postgresql";
+      PGPORT = toString 5432; #not TCP/IP but socket connection
     };
 
     serviceConfig = {
