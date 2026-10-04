@@ -1,10 +1,10 @@
-import * as db from '../db.js'
+import {deleteRecipe} from '../db/destruction.js'
 import * as utils from '../utils.js'
 
 export default function registerDeleteRoutes(fastify) {
     
-  fastify.delete('/recipes/:id', utils.templateAlterRoute(async (req, reply, client) => { 
+  fastify.delete('/recipes/:id', async (req, reply) => { 
     const { id } = req.params
-    await db.deleteRecipe(client, id);
-  }))
+    await deleteRecipe(id);
+  })
 }

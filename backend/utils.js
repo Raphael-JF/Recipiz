@@ -1,4 +1,4 @@
-import * as db from './db.js'
+import {pool} from './db/pool.js'
 
 
 export function normalizeIngredientName(value) {
@@ -7,15 +7,18 @@ export function normalizeIngredientName(value) {
 
 
 // Template route for POST or PUT requests that require a database transaction
-export function templateAlterRoute(behaviour) {
+export function dbTransaction(behaviour) {
   return async (req, reply) => {
-    const client = await db.pool.connect()
+    const client = await pool.connect()
 
     try {
       await client.query('BEGIN')
-      await behaviour(req, reply, client); 
+      const result = await behaviour(req, reply, client); 
       await client.query('COMMIT')
-      reply.code(201).send()
+      if (result !== undefined) {
+        reply.send(result)
+      }
+      // reply.code(200).send()
     } catch (error) {
       await client.query('ROLLBACK')
       reply.code(500).send({

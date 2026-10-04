@@ -1,7 +1,6 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import rateLimit from '@fastify/rate-limit'
-import * as db from './db.js'
 import registerGetRoutes from './routes/get/index.js'
 import registerPostRoutes from './routes/post.js'
 import registerPutRoutes from './routes/put.js'
