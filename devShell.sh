@@ -94,11 +94,12 @@ fi
 
 echo "Initializing database '$PGDATABASE'..."
 
-psql \
-  -U recipiz \
-  -d "$PGDATABASE" \
-  -v ON_ERROR_STOP=1 \
-  -f "$PWD/sql/init_dev.sql"
+# psql \
+#   -U recipiz \
+#   -d "$PGDATABASE" \
+#   -v ON_ERROR_STOP=1 \
+#   -f "$PWD/sql/init_dev.sql"
+node "$PWD/sql/insert_data.js"
 
 export DATABASE_URL="postgresql://recipiz@/$PGDATABASE?host=$PGHOST&port=$PGPORT"
 

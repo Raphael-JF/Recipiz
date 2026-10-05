@@ -1,7 +1,7 @@
 { config, ... }:
 {
   systemd.tmpfiles.rules = [
-    "d /var/lib/recipiz 0750 recipiz nginx -"
+    "d ${config.services.recipiz.packageDirectory} 0750 recipiz nginx -"
   ];
   users.groups.recipiz = {};
 
