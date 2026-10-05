@@ -6,7 +6,5 @@ to do list :
 
 
 Done :
-
-
 - V Se débarasser de db.js
 - V "Modifier" ne modifie pas 
