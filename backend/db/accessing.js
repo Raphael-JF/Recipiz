@@ -28,7 +28,7 @@ export async function getRecipesPage(search, page, pageSize) {
 
   if (search.length == 0) {
     res = await pool.query(
-      `SELECT id, title
+      `SELECT id, title, COUNT(*) OVER() AS total_count
        FROM recipes
        ORDER BY title
        LIMIT $1
@@ -38,7 +38,7 @@ export async function getRecipesPage(search, page, pageSize) {
   }
   else if (search.length <= 3 ) {
     res = await pool.query(
-      `SELECT id, title
+      `SELECT id, title, COUNT(*) OVER() AS total_count
        FROM recipes
        WHERE title ILIKE $1
        ORDER BY title
@@ -49,7 +49,7 @@ export async function getRecipesPage(search, page, pageSize) {
   }
   else {
     res = await pool.query(
-      `SELECT id, title
+      `SELECT id, title, COUNT(*) OVER() AS total_count
        FROM recipes
        WHERE title % $1
        ORDER BY similarity(title, $1) DESC
@@ -60,8 +60,8 @@ export async function getRecipesPage(search, page, pageSize) {
   }
 
   return {
-    recipes: res.rows,
-    total: res.rows.length,
+    recipes: res.rows.map(({ total, ...recipe }) => recipe),
+    totalPages: Math.ceil(res.rows[0].total_count / pageSize), 
   }
 }
 

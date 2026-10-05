@@ -17,7 +17,16 @@
   
   <section class="recipe-list">
     <List :component="RecipeCardComponent" :items="recipes" />
-  </section>
+    
+    <!-- Ajout du composant PageSelector pour la pagination -->
+    <PageSelector
+      v-if="totalPages > 1"
+      :current-page="page"
+      :total-pages="totalPages"
+      :has-next-page="hasNextPage"
+      @page-change="updatePage"
+    />
+</section>
 </template>
 
 <script>
@@ -27,39 +36,49 @@ import PageShell from '../components/PageShell.vue'
 import List from '../components/List.vue'
 import SearchBar from '../components/SearchBar.vue'
 import RecipeCard from '../components/RecipeCard.vue'
+import PageSelector from '../components/PageSelector.vue'
 
 export default {
   components: {
     PageShell,
     List,
     SearchBar,
+    PageSelector,
   },
   data() {
     return {
       recipes: [],
+      totalPages: 0,
+      hasNextPage: false,
       loading: true,
       RecipeCardComponent: markRaw(RecipeCard),
       search: '',
       page: 1,
     }
   },
-  methods: {
+methods: {
+    updatePage(pageNum) {
+      this.page = pageNum;
+      this.getRecipesPage(this.search);
+    },
+
     getRecipesPage(search) {
-      this.search = search
+      this.search = search;
       api.get('/recipes', {
         params: {
           search: this.search,
           page: this.page
         }
       }).then((res) => {
-        this.recipes = res.data.recipes 
-        this.loading = false
+        this.recipes = res.data.recipes;
+        this.totalPages = res.data.totalPages;
+        this.hasNextPage = this.page < this.totalPages;
+        this.loading = false;
       }).catch(() => {
-        this.loading = false
-        alert('Impossible de charger les recettes')
-      }) 
-      return 
-    }
+        this.loading = false;
+        alert('Impossible de charger les recettes');
+      });
+    },
   },
   mounted() {
     this.$refs.SearchBar.focus()
@@ -70,11 +89,8 @@ export default {
 <style scoped>
 section.home-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 4vh;
-  margin-top: 4vh;
 }
 
 section.home-header h1 {
@@ -84,9 +100,14 @@ section.home-header h1 {
 }
 
 section.search-bar {
-  width: 40%;
-  margin-bottom: 8vh;
+  width: 75%;
+}
 
+section.recipe-list {
+  width: 75%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 </style>

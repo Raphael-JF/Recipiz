@@ -26,15 +26,12 @@ export default {
   list-style: none;
   padding: 0;
   margin: 1rem auto;
-  width: min(95vw, 1200px);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.8rem;
-  justify-content: center;
+  width: 100%;
 }
 .list li {
   flex: 1 1 calc(33% - 1.8rem);
-  min-width: 0;
+  margin-bottom: 1em;
+
 }
 
 </style>
