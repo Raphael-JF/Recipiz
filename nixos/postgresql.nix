@@ -41,15 +41,10 @@ in
     script = ''
       set -e
 
-      ${pkgs.nodejs}/bin/node ${sql}/insert_data.js
-
-
-      # PSQL="${pkgs.postgresql_18}/bin/psql"
-      #      "$PSQL" \
-      #   -d "recipiz" \
-      #   -v ON_ERROR_STOP=1 \
-      #   -f "${sql}/init_prod.sql"
-
+      "${pkgs.postgresql_18}/bin/psql" \
+      -d "recipiz" \
+      -v ON_ERROR_STOP=1 \
+      -f "${sql}/init_prod.sql"
     '';
   };
 }
