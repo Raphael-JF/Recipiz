@@ -1,24 +1,31 @@
 import {pool} from './pool.js'
 
-
-export async function getMatchingRecipes(searchTerm, limit) {
+async function getMatchingThings(table, column, searchTerm, limit) {
   const res = await pool.query(
     `
-    SELECT title
-    FROM recipes
-    WHERE title ILIKE '%' || $1 || '%'
-       OR similarity(title, $1) > 0.2
+    SELECT ${column}
+    FROM ${table}
+    WHERE ${column} ILIKE '%' || $1 || '%'
+       OR similarity(${column}, $1) > 0.2
     ORDER BY
       CASE
-        WHEN title ILIKE '%' || $1 || '%' THEN 0
+        WHEN ${column} ILIKE '%' || $1 || '%' THEN 0
         ELSE 1
       END,
-      similarity(title, $1) DESC
+      similarity(${column}, $1) DESC
     LIMIT $2;
     `,
     [searchTerm, limit]
   )
   return res.rows
+}
+
+export async function getMatchingRecipes(searchTerm, limit) {
+  return getMatchingThings('recipes', 'title', searchTerm, limit)
+}
+
+  export async function getMatchingIngredients(searchTerm, limit) {
+  return getMatchingThings('ingredients', 'name', searchTerm, limit)
 }
 
 
@@ -61,7 +68,7 @@ export async function getRecipesPage(search, page, pageSize) {
 
   return {
     recipes: res.rows.map(({ total, ...recipe }) => recipe),
-    totalPages: Math.ceil(res.rows[0].total_count / pageSize), 
+    totalPages: res.rows.total_count , 
   }
 }
 
@@ -91,6 +98,7 @@ export async function getOneRecipePage(client, recipeId) {
     `, [recipeId])
   
   return {
+    id: recipeId,
     title: title,
     instructions: instructions,
     ingredients: res.rows.map(row => ({

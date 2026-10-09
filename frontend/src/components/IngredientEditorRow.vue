@@ -1,53 +1,51 @@
 <template>
   <div class="ingredient-row">
-    <input
+    <SearchBar 
       class="ingredient-row__name"
-      :value="ingredient.name"
-      :list="datalistId"
+      apiURL = "/matchingIngredients"
       placeholder="Ingrédient"
-      @input="updateIngredient('name', $event.target.value)"
-      required
-    >
+      className="ingredient-search-bar"
+      @change="item.name = $event; this.$emit('update',item)"
+    />   
+
     <input
       class="ingredient-row__quantity"
-      :value="ingredient.quantity"
+      :value="item.quantity"
       type="number"
       min="0"
       step="0.01"
       placeholder="Qté"
-      @input="updateIngredient('quantity', $event.target.valueAsNumber)"
+      @change="this.$emit('update',item)"
     >
     <input
       class="ingredient-row__unit"
-      :value="ingredient.unit"
+      :value="item.unit"
       placeholder="g, ml, pièces"
-      @input="updateIngredient('unit', $event.target.value)"
+      @change="this.$emit('update',item)"
     >
-    <button type="button" class="danger" @click="$emit('remove')">❌</button>
+    <button type="button" class="danger" @click="$emit('remove')">Supprimer</button>
   </div>
 </template>
 
 <script>
+import SearchBar from './SearchBar.vue'
+
 export default {
   name: 'IngredientEditorRow',
+  components: {
+    SearchBar
+  },
   props: {
-    ingredient: {
+    item: {
       type: Object,
       required: true
     },
-    datalistId: {
-      type: String,
-      default: ''
-    }
   },
   emits: ['update', 'remove'],
   methods: {
     updateIngredient(field, value) {
-      const safeValue = Number.isNaN(value) ? 0 : value
-      this.$emit('update', {
-        ...this.ingredient,
-        [field]: safeValue
-      })
+      this.item[field] = value;
+      this.$emit('update', this.item);
     }
   }
 }

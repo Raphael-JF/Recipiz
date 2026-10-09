@@ -3,7 +3,8 @@ import {pool} from './db/pool.js'
 
 // Constants
 export const RECIPES_PER_PAGE = 10
-export const RECIPE_SUGGESTIONS_PER_PAGE = 5
+export const NUM_RECIPE_SUGGESTIONS = 5
+export const NUM_INGREDIENT_SUGGESTIONS = 3
 
 
 export function normalizeIngredientName(value) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="search-bar">
+  <div class="search-bar" :class="className">
     <input
       ref="input"
       :value="search"
@@ -43,9 +43,20 @@ import api from '../services/api'
 
 export default {
   name: 'SearchBar',
-
-  props: ['apiURL', 'placeholder'],
-  emits: ['search'],
+  props: {
+    apiURL: {
+      type: String,
+      required: true
+    },
+    placeholder: {
+      type: String,
+      default: 'Recherche...'
+    },
+    className: {
+      type: String,
+      default: 'search-bar'
+    },   
+  },
 
   data() {
     return {
@@ -65,6 +76,7 @@ export default {
 
     handleInput(event) {
       this.search = event.target.value
+      this.$emit('change', this.search)
       this.suggestionSearch = this.search
       api.get(this.apiURL, {
         params: {
@@ -83,7 +95,7 @@ export default {
       if (event.key === 'ArrowDown') {
         event.preventDefault()
 
-        if (!this.suggestions.length) {
+      if (!this.suggestions.length) {
           return
         }
 
@@ -141,27 +153,27 @@ export default {
   }
 }
 </script>
-<style>
+<style>  
   .search-bar {
-    --search-border-radius: 25px;
+    --search-border-radius: 8px;
     position: relative;
+  }
+
+  .recipe-search-bar {
+    --search-border-radius: 24px;
   }
 
 
   .search-bar input {
-    width: 100%;
-    padding: 13px 16px;
     border-radius: var(--search-border-radius);
-    border: 2px solid #dfe2e5;
-    font-size: 17px;
-    outline: none;
-    transition: box-shadow 1.3s ease;
   }
 
-  /* .search-bar input:focus { */
-  /*   box-shadow: 1 0 0 2px rgba(72, 146, 255, 0.2); */
-  /*   border-color: #4893ff; */
-  /* } */
+  .recipe-search-bar input {
+    font-size: 17px;
+    padding: 13px 16px;
+  }
+
+
 
   .search-bar input.has-suggestions {
     border-radius: var(--search-border-radius) var(--search-border-radius) 0px 0px;

@@ -1,7 +1,10 @@
+let ingredientCounter = 0
+
 export function createEmptyIngredient() {
-    return { 
-        name: '', 
-        quantity: 0, 
-        unit: '' 
-    }
+  return {
+    key: ingredientCounter++,
+    name: '',
+    quantity: 0,
+    unit: ''
+  }
 }

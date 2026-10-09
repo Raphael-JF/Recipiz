@@ -13,14 +13,14 @@ export default {
     RouterLink
   },
   props: {
-    id: {
-      type: Number,
-      required: true
-    },
     title: {
       type: String,
       required: true
-    }
+    },
+    id: {
+      type: Number,
+      required: true
+    } 
   }
 }
 </script>

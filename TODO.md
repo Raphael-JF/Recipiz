@@ -1,4 +1,7 @@
 to do list :
+- Désactiver le dragging dans les ingrédients (au moins on a compris comment ça marche)
+
+
 - Changer l'initialisation de la BD, privilégier du js 
 - "SubSearchBar" en changeant juste la classe des éléments de searchBar, pour avoir des barres de recherche plus petites pour par exemple, les unités, les ingrédients quand on crée une recette.
 - RecipeCard à compléter

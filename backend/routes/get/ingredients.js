@@ -1,5 +1,13 @@
+import {getMatchingIngredients} from '../../db/accessing.js'
+import * as utils from '../../utils.js'
 
 export default function registerIngredientGetRoutes(fastify) {
+
+  fastify.get('/matchingIngredients', async (request) => {
+    const suggestionIngredients = request.query.suggestionSearch
+    return await getMatchingIngredients(suggestionIngredients, utils.NUM_INGREDIENT_SUGGESTIONS)
+  })
+
 
   fastify.get('/ingredients/:id', async (request, reply) => {
     const { id } = request.params

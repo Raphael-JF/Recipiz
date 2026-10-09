@@ -7,16 +7,25 @@
   <section class="search-bar">
     <SearchBar 
        ref="SearchBar"
-       :items="recipes" 
-       :keys="['title']"
        apiURL = "/matchingRecipes"
        placeholder="Rechercher une recette..."
+       className="recipe-search-bar"
        @search="getRecipesPage"
     />
   </section>
   
   <section class="recipe-list">
-    <List :component="RecipeCardComponent" :items="recipes" />
+    <div class="item-list">
+      <p v-if="loading">Chargement...</p>
+      <p v-else-if="!recipes.length">Aucune recette trouvée</p>
+      <RecipeCard 
+        v-else 
+        v-for="(recipe, index) in recipes" 
+        :key="index" 
+        :id="recipe.id"
+        :title="recipe.title" 
+      />
+    </div>
     
     <!-- Ajout du composant PageSelector pour la pagination -->
     <PageSelector
@@ -26,14 +35,13 @@
       :has-next-page="hasNextPage"
       @page-change="updatePage"
     />
-</section>
+  </section>
 </template>
 
 <script>
 import { markRaw } from 'vue'
 import api from '../services/api'
 import PageShell from '../components/PageShell.vue'
-import List from '../components/List.vue'
 import SearchBar from '../components/SearchBar.vue'
 import RecipeCard from '../components/RecipeCard.vue'
 import PageSelector from '../components/PageSelector.vue'
@@ -41,7 +49,7 @@ import PageSelector from '../components/PageSelector.vue'
 export default {
   components: {
     PageShell,
-    List,
+    RecipeCard,
     SearchBar,
     PageSelector,
   },

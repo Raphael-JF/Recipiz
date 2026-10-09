@@ -8,32 +8,22 @@
     <form v-else class="recipe-form" @submit.prevent="save">
       <label>
         <span>Titre</span>
-        <input type="text" v-model="newRecipe.title" placeholder="Titre" required>
+        <input type="text" v-model="recipe.title" placeholder="Titre" required>
       </label>
 
       <section>
         <h2>Ingrédients</h2>
-        <datalist id="ingredient-options">
-          <option v-for="ingredient in ingredientOptions" :key="ingredient.id" :value="ingredient.name" />
-        </datalist>
-
-        <div class="ingredient-grid">
-          <IngredientEditorRow
-            v-for="(ingredient, index) in newRecipe.ingredients"
-            :key="index"
-            :ingredient="ingredient"
-            datalist-id="ingredient-options"
-            @update="updateIngredient(index, $event)"
-            @remove="removeIngredient(index)"
-          />
-        </div>
-
-        <button type="button" class="secondary" @click="addIngredient">➕ ingrédient</button>
+        
+        <EditorList
+          v-model="recipe.ingredients"
+          :component="IngredientEditorRowComponent"
+          :createItem="createEmptyIngredient"
+        />
       </section>
 
       <label>
         <span>Instructions</span>
-        <textarea placeholder="Instructions" v-model="newRecipe.instructions"></textarea>
+        <textarea placeholder="Instructions" v-model="recipe.instructions"></textarea>
       </label>
 
       <section class="actions">
@@ -48,12 +38,15 @@
 import api from '../services/api'
 import { createEmptyRecipe } from '../models/emptyRecipe'
 import { createEmptyIngredient } from '../models/emptyIngredient'
+import { markRaw } from 'vue'
 import IngredientEditorRow from '../components/IngredientEditorRow.vue'
 import PageShell from '../components/PageShell.vue'
+import EditorList from '../components/EditorList.vue'
 
 export default {
   components: {
     IngredientEditorRow,
+    EditorList,
     PageShell
   },
   props: {
@@ -63,40 +56,42 @@ export default {
   },
   data() {
     return {
-      newRecipe: createEmptyRecipe(),
-      ingredientOptions: [],
+      recipe: createEmptyRecipe(),
+      IngredientEditorRowComponent: markRaw(IngredientEditorRow),
       loading: true,
     }
   },
   async mounted() {
 
-    const ingredientPromise = api.get('/ingredients').then((res) => {
-      this.ingredientOptions = res.data
-    }).catch(() => {
-      this.ingredientOptions = []
-    })
 
     if (this.id) {
       await api.get(`/recipes/${this.id}`).then((res) => {
-        this.newRecipe.title = res.data.title
-        this.newRecipe.instructions = res.data.instructions
-        this.newRecipe.ingredients = res.data.ingredients
+        this.recipe.title = res.data.title
+        this.recipe.instructions = res.data.instructions
+        // to make the key unique for each ingredient entry, we create a new object for each ingredient
+        this.recipe.ingredients = res.data.ingredients.map((ingredient) => {
+          let res = createEmptyIngredient()
+          res.name = ingredient.name
+          res.quantity = ingredient.quantity
+          res.unit = ingredient.unit
+          return res
+        })
       }).catch(() => {
         alert('Recette introuvable')
       })
     }
     
-
-    await ingredientPromise
     this.loading = false
   },
   methods: {
+    createEmptyIngredient,
+
     async save() {
       const id = this.$route.params.id
       const payload = {
-        title: this.newRecipe.title,
-        instructions: this.newRecipe.instructions,
-        ingredients: this.newRecipe.ingredients
+        title: this.recipe.title,
+        instructions: this.recipe.instructions,
+        ingredients: this.recipe.ingredients
       }
 
       if (this.id) {
@@ -108,13 +103,13 @@ export default {
       }
     },
     addIngredient() {
-      this.newRecipe.ingredients.push(createEmptyIngredient())
+      this.recipe.ingredients.push(createEmptyIngredient())
     },
     updateIngredient(index, updatedIngredient) {
-      this.newRecipe.ingredients.splice(index, 1, updatedIngredient)
+      this.recipe.ingredients.splice(index, 1, updatedIngredient)
     },
     removeIngredient(index) {
-      this.newRecipe.ingredients.splice(index, 1)
+      this.recipe.ingredients.splice(index, 1)
     }
   }
 }

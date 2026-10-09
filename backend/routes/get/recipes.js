@@ -6,7 +6,7 @@ import * as utils from '../../utils.js'
 export default function registerRecipeGetRoutes(fastify) {
   fastify.get('/matchingRecipes', async (request) => {
     const suggestionRecipe = request.query.suggestionSearch
-    return await getMatchingRecipes(suggestionRecipe, utils.RECIPE_SUGGESTIONS_PER_PAGE)
+    return await getMatchingRecipes(suggestionRecipe, utils.NUM_RECIPE_SUGGESTIONS)
   })
 
   fastify.get('/recipes', async (request) => {

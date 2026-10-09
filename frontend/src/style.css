@@ -41,7 +41,7 @@ main {
 }
 
 button {
-  border-radius: 0.65rem;
+  border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.55rem 0.95rem;
   font-size: 0.95rem;
@@ -73,6 +73,18 @@ button.danger {
 button.danger:hover {
   background-color: #dc2626;
 }
+
+input {
+    width: 100%;
+    padding: 10px 10px;
+    font-size: 14px;
+    border: 2px solid #dfe2e5;
+    outline: none;
+    transition: box-shadow 1.3s ease;
+    border-radius: 8px;
+
+}
+
 
 #app {
   max-width: none;
