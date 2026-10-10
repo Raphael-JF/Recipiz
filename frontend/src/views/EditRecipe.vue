@@ -18,6 +18,7 @@
           v-model="recipe.ingredients"
           :component="IngredientEditorRowComponent"
           :createItem="createEmptyIngredient"
+          disableDraggable="true"
         />
       </section>
 
@@ -80,7 +81,6 @@ export default {
         alert('Recette introuvable')
       })
     }
-    
     this.loading = false
   },
   methods: {

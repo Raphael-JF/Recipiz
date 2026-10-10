@@ -1,13 +1,32 @@
 <template>
-  <draggable
-    v-model="items"
-    item-key="key"
-    handle=".drag-handle"
-    class="editor-list"
-  >
-    <template #item="{ element: item, index }">
-      <div class="editor-row">
-        <span class="drag-handle" title="Déplacer" aria-hidden="true">⠿</span>
+  <div class="editor-list-container">
+    <draggable
+      v-if="!disableDraggable"
+      v-model="items"
+      item-key="key"
+      handle=".drag-handle"
+      class="editor-list"
+    >
+      <template #item="{ element: item, index }">
+        <li class="editor-row">
+          <span class="drag-handle" title="Déplacer" aria-hidden="true">⠿</span>
+          <component
+            :is="component"
+            class="editor-row-content"
+            :item="item"
+            @update="updateItem(index, $event)"
+            @remove="removeItem(index)"
+          />
+        </li>
+      </template>
+    </draggable>
+
+    <ul v-else class="editor-list">
+      <li
+        v-for="(item, index) in items"
+        :key="item.key"
+        class="editor-row"
+      >
         <component
           :is="component"
           class="editor-row-content"
@@ -15,12 +34,13 @@
           @update="updateItem(index, $event)"
           @remove="removeItem(index)"
         />
-      </div>
-    </template>
-  </draggable>
-  <button type="button" class="secondary" @click="addItem">
-    ➕ ajouter
-  </button>
+      </li>
+    </ul>
+
+    <button type="button" class="secondary" @click="addItem">
+      ➕ ajouter
+    </button>
+  </div>
 </template>
 
 <script>
@@ -43,6 +63,10 @@ export default {
     createItem: {
       type: Function,
       required: true
+    },
+    disableDraggable: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -52,7 +76,6 @@ export default {
         return this.modelValue
       },
       set(value) {
-        console.log(this.items[0].id);
         this.$emit('update:modelValue', value)
       }
     }
@@ -72,17 +95,16 @@ export default {
       const items = [...this.modelValue]
       items[index] = item
 
-      this.$emit('update:modelValue', items )
+      this.$emit('update:modelValue', items)
     },
 
     removeItem(index) {
       const items = [...this.modelValue]
       items.splice(index, 1)
 
-      this.$emit('update:modelValue', items )
+      this.$emit('update:modelValue', items)
     }
   }
-
 }
 </script>
 
@@ -90,9 +112,12 @@ export default {
 .editor-list {
   display: grid;
   gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.editor-item {
+.editor-row {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -106,4 +131,12 @@ export default {
 .drag-handle:active {
   cursor: grabbing;
 }
+
+.editor-list-container {
+  width : 100%;
+  display: flex;
+  flex-direction: column;
+  gap : 0.6rem;
+}
+
 </style>
