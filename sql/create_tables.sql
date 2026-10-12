@@ -13,10 +13,10 @@ CREATE TABLE IF NOT EXISTS tags (
 );
 
 CREATE TABLE IF NOT EXISTS recipe_steps (
-    id SERIAL PRIMARY KEY,
-    step_number INT NOT NULL,
-    content TEXT NOT NULL,
-    recipe_id INT NOT NULL REFERENCES recipes(id) ON DELETE CASCADE
+    step INT NOT NULL,
+    text TEXT NOT NULL,
+    recipe_id INT NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
+    PRIMARY KEY (recipe_id, step)
 );
 
 CREATE TABLE IF NOT EXISTS recipe_tags (

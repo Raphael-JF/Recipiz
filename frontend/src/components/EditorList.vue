@@ -15,8 +15,8 @@
             class="editor-row-content"
             :item="item"
             @update="updateItem(index, $event)"
-            @remove="removeItem(index)"
           />
+          <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
         </li>
       </template>
     </draggable>
@@ -32,8 +32,8 @@
           class="editor-row-content"
           :item="item"
           @update="updateItem(index, $event)"
-          @remove="removeItem(index)"
         />
+        <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
       </li>
     </ul>
 

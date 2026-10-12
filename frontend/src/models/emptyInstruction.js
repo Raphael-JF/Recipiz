@@ -1,6 +1,6 @@
 export function createEmptyInstruction() {
   return {
-    step: '',
-    description: ''
+    text: '',
+    key: -1, // key == step 
   }
 }

@@ -7,26 +7,37 @@
 
     <form v-else class="recipe-form" @submit.prevent="save">
       <label>
-        <span>Titre</span>
+        <h2>Titre</h2>
         <input type="text" v-model="recipe.title" placeholder="Titre" required>
       </label>
 
-      <section>
+      <label>
         <h2>Ingrédients</h2>
-        
         <EditorList
           v-model="recipe.ingredients"
           :component="IngredientEditorRowComponent"
-          :createItem="createEmptyIngredient"
-          disableDraggable="true"
+          :createItem="addIngredient"
+          @update="updateIngredient"
+          @remove="removeIngredient"
+          :disableDraggable="true"
         />
-      </section>
-
-      <label>
-        <span>Instructions</span>
-        <textarea placeholder="Instructions" v-model="recipe.instructions"></textarea>
       </label>
 
+      <!-- <label> -->
+      <!--   <span>Instructions</span> -->
+      <!--   <textarea placeholder="Instructions" v-model="recipe.instructions"></textarea> -->
+      <!-- </label> -->
+      <label>
+        <h2>Instructions</h2>
+         <EditorList
+          v-model="recipe.instructions"
+          :component="InstructionEditorRowComponent"
+          :createItem="addInstruction"
+          @update="updateInstruction"
+          @remove="removeInstruction"
+        />
+      </label>
+      
       <section class="actions">
         <button type="submit">Enregistrer</button>
         <button type="button" class="secondary" @click="$router.back()">Annuler</button>
@@ -39,14 +50,15 @@
 import api from '../services/api'
 import { createEmptyRecipe } from '../models/emptyRecipe'
 import { createEmptyIngredient } from '../models/emptyIngredient'
+import { createEmptyInstruction } from '../models/emptyInstruction'
 import { markRaw } from 'vue'
 import IngredientEditorRow from '../components/IngredientEditorRow.vue'
 import PageShell from '../components/PageShell.vue'
 import EditorList from '../components/EditorList.vue'
+import InstructionEditorRow from '../components/InstructionEditorRow.vue'
 
 export default {
-  components: {
-    IngredientEditorRow,
+  components: {  
     EditorList,
     PageShell
   },
@@ -59,16 +71,21 @@ export default {
     return {
       recipe: createEmptyRecipe(),
       IngredientEditorRowComponent: markRaw(IngredientEditorRow),
+      InstructionEditorRowComponent: markRaw(InstructionEditorRow),
       loading: true,
     }
   },
   async mounted() {
 
-
     if (this.id) {
       await api.get(`/recipes/${this.id}`).then((res) => {
         this.recipe.title = res.data.title
-        this.recipe.instructions = res.data.instructions
+        this.recipe.instructions = res.data.instructions.map((instruction, idx) => {
+          let res = createEmptyInstruction()
+          res.text = instruction.text
+          res.key = idx
+          return res
+        })
         // to make the key unique for each ingredient entry, we create a new object for each ingredient
         this.recipe.ingredients = res.data.ingredients.map((ingredient) => {
           let res = createEmptyIngredient()
@@ -83,8 +100,19 @@ export default {
     }
     this.loading = false
   },
+
+  watch : {
+    recipe : {
+      handler(newValue) {
+console.log('Recipe changed:', JSON.parse(JSON.stringify(newValue)))
+      },
+      deep: true
+    }
+
+  },
   methods: {
     createEmptyIngredient,
+    createEmptyInstruction,
 
     async save() {
       const id = this.$route.params.id
@@ -110,6 +138,19 @@ export default {
     },
     removeIngredient(index) {
       this.recipe.ingredients.splice(index, 1)
+    },
+
+    addInstruction() { 
+      let temp = createEmptyInstruction()
+      console.log(temp)
+      temp.key = this.recipe.instructions.length
+      this.recipe.instructions.push(temp)
+    },
+    updateInstruction(index, updatedInstruction) {
+      this.recipe.instructions.splice(index, 1, updatedInstruction)
+    },
+    removeInstruction(index) {
+      this.recipe.instructions.splice(index, 1)
     }
   }
 }

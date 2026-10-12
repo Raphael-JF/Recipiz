@@ -8,7 +8,7 @@ export function createEmptyRecipe() {
       createEmptyIngredient()
     ],
     instructions: [
-      createEmptyInstruction()
+      { ...createEmptyInstruction(), key: 0 }
     ]
   }
 }
