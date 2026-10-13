@@ -1,6 +1,6 @@
-export function createEmptyInstruction() {
+export function createEmptyInstruction(key) {
   return {
     text: '',
-    key: -1, // key == step 
+    key: key, // key == step 
   }
 }

@@ -12,10 +12,10 @@
           <span class="drag-handle" title="Déplacer" aria-hidden="true">⠿</span>
           <component
             :is="component"
-            class="editor-row-content"
             :item="item"
-            @update="updateItem(index, $event)"
+
           />
+            <!-- @update="updateItem(index, $event)" -->
           <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
         </li>
       </template>
@@ -29,10 +29,10 @@
       >
         <component
           :is="component"
-          class="editor-row-content"
           :item="item"
-          @update="updateItem(index, $event)"
         />
+
+          <!-- @update="updateItem(index, $event)" -->
         <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
       </li>
     </ul>
@@ -60,10 +60,6 @@ export default {
       type: [Object, String],
       required: true
     },
-    createItem: {
-      type: Function,
-      required: true
-    },
     disableDraggable: {
       type: Boolean,
       default: false
@@ -81,28 +77,15 @@ export default {
     }
   },
 
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'new-item'],
 
   methods: {
     addItem() {
-      this.$emit('update:modelValue', [
-        ...this.modelValue,
-        this.createItem()
-      ])
-    },
-
-    updateItem(index, item) {
-      const items = [...this.modelValue]
-      items[index] = item
-
-      this.$emit('update:modelValue', items)
+      this.$emit('new-item')
     },
 
     removeItem(index) {
-      const items = [...this.modelValue]
-      items.splice(index, 1)
-
-      this.$emit('update:modelValue', items)
+      this.items.splice(index, 1)
     }
   }
 }
@@ -126,6 +109,8 @@ export default {
 .drag-handle {
   cursor: grab;
   user-select: none;
+  display:flex;
+  align-items:center;
 }
 
 .drag-handle:active {

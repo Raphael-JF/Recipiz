@@ -1,21 +1,19 @@
-
-<template>
-  <div class="instruction-row">
-    <input
-      :value="item.unit"
-      placeholder="Instruction"
-      @change="this.$emit('update',item)"
-    >
-  </div>
-</template>
+<template> 
+  <AutoResizeTextarea
+    id="instruction"
+    :modelValue="item.text"
+    placeholder="Instruction"
+    @update:modelValue="item.text = $event; this.$emit('update',item)"
+  />
+ </template>
 
 <script>
-import SearchBar from './SearchBar.vue'
+import AutoResizeTextarea from './AutoResizeTextarea.vue'
 
 export default {
-  name: 'IngredientEditorRow',
+  name: 'InstructionEditorRow',
   components: {
-    SearchBar
+    AutoResizeTextarea
   },
   props: {
     item: {
@@ -28,7 +26,11 @@ export default {
 </script>
 
 <style scoped>
-.instruction-row {
+.instruction-row{
+  display : flex; 
+}
+
+#instruction {
 }
 
 

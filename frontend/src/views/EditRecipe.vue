@@ -16,9 +16,7 @@
         <EditorList
           v-model="recipe.ingredients"
           :component="IngredientEditorRowComponent"
-          :createItem="addIngredient"
-          @update="updateIngredient"
-          @remove="removeIngredient"
+          @new-item="addIngredient"
           :disableDraggable="true"
         />
       </label>
@@ -32,9 +30,7 @@
          <EditorList
           v-model="recipe.instructions"
           :component="InstructionEditorRowComponent"
-          :createItem="addInstruction"
-          @update="updateInstruction"
-          @remove="removeInstruction"
+          @new-item="addInstruction"
         />
       </label>
       
@@ -101,15 +97,7 @@ export default {
     this.loading = false
   },
 
-  watch : {
-    recipe : {
-      handler(newValue) {
-console.log('Recipe changed:', JSON.parse(JSON.stringify(newValue)))
-      },
-      deep: true
-    }
-
-  },
+  
   methods: {
     createEmptyIngredient,
     createEmptyInstruction,
@@ -133,25 +121,13 @@ console.log('Recipe changed:', JSON.parse(JSON.stringify(newValue)))
     addIngredient() {
       this.recipe.ingredients.push(createEmptyIngredient())
     },
-    updateIngredient(index, updatedIngredient) {
-      this.recipe.ingredients.splice(index, 1, updatedIngredient)
-    },
-    removeIngredient(index) {
-      this.recipe.ingredients.splice(index, 1)
-    },
-
+    
     addInstruction() { 
       let temp = createEmptyInstruction()
       console.log(temp)
       temp.key = this.recipe.instructions.length
       this.recipe.instructions.push(temp)
     },
-    updateInstruction(index, updatedInstruction) {
-      this.recipe.instructions.splice(index, 1, updatedInstruction)
-    },
-    removeInstruction(index) {
-      this.recipe.instructions.splice(index, 1)
-    }
   }
 }
 </script>
@@ -175,18 +151,18 @@ label {
   color: #334155;
 }
 
-input,
-textarea {
-  padding: 0.7rem 0.8rem;
-  border-radius: 0.65rem;
-  border: 1px solid #cbd5e1;
-  font-size: 1rem;
-  font-family: inherit;
-}
-
-textarea {
-  min-height: 180px;
-}
+/* input, */
+/* textarea { */
+/*   padding: 0.7rem 0.8rem; */
+/*   border-radius: 0.65rem; */
+/*   border: 1px solid #cbd5e1; */
+/*   font-size: 1rem; */
+/*   font-family: inherit; */
+/* } */
+/**/
+/* textarea { */
+/*   min-height: 180px; */
+/* } */
 
 .ingredient-grid {
   display: grid;

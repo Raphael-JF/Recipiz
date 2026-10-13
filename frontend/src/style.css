@@ -74,7 +74,7 @@ button.danger:hover {
   background-color: #dc2626;
 }
 
-input {
+input, textarea {
     width: 100%;
     padding: 10px 10px;
     font-size: 14px;
