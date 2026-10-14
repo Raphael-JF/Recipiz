@@ -24,7 +24,7 @@ export async function getMatchingRecipes(searchTerm, limit) {
   return getMatchingThings('recipes', 'title', searchTerm, limit)
 }
 
-  export async function getMatchingIngredients(searchTerm, limit) {
+export async function getMatchingIngredients(searchTerm, limit) {
   return getMatchingThings('ingredients', 'name', searchTerm, limit)
 }
 
@@ -35,7 +35,7 @@ export async function getRecipesPage(search, page, pageSize) {
 
   if (search.length == 0) {
     res = await pool.query(
-      `SELECT id, title, COUNT(*) OVER() AS total_count
+      `SELECT recipe_id, title, COUNT(*) OVER() AS total_count
        FROM recipes
        ORDER BY title
        LIMIT $1
@@ -45,7 +45,7 @@ export async function getRecipesPage(search, page, pageSize) {
   }
   else if (search.length <= 3 ) {
     res = await pool.query(
-      `SELECT id, title, COUNT(*) OVER() AS total_count
+      `SELECT recipe_id, title, COUNT(*) OVER() AS total_count
        FROM recipes
        WHERE title ILIKE $1
        ORDER BY title
@@ -56,7 +56,7 @@ export async function getRecipesPage(search, page, pageSize) {
   }
   else {
     res = await pool.query(
-      `SELECT id, title, COUNT(*) OVER() AS total_count
+      `SELECT recipe_id, title, COUNT(*) OVER() AS total_count
        FROM recipes
        WHERE title % $1
        ORDER BY similarity(title, $1) DESC
@@ -75,26 +75,38 @@ export async function getRecipesPage(search, page, pageSize) {
 export async function getOneRecipePage(client, recipeId) {
 
   const recipeInfo = await client.query(
-    `SELECT title, instructions
+    `SELECT title
      FROM recipes
      WHERE id = $1`,
     [recipeId]
   )
+
   if (recipeInfo.rows.length === 0) {
     return  null;
   }
+
   const { title, instructions } = recipeInfo.rows[0]
+
+  const instructionsRes = await client.query(
+    `SELECT text
+    FROM recipe_instructions
+    JOIN recipes USING (recipe_id)
+    WHERE recipe_id = $1
+    ORDER BY step`,
+    [recipeId]
+  )
+
 
   const res = await pool.query(
     `SELECT
-      i.id AS ingredient_id,
-      i.name,
-      ri.quantity,
-      ri.unit
-    FROM recipes r
-    LEFT JOIN recipe_ingredients ri ON ri.recipe_id = r.id
-    LEFT JOIN ingredients i ON i.id = ri.ingredient_id
-    WHERE r.id = $1; 
+      ingredient_id,
+      name,
+      quantity,
+      unit
+    FROM recipes
+    JOIN recipe_ingredients USING recipe_id
+    JOIN ingredients USING ingredient_id    
+    WHERE ingredient_id = $1; 
     `, [recipeId])
   
   return {
@@ -106,6 +118,7 @@ export async function getOneRecipePage(client, recipeId) {
       name: row.name,
       quantity: row.quantity,
       unit: row.unit
-    }))
+    })),
+    instructions: instructionsRes.rows.map(row => row.text)
   }
 }

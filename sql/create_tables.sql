@@ -1,45 +1,44 @@
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 CREATE TABLE IF NOT EXISTS recipes (
-    id SERIAL PRIMARY KEY,
+    recipe_id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    description TEXT, 
-    instructions TEXT
+    -- instructions TEXT
 );
 
 CREATE TABLE IF NOT EXISTS tags (
-    id SERIAL PRIMARY KEY,
+    tag_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS recipe_steps (
     step INT NOT NULL,
     text TEXT NOT NULL,
-    recipe_id INT NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
+    recipe_id INT NOT NULL REFERENCES recipes(recipe_id) ON DELETE CASCADE,
     PRIMARY KEY (recipe_id, step)
 );
 
 CREATE TABLE IF NOT EXISTS recipe_tags (
-    recipe_id INT NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
-    tag_id INT NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+    recipe_id INT NOT NULL REFERENCES recipes(recipe_id) ON DELETE CASCADE,
+    tag_id INT NOT NULL REFERENCES tags(tag_id) ON DELETE CASCADE,
     PRIMARY KEY (recipe_id, tag_id)
 );
 
 CREATE TABLE IF NOT EXISTS ingredients (
-    id SERIAL PRIMARY KEY,
+    ingredient_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS ingredient_tags (
     ingredient_id INT NOT NULL REFERENCES ingredients(id) ON DELETE CASCADE,
-    tag_id INT NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+    tag_id INT NOT NULL REFERENCES tags(tag_id) ON DELETE CASCADE,
     PRIMARY KEY (ingredient_id, tag_id)
 );
 
 CREATE TABLE IF NOT EXISTS recipe_ingredients (
     quantity NUMERIC,
     unit VARCHAR(50),
-    recipe_id INT NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
+    recipe_id INT NOT NULL REFERENCES recipes(recipe_id) ON DELETE CASCADE,
     ingredient_id INT NOT NULL REFERENCES ingredients(id) ON DELETE CASCADE,
     PRIMARY KEY (recipe_id, ingredient_id)
 );
