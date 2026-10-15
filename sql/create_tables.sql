@@ -2,8 +2,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 CREATE TABLE IF NOT EXISTS recipes (
     recipe_id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    -- instructions TEXT
+    title VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS tags (
@@ -11,7 +10,7 @@ CREATE TABLE IF NOT EXISTS tags (
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS recipe_steps (
+CREATE TABLE IF NOT EXISTS recipe_instructions (
     step INT NOT NULL,
     text TEXT NOT NULL,
     recipe_id INT NOT NULL REFERENCES recipes(recipe_id) ON DELETE CASCADE,
@@ -39,7 +38,7 @@ CREATE TABLE IF NOT EXISTS recipe_ingredients (
     quantity NUMERIC,
     unit VARCHAR(50),
     recipe_id INT NOT NULL REFERENCES recipes(recipe_id) ON DELETE CASCADE,
-    ingredient_id INT NOT NULL REFERENCES ingredients(id) ON DELETE CASCADE,
+    ingredient_id INT NOT NULL REFERENCES ingredients(ingredient_id) ON DELETE CASCADE,
     PRIMARY KEY (recipe_id, ingredient_id)
 );
 

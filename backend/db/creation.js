@@ -5,7 +5,7 @@ export async function upsertIngredient(client, ingredientName) {
      VALUES ($1)
      ON CONFLICT (name)
      DO UPDATE SET name = EXCLUDED.name
-     RETURNING id`,
+     RETURNING recipe_id`,
     [ingredientName]
   )
 
@@ -24,13 +24,26 @@ export async function bindRecipeIngredients(client, recipeId, ingredients) {
   }
 }
 
-export async function insertRecipeWithIngredients(client, title, instructions, ingredients) {
+export async function bindRecipeInstructions(client, recipeId, instructions) {
+  for (let step = 0; step < instructions.length; step++) {
+    await client.query(
+      `INSERT INTO recipe_instructions (recipe_id, step, text)
+       VALUES ($1, $2, $3)`,
+      [recipeId, step, instructions[step]]
+    )
+  }
+
+}
+
+export async function insertCompleteRecipe(client, title, ingredients, instructions) {
   const recipeId = (await client.query(
-    `INSERT INTO recipes (title, instructions)
-     VALUES ($1, $2)
-     RETURNING id`,
-    [title, instructions]
+    `INSERT INTO recipes (title)
+     VALUES ($1)
+     RETURNING recipe_id`,
+    [title]
   )).rows[0].id
 
-  await bindRecipeIngredients(client, recipeId, ingredients) 
+  let promise1 = bindRecipeIngredients(client, recipeId, ingredients) 
+  let promise2 = bindRecipeInstructions(client, recipeId, instructions)
+  await Promise.all([promise1, promise2])
 }
