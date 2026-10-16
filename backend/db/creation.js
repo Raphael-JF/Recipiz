@@ -9,7 +9,7 @@ export async function upsertIngredient(client, ingredientName) {
     [ingredientName]
   )
 
-  return ingredientRes.rows[0].id
+  return ingredientRes.rows[0].recipe_id
 }
 
 export async function bindRecipeIngredients(client, recipeId, ingredients) {
@@ -41,7 +41,7 @@ export async function insertCompleteRecipe(client, title, ingredients, instructi
      VALUES ($1)
      RETURNING recipe_id`,
     [title]
-  )).rows[0].id
+  )).rows[0].recipe_id
 
   let promise1 = bindRecipeIngredients(client, recipeId, ingredients) 
   let promise2 = bindRecipeInstructions(client, recipeId, instructions)
