@@ -98,12 +98,16 @@ export default {
   list-style: none;
   padding: 0;
   margin: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .editor-row {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .drag-handle {

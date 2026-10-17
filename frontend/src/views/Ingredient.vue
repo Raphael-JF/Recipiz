@@ -1,5 +1,4 @@
 <template>
-  <PageShell>
     <button class="secondary" @click="$router.back()">← Retour</button>
 
     <p v-if="loading">Chargement...</p>
@@ -15,19 +14,16 @@
       </ul>
       <p v-else>Aucune recette liée pour le moment.</p>
     </section>
-  </PageShell>
 </template>
 
 <script>
 import { RouterLink } from 'vue-router'
 import api from '../services/api'
-import PageShell from '../components/PageShell.vue'
 
 export default {
   name: 'IngredientView',
   components: {
     RouterLink,
-    PageShell
   },
   data() {
     return {

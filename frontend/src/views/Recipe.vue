@@ -1,36 +1,35 @@
 <template>
-  <PageShell>
-    <section class="actions">
-      <button class="secondary" @click="$router.push('/')">← Retour</button>
-      <button class="secondary" @click="$router.push(`/recipe/${$route.params.id}/edit`)">Modifier</button>
-      <button class="danger" @click="deleteRecipe">Supprimer</button>
-    </section>
+  <section class="actions">
+    <button class="secondary" @click="$router.push('/')">← Retour</button>
+    <button class="secondary" @click="$router.push(`/recipe/${$route.params.id}/edit`)">Modifier</button>
+    <button class="danger" @click="deleteRecipe">Supprimer</button>
+  </section>
 
-    <p v-if="loading">Chargement...</p>
+  <p v-if="loading">Chargement...</p>
 
-    <section v-else class="recipe-sheet">
-      <h1>{{ recipe.title }}</h1>
+  <section v-else class="recipe-sheet">
+    <h1>{{ recipe.title }}</h1>
 
-      <h2>Ingrédients</h2>
-      <IngredientList :ingredients="recipe.ingredients" link-ingredients />
+    <h2>Ingrédients</h2>
+    <IngredientList :ingredients="recipe.ingredients" link-ingredients />
 
-      <h2>Instructions</h2>
-      <MarkdownRenderer v-if="recipe?.instructions" :content="recipe.instructions" />
-    </section>
-  </PageShell>
+    <h2>Instructions</h2>
+    <p v-if="!recipe.instructions">Aucune instruction fournie</p>
+    <ul v-else>
+      <li v-for="(instruction, index) in recipe.instructions" :key="index">
+        {{ instruction }}
+      </li>
+    </ul>
+  </section>
 </template>
 
 <script>
 import api from '../services/api'
-import MarkdownRenderer from '../components/MarkdownRenderer.vue'
 import IngredientList from '../components/IngredientList.vue'
-import PageShell from '../components/PageShell.vue'
 
 export default {
   components: {
-    MarkdownRenderer,
     IngredientList,
-    PageShell
   },
   data() {
     return {

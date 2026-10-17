@@ -5,11 +5,11 @@ export async function upsertIngredient(client, ingredientName) {
      VALUES ($1)
      ON CONFLICT (name)
      DO UPDATE SET name = EXCLUDED.name
-     RETURNING recipe_id`,
+     RETURNING ingredient_id`,
     [ingredientName]
   )
 
-  return ingredientRes.rows[0].recipe_id
+  return ingredientRes.rows[0].ingredient_id
 }
 
 export async function bindRecipeIngredients(client, recipeId, ingredients) {

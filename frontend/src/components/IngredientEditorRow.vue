@@ -4,7 +4,8 @@
     apiURL = "/matchingIngredients"
     placeholder="Ingrédient"
     className="ingredient-search-bar"
-    @change="item.name = $event; this.$emit('update',item)"
+    v-model="item.name"
+    @update:modelValue="$emit('update', item)"
   />   
   <input
     id="quantity"
@@ -13,13 +14,13 @@
     min="0"
     step="0.01"
     placeholder="Qté"
-    @change="this.$emit('update',item)"
+    @input="this.$emit('update',item)"
   >
   <input
     id="unit"
     :value="item.unit"
     placeholder="g, ml, pièces"
-    @change="this.$emit('update',item)"
+    @input="this.$emit('update',item)"
   >
 </template>
 

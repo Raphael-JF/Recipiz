@@ -77,7 +77,7 @@ export async function getOneRecipePage(client, recipeId) {
   const recipeInfo = await client.query(
     `SELECT title
      FROM recipes
-     WHERE id = $1`,
+     WHERE recipe_id = $1`,
     [recipeId]
   )
 
@@ -90,10 +90,9 @@ export async function getOneRecipePage(client, recipeId) {
   const instructionsRes = await client.query(
     `SELECT text
     FROM recipe_instructions
-    JOIN recipes USING (recipe_id)
     WHERE recipe_id = $1
-    ORDER BY step`,
-    [recipeId]
+    ORDER BY step;
+    `, [recipeId]
   )
 
 
@@ -104,8 +103,8 @@ export async function getOneRecipePage(client, recipeId) {
       quantity,
       unit
     FROM recipes
-    JOIN recipe_ingredients USING recipe_id
-    JOIN ingredients USING ingredient_id    
+    JOIN recipe_ingredients USING (recipe_id)
+    JOIN ingredients USING (ingredient_id)    
     WHERE ingredient_id = $1; 
     `, [recipeId])
   

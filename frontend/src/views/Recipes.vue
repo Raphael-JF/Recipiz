@@ -1,5 +1,6 @@
 <template>
   <section class="home-header">
+    <div></div>
     <h1>📖 Mes recettes</h1>
     <button @click="$router.push('/recipe/new')">Ajouter</button>
   </section> 
@@ -22,7 +23,7 @@
         v-else 
         v-for="(recipe, index) in recipes" 
         :key="index" 
-        :id="recipe.id"
+        :id="recipe.recipe_id"
         :title="recipe.title" 
       />
     </div>
@@ -41,14 +42,12 @@
 <script>
 import { markRaw } from 'vue'
 import api from '../services/api'
-import PageShell from '../components/PageShell.vue'
 import SearchBar from '../components/SearchBar.vue'
 import RecipeCard from '../components/RecipeCard.vue'
 import PageSelector from '../components/PageSelector.vue'
 
 export default {
   components: {
-    PageShell,
     RecipeCard,
     SearchBar,
     PageSelector,
@@ -78,6 +77,7 @@ methods: {
           page: this.page
         }
       }).then((res) => {
+        console.log(res.data)
         this.recipes = res.data.recipes;
         this.totalPages = res.data.totalPages;
         this.hasNextPage = this.page < this.totalPages;
@@ -97,7 +97,8 @@ methods: {
 <style scoped>
 section.home-header {
   display: flex;
-  align-items: center;
+  /* align-items: center; */
+  justify-content: space-between;
   gap: 1rem;
 }
 
@@ -108,11 +109,11 @@ section.home-header h1 {
 }
 
 section.search-bar {
-  width: 75%;
+  width: 100%;
 }
 
 section.recipe-list {
-  width: 75%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

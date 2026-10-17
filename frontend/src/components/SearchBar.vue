@@ -44,6 +44,10 @@ import api from '../services/api'
 export default {
   name: 'SearchBar',
   props: {
+    modelValue: {
+      type: String,
+      default: ''
+    },
     apiURL: {
       type: String,
       required: true
@@ -58,16 +62,38 @@ export default {
     },   
   },
 
-  data() {
-    return {
-      search: '',
-      suggestionSearch: '',
-      suggestions: [],
-      selectedIndex: -1,
-      showSuggestions: true
-    }
-  },
+data() {
+  return {
+    search: this.modelValue,
+    suggestionSearch: '',
+    suggestions: [],
+    selectedIndex: -1,
+    showSuggestions: true
+  }
+},
 
+  watch: {
+    modelValue(value) {
+      this.search = value
+    },
+
+    search(value) {
+      this.$emit('update:modelValue', value)
+    }
+  },  
+
+
+  // we should do that, but it only works with v-model
+  // computed: {
+  //   search: {
+  //     get() {
+  //       return this.modelValue
+  //     },
+  //     set(value) {
+  //       this.$emit('update:modelValue', value)
+  //     }
+  //   }
+  // },  
 
   methods: {
     focus() {

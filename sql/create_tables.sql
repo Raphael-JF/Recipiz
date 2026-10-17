@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS ingredients (
 );
 
 CREATE TABLE IF NOT EXISTS ingredient_tags (
-    ingredient_id INT NOT NULL REFERENCES ingredients(id) ON DELETE CASCADE,
+    ingredient_id INT NOT NULL REFERENCES ingredients(ingredient_id) ON DELETE CASCADE,
     tag_id INT NOT NULL REFERENCES tags(tag_id) ON DELETE CASCADE,
     PRIMARY KEY (ingredient_id, tag_id)
 );
