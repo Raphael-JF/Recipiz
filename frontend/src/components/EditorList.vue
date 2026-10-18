@@ -10,12 +10,19 @@
       <template #item="{ element: item, index }">
         <li class="editor-row">
           <span class="drag-handle" title="Déplacer" aria-hidden="true">⠿</span>
+          <!-- <component -->
+          <!--   :is="component" -->
+          <!--   :item="item" -->
+          <!---->
+          <!---->
+          <!-- /> -->
+
+          <!-- We don't give items[index] as :v-model because it would also do @update:model-value="item[index] = $event", which changes the prop. Instead we do "@update:model-value="updateItem(index, $event)" to make a shallow copy of items and send it properly  -->
           <component
             :is="component"
-            :item="item"
-
+            :model-value="item"
+            @update:model-value="updateItem(index, $event)"
           />
-            <!-- @update="updateItem(index, $event)" -->
           <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
         </li>
       </template>
@@ -29,10 +36,9 @@
       >
         <component
           :is="component"
-          :item="item"
+          :model-value="item"
+          @update:model-value="updateItem(index, $event)"
         />
-
-          <!-- @update="updateItem(index, $event)" -->
         <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
       </li>
     </ul>
@@ -82,6 +88,14 @@ export default {
   methods: {
     addItem() {
       this.$emit('new-item')
+    },
+
+    // in case a specific item changes i.e. the user edits it
+    updateItem(index, updatedItem) {
+      const newItems = [...this.modelValue] // shallow copy
+      newItems[index] = updatedItem
+
+      this.$emit('update:modelValue', newItems) // emit the updated array
     },
 
     removeItem(index) {

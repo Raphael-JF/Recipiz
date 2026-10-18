@@ -7,7 +7,6 @@ export default function registerPutRoutes(fastify) {
   fastify.put('/recipes/:id', utils.dbTransaction(async (req, reply, client) => {
     const recipeId = req.params.id
     const { title, instructions, ingredients } = req.body
-    console.log(instructions);
     // await deleteRecipe(recipeId);
     // await insertRecipeWithIngredients(client, title, instructions, ingredients);
    await client.query(` 

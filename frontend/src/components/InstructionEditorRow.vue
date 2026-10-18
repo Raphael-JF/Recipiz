@@ -1,9 +1,9 @@
 <template> 
   <AutoResizeTextarea
     id="instruction"
-    :modelValue="item.text"
+    :modelValue="modelValue.text"
     placeholder="Instruction"
-    @update:modelValue="item.text = $event; this.$emit('update',item)"
+    @update:modelValue="UpdateInstruction($event)"
   />
  </template>
 
@@ -16,12 +16,20 @@ export default {
     AutoResizeTextarea
   },
   props: {
-    item: {
+    modelValue: {
       type:Object,
       required: true
     },
   },
   emits: ['update', 'remove'],
+  methods: {
+    UpdateInstruction(text) {
+      this.$emit('update', {
+        ...this.modelValue,
+        text
+      })
+    }
+  },
 }
 </script>
 

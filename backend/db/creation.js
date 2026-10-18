@@ -16,6 +16,7 @@ export async function bindRecipeIngredients(client, recipeId, ingredients) {
 
   for (const { name, quantity, unit } of ingredients) {
     const ingredientId = await upsertIngredient(client, name)
+    console.log('Création ingrédient :', name, ingredientId, quantity, unit)
     await client.query(
       `INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit)
        VALUES ($1, $2, $3, $4)`,
@@ -43,7 +44,6 @@ export async function insertCompleteRecipe(client, title, ingredients, instructi
     [title]
   )).rows[0].recipe_id
 
-console.log('Création recette :', title, recipeId)
 
   let promise1 = bindRecipeIngredients(client, recipeId, ingredients) 
   let promise2 = bindRecipeInstructions(client, recipeId, instructions)

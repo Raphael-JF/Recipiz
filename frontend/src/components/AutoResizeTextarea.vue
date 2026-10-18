@@ -31,7 +31,6 @@ export default {
 
       // Ajuste la hauteur au contenu
       textarea.style.height = 'auto'
-      console.log(textarea.style.minHeight)
       textarea.style.height = textarea.scrollHeight + 'px'
 
       this.$emit('update:modelValue', textarea.value)

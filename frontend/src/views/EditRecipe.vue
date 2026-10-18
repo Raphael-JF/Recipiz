@@ -94,6 +94,8 @@ export default {
 
     async save() {
       const id = this.$route.params.id
+
+      console.log(this.recipe.ingredients)
       const payload = {
         title: this.recipe.title,
         instructions: this.recipe.instructions.map(instruction => instruction.text),
@@ -114,7 +116,6 @@ export default {
     
     addInstruction() { 
       let temp = createEmptyInstruction()
-      console.log(temp)
       temp.key = this.recipe.instructions.length
       this.recipe.instructions.push(temp)
     },

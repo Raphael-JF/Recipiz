@@ -63,12 +63,6 @@ export default {
       page: 1,
     }
   },
-  watch: {
-    totalPages(newTotalPages) {
-      console.log(`Total pages updated: ${newTotalPages}`);
-      
-    }
-  },
      
   methods: {
     updatePage(pageNum) {
@@ -84,7 +78,6 @@ export default {
           page: this.page
         }
       }).then((res) => {
-        console.log(res.data)
         this.recipes = res.data.recipes;
         this.totalPages = res.data.totalPages;
         this.hasNextPage = this.page < this.totalPages;

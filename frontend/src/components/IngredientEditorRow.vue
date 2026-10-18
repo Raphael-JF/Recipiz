@@ -1,26 +1,28 @@
 <template>
-  <SearchBar 
+  <SearchBar
     id="name"
-    apiURL = "/matchingIngredients"
+    apiURL="/matchingIngredients"
     placeholder="Ingrédient"
     className="ingredient-search-bar"
-    v-model="item.name"
-    @update:modelValue="$emit('update', item)"
-  />   
+    :model-value="modelValue.name"
+    @update:model-value="updateIngredientName"
+  />
+
   <input
     id="quantity"
-    :value="item.quantity"
+    :value="modelValue.quantity"
     type="number"
     min="0"
     step="0.01"
     placeholder="Qté"
-    @input="this.$emit('update',item)"
+    @input="updateQuantity($event.target.value)"
   >
+
   <input
     id="unit"
-    :value="item.unit"
+    :value="modelValue.unit"
     placeholder="g, ml, pièces"
-    @input="this.$emit('update',item)"
+    @input="updateUnit($event.target.value)"
   >
 </template>
 
@@ -29,22 +31,46 @@ import SearchBar from './SearchBar.vue'
 
 export default {
   name: 'IngredientEditorRow',
+
   components: {
     SearchBar
   },
+
   props: {
-    item: {
+    modelValue: {
       type: Object,
       required: true
-    },
+    }
   },
-  emits: ['update', 'remove'],
+
+  emits: ['update:modelValue', 'remove'],
+
+  methods: {
+    updateIngredientName(name) {
+      this.$emit('update:modelValue', {
+        ...this.modelValue,
+        name
+      })
+    },
+
+    updateQuantity(quantity) {
+      this.$emit('update:modelValue', {
+        ...this.modelValue,
+        quantity: quantity === '' ? '' : Number(quantity)
+      })
+    },
+
+    updateUnit(unit) {
+      this.$emit('update:modelValue', {
+        ...this.modelValue,
+        unit
+      })
+    }
+  }
 }
 </script>
 
 <style scoped>
-
-
 #name {
   flex: 3;
 }
@@ -56,5 +82,4 @@ export default {
 #unit {
   flex: 1;
 }
-
 </style>
