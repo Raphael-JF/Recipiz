@@ -65,10 +65,9 @@ export async function getRecipesPage(search, page, pageSize) {
       [search, pageSize, offset]
     )
   }
-
   return {
     recipes: res.rows.map(({ total, ...recipe }) => recipe),
-    totalPages: res.rows.total_count , 
+    totalPages: Math.ceil(res.rows[0].total_count / pageSize)
   }
 }
 
@@ -105,7 +104,7 @@ export async function getOneRecipePage(client, recipeId) {
     FROM recipes
     JOIN recipe_ingredients USING (recipe_id)
     JOIN ingredients USING (ingredient_id)    
-    WHERE ingredient_id = $1; 
+    WHERE recipe_id = $1; 
     `, [recipeId])
   
   return {

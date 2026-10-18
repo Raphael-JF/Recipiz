@@ -43,6 +43,8 @@ export async function insertCompleteRecipe(client, title, ingredients, instructi
     [title]
   )).rows[0].recipe_id
 
+console.log('Création recette :', title, recipeId)
+
   let promise1 = bindRecipeIngredients(client, recipeId, ingredients) 
   let promise2 = bindRecipeInstructions(client, recipeId, instructions)
   await Promise.all([promise1, promise2])

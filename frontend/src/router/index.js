@@ -7,6 +7,11 @@ import Ingredient from '../views/Ingredient.vue'
 export default createRouter({
   history: createWebHistory(),
   routes: [
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('../views/NotFound.vue')
+    },
     { 
       path: '/', 
       name: "Recipes",

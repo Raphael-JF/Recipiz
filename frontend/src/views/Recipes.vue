@@ -63,7 +63,14 @@ export default {
       page: 1,
     }
   },
-methods: {
+  watch: {
+    totalPages(newTotalPages) {
+      console.log(`Total pages updated: ${newTotalPages}`);
+      
+    }
+  },
+     
+  methods: {
     updatePage(pageNum) {
       this.page = pageNum;
       this.getRecipesPage(this.search);
@@ -90,6 +97,7 @@ methods: {
   },
   mounted() {
     this.$refs.SearchBar.focus()
+    this.getRecipesPage(this.search);
   }
 }
 </script>

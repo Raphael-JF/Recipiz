@@ -1,14 +1,17 @@
 <template>
   <ul class="ingredient-list">
     <li v-for="ingredient in ingredients" :key="ingredient.id ?? ingredient.name" class="ingredient-item">
-      <RouterLink
-        v-if="linkIngredients && ingredient.id"
-        class="ingredient-link"
-        :to="`/ingredients/${ingredient.id}`"
-      >
+      <!-- <RouterLink -->
+      <!--   v-if="linkIngredients && ingredient.id" -->
+      <!--   class="ingredient-link" -->
+      <!--   :to="`/ingredients/${ingredient.id}`" -->
+      <!-- > -->
+      <!--   {{ ingredient.name }} -->
+      <!-- </RouterLink> -->
+      <!-- <span v-else>{{ ingredient.name }}</span> -->
+      <span>
         {{ ingredient.name }}
-      </RouterLink>
-      <span v-else>{{ ingredient.name }}</span>
+      </span>
       <span class="ingredient-meta" v-if="ingredient.quantity || ingredient.unit">
         : {{ ingredient.quantity }} {{ ingredient.unit }}
       </span>
