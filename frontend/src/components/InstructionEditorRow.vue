@@ -3,7 +3,7 @@
     id="instruction"
     :modelValue="modelValue.text"
     placeholder="Instruction"
-    @update:modelValue="UpdateInstruction($event)"
+    @update:modelValue="updateInstruction($event)"
   />
  </template>
 
@@ -21,10 +21,11 @@ export default {
       required: true
     },
   },
-  emits: ['update', 'remove'],
+  emits: ['update:modelValue', 'remove'],
   methods: {
-    UpdateInstruction(text) {
-      this.$emit('update', {
+    updateInstruction(text) {
+
+      this.$emit('update:modelValue', {
         ...this.modelValue,
         text
       })
