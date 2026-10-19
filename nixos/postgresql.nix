@@ -47,4 +47,69 @@ in
       -f "${sql}/init_prod.sql"
     '';
   };
+
+  # Backup PostgreSQL database
+  systemd.tmpfiles.rules = [
+    "d /data/backupPostgresql/recipiz 0700 recipiz recipiz -"
+  ];
+  systemd.services.recipiz-bakcup-database = {
+    description = "Backup Recipiz PostgreSQL databases";
+
+    after = [ "postgresql.service" ];
+    requires = [ "postgresql.service" ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = "recipiz";
+      Group = "recipiz";
+    };
+
+    script = ''
+      ${pkgs.postgresql_18}/bin/pg_dump -U recipiz -d recipiz \
+        --file=/data/backupPostgresql/recipiz/dump.sql
+    '';
+  };
+
+  systemd.timers.backupPostgresql = {
+    description = "Daily backup of Recipiz PostgreSQL database";
+
+    wantedBy = [ "timers.target" ];
+
+    timerConfig = {
+      OnCalendar = "*-*-* 04:00:00";
+      Persistent = true;
+    };
+  };
+  systemd.tmpfiles.rules = [
+    "d /data/backupPostgresql/recipiz 0700 recipiz recipiz -"
+  ];
+  systemd.services.backupPostgresql = {
+    description = "Backup Recipiz PostgreSQL databases";
+
+    after = [ "postgresql.service" ];
+    requires = [ "postgresql.service" ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = "recipiz";
+      Group = "recipiz";
+    };
+
+    script = ''
+      ${pkgs.postgresql_18}/bin/pg_dump -U recipiz -d recipiz \
+        --file=/data/backupPostgresql/recipiz/dump.sql
+    '';
+  };
+
+  systemd.timers.backupPostgresql = {
+    description = "Daily backup of Recipiz PostgreSQL database";
+
+    wantedBy = [ "timers.target" ];
+
+    timerConfig = {
+      OnCalendar = "*-*-* 04:00:00";
+      Persistent = true;
+    };
+  };
+
 }
