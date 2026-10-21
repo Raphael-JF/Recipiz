@@ -4,6 +4,8 @@ import * as utils from '../utils.js'
 
 
 export default function registerPutRoutes(fastify) {
+
+  // Change a recipe
   fastify.put('/recipes/:id', utils.dbTransaction(async (req, reply, client) => {
     const recipeId = req.params.id
     const { title, instructions, ingredients } = req.body

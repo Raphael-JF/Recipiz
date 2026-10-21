@@ -12,6 +12,20 @@ export async function upsertIngredient(client, ingredientName) {
   return ingredientRes.rows[0].ingredient_id
 }
 
+export async function upsertTag(client, tagName) {
+  const tagRes = await client.query(
+    `INSERT INTO tags (name)
+     VALUES ($1)
+     ON CONFLICT (name)
+     DO UPDATE SET name = EXCLUDED.name
+     RETURNING tag_id`,
+    [tagName]
+  )
+
+  return tagRes.rows[0].tag_id
+}
+
+
 export async function bindRecipeIngredients(client, recipeId, ingredients) {
 
   for (const { name, quantity, unit } of ingredients) {
@@ -33,7 +47,18 @@ export async function bindRecipeInstructions(client, recipeId, instructions) {
       [recipeId, step, instructions[step]]
     )
   }
+}
 
+
+export async function bindRecipeTags(client, recipeId, tags) {
+  for (const tag of tags) {
+    const tagId = await upsertTag(client, tag)
+    await client.query(
+      `INSERT INTO recipe_tags (recipe_id, tag_id)
+       VALUES ($1, $2)`,
+      [recipeId, tagId]
+    )
+  }
 }
 
 export async function insertCompleteRecipe(client, title, ingredients, instructions) {
