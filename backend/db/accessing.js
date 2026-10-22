@@ -28,6 +28,10 @@ export async function getMatchingIngredients(searchTerm, limit) {
   return getMatchingThings('ingredients', 'name', searchTerm, limit)
 }
 
+export async function getMatchingTags(searchTerm, limit) {
+  return getMatchingThings('tags', 'name', searchTerm, limit)
+}
+
 
 export async function getRecipesPage(search, page, pageSize) {
   const offset = (page - 1) * pageSize
@@ -95,7 +99,7 @@ async function getRecipeInstructions(client, recipeId) {
     `,
     [recipeId]
   );
-  return res.rows.map(row => row.text);
+  return res.rows;
 }
 
 
@@ -123,14 +127,14 @@ async function getRecipeIngredients(pool, recipeId) {
 
 async function getRecipeTags(client, recipeId) {
   const res = await client.query(
-    `SELECT name
+    `SELECT tag_id, name
      FROM recipe_tags
      JOIN tags USING (tag_id)
      WHERE recipe_id = $1;
     `,
     [recipeId]
   );
-  return res.rows.map(row => row.name);
+  return res.rows;
 }
 
 export async function getOneRecipePage(client, recipeId) {
@@ -146,7 +150,6 @@ export async function getOneRecipePage(client, recipeId) {
   const tags = await getRecipeTags(client, recipeId);
 
   return {
-    id: recipeId,
     title: title,
     description: description,
     ingredients: ingredients,

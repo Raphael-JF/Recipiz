@@ -3,7 +3,6 @@
     id="name"
     apiURL="/matchingIngredients"
     placeholder="Ingrédient"
-    className="ingredient-search-bar"
     :model-value="modelValue.name"
     @update:model-value="updateIngredientName"
   />

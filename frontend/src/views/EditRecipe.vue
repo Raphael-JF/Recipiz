@@ -11,10 +11,19 @@
     </section>
 
     <section>
+      <h2>Tags</h2>
+      <EditorList
+        v-model="recipe.tags"
+        :component="TagEditorRowComponent"
+        @new-item="addTag"
+        :disableDraggable="true"
+      />
+    </section>
+
+    <section>
       <h2>Description</h2>
       <AutoResizeTextarea placeholder="Description" v-model="recipe.description"></AutoResizeTextarea>
     </section>
-
 
     <section>
       <h2>Ingrédients</h2>
@@ -53,6 +62,7 @@ import IngredientEditorRow from '../components/IngredientEditorRow.vue'
 import EditorList from '../components/EditorList.vue'
 import InstructionEditorRow from '../components/InstructionEditorRow.vue'
 import AutoResizeTextarea from '../components/AutoResizeTextarea.vue'
+import TagEditorRow from '../components/TagEditorRow.vue'
 
 export default {
   components: {  
@@ -69,6 +79,7 @@ export default {
       recipe: createEmptyRecipe(),
       IngredientEditorRowComponent: markRaw(IngredientEditorRow),
       InstructionEditorRowComponent: markRaw(InstructionEditorRow),
+      TagEditorRowComponent: markRaw(TagEditorRow),
       loading: true,
     }
   },
@@ -76,15 +87,7 @@ export default {
 
     if (this.id) {
       await api.get(`/recipes/${this.id}`).then((res) => {
-        this.recipe.title = res.data.title
-        this.recipe.description = res.data.description
-        this.recipe.instructions = res.data.instructions.map((instruction, idx) => {
-          let res = createEmptyInstruction(idx)
-          res.text = instruction
-          return res
-        })
-        // to make the key unique for each ingredient entry, we create a new object for each ingredient
-        this.recipe.ingredients = res.data.ingredients
+        this.recipe = res.data
       }).catch(() => {
         alert('Recette introuvable')
       })
@@ -100,8 +103,6 @@ export default {
     async save() {
       const id = this.$route.params.id
 
-      console.log(this.recipe.ingredients)
-
       if (this.id) {
         await api.put(`/recipes/${id}`, this.recipe)
         this.$router.back()
@@ -112,6 +113,9 @@ export default {
     },
     addIngredient() {
       this.recipe.ingredients.push(createEmptyIngredient())
+    },
+    addTag() {
+      this.recipe.tags.push(createEmptyTag())
     },
     
     addInstruction() { 
@@ -130,7 +134,8 @@ h1 {
 }
 
 .recipe-form {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1.1rem;
 }
 
@@ -142,18 +147,6 @@ label {
   color: #334155;
 }
 
-/* input, */
-/* textarea { */
-/*   padding: 0.7rem 0.8rem; */
-/*   border-radius: 0.65rem; */
-/*   border: 1px solid #cbd5e1; */
-/*   font-size: 1rem; */
-/*   font-family: inherit; */
-/* } */
-/**/
-/* textarea { */
-/*   min-height: 180px; */
-/* } */
 
 .ingredient-grid {
   display: grid;

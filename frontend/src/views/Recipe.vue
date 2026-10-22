@@ -1,29 +1,45 @@
 <template>
-  <section class="actions">
-    <button class="secondary" @click="$router.push('/')">← Retour</button>
-    <button class="secondary" @click="$router.push(`/recipe/${$route.params.id}/edit`)">Modifier</button>
-    <button class="danger" @click="deleteRecipe">Supprimer</button>
-  </section>
-
   <p v-if="loading">Chargement...</p>
+  <div v-else class="recipe-view">
+    <section class="actions">
+      <button id="back" class="secondary" @click="$router.push('/')">← Retour</button>
+      <button class="secondary" @click="$router.push(`/recipe/${$route.params.id}/edit`)">Modifier</button>
+      <button class="danger" @click="deleteRecipe">Supprimer</button>
+    </section>
 
-  <section v-else class="recipe-sheet">
-    <h1>{{ recipe.title }}</h1>
+    <section>
+      <h1>{{ recipe.title }}</h1>
+      
+      <div class="tags">
+        <a v-for="(tag, index) in recipe.tags" 
+          :key="index"
+          :href="`/tag/${tag.tag_id}`"
+        >
+          {{ tag.name }}
+        </a>
+      </div>
+    </section>
     
-    <p v-if="recipe.description">&laquo <i>{{ recipe.description }}</i> &raquo</p>
-    <p v-else><i>Aucune description fournie</i></p>
+    <section>
+      <p v-if="recipe.description">&laquo <i>{{ recipe.description }}</i> &raquo</p>
+      <p v-else><i>Aucune description fournie</i></p>
+    </section>
 
-    <h2>Ingrédients</h2>
-    <IngredientList :ingredients="recipe.ingredients" link-ingredients />
+    <section>
+      <h2>Ingrédients</h2>
+      <IngredientList :ingredients="recipe.ingredients" link-ingredients />
+    </section>
 
-    <h2>Instructions</h2>
-    <p v-if="!recipe.instructions">Aucune instruction fournie</p>
-    <ul v-else>
-      <li v-for="(instruction, index) in recipe.instructions" :key="index">
-        {{ instruction }}
-      </li>
-    </ul>
-  </section>
+    <section>
+      <h2>Instructions</h2>
+      <p v-if="!recipe.instructions">Aucune instruction fournie</p>
+      <ul v-else>
+        <li v-for="(instruction, index) in recipe.instructions" :key="index">
+          {{ instruction.text }}
+        </li>
+      </ul>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -64,19 +80,47 @@ export default {
 </script>
 
 <style scoped>
-.actions {
+
+.recipe-view {
   display: flex;
-  gap: 0.6rem;
-  margin-bottom: 1.2rem;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.recipe-sheet h1 {
+#back {
+  self-align: flex-start;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 0.6rem;
+}
+
+.tags {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tags a {
+  background-color: #e2e8f0;
+  color: #1e293b;
+  padding: 0.2rem 0.5rem;
+  border-radius: 50rem;
+  text-decoration: none;
+}
+
+.tags a:hover {
+  background-color: #cbd5e1;
+}
+
+ h1 {
   margin-top: 0;
   color: #0f172a;
 }
 
-.recipe-sheet h2 {
-  margin: 1.35rem 0 0.5rem;
+h2 {
   color: #1e293b;
 }
 </style>

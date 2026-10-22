@@ -1,5 +1,3 @@
 export function createEmptyTag() {
-  return {
-    name: '',
-  }
+  return { name: ""};
 }
