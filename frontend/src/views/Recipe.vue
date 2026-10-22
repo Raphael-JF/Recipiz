@@ -9,6 +9,9 @@
 
   <section v-else class="recipe-sheet">
     <h1>{{ recipe.title }}</h1>
+    
+    <p v-if="recipe.description">&laquo <i>{{ recipe.description }}</i> &raquo</p>
+    <p v-else><i>Aucune description fournie</i></p>
 
     <h2>Ingrédients</h2>
     <IngredientList :ingredients="recipe.ingredients" link-ingredients />

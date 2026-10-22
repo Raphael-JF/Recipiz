@@ -7,15 +7,14 @@ export default function registerPutRoutes(fastify) {
 
   // Change a recipe
   fastify.put('/recipes/:id', utils.dbTransaction(async (req, reply, client) => {
-    const recipeId = req.params.id
-    const { title, instructions, ingredients } = req.body
-    // await deleteRecipe(recipeId);
-    // await insertRecipeWithIngredients(client, title, instructions, ingredients);
+    let {title, description, ingredients, instructions} = req.body;
+    instructions = instructions.map((obj) => (obj.text));
+    const recipeId = req.params.id;
    await client.query(` 
     UPDATE recipes
-    SET title = $1
-    WHERE recipe_id = $2;
-  `, [title, recipeId]); 
+    SET title = $1, description = $2
+    WHERE recipe_id = $3;
+  `, [title, description, recipeId]); 
   
   let r1 = client.query(`
     DELETE FROM recipe_ingredients

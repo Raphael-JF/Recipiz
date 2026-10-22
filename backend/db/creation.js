@@ -61,12 +61,12 @@ export async function bindRecipeTags(client, recipeId, tags) {
   }
 }
 
-export async function insertCompleteRecipe(client, title, ingredients, instructions) {
+export async function insertCompleteRecipe(client, title, description, ingredients, instructions) {
   const recipeId = (await client.query(
-    `INSERT INTO recipes (title)
-     VALUES ($1)
+    `INSERT INTO recipes (title, description)
+      VALUES ($1, $2)
      RETURNING recipe_id`,
-    [title]
+    [title, description]
   )).rows[0].recipe_id
 
 

@@ -71,30 +71,35 @@ export async function getRecipesPage(search, page, pageSize) {
   }
 }
 
-export async function getOneRecipePage(client, recipeId) {
 
-  const recipeInfo = await client.query(
-    `SELECT title
-     FROM recipes
-     WHERE recipe_id = $1`,
+async function getRecipeInfo(client, recipeId) {
+  const res = await client.query(
+    `SELECT title, description FROM recipes WHERE recipe_id = $1`,
     [recipeId]
   )
 
-  if (recipeInfo.rows.length === 0) {
-    return  null;
+  if (res.rows.length === 0) {
+    return null;
   }
 
-  const { title, instructions } = recipeInfo.rows[0]
+  return res.rows[0];
+}
 
-  const instructionsRes = await client.query(
+
+async function getRecipeInstructions(client, recipeId) {
+  const res = await client.query(
     `SELECT text
-    FROM recipe_instructions
-    WHERE recipe_id = $1
-    ORDER BY step;
-    `, [recipeId]
-  )
+     FROM recipe_instructions
+     WHERE recipe_id = $1
+     ORDER BY step;
+    `,
+    [recipeId]
+  );
+  return res.rows.map(row => row.text);
+}
 
 
+async function getRecipeIngredients(pool, recipeId) {
   const res = await pool.query(
     `SELECT
       ingredient_id,
@@ -103,20 +108,49 @@ export async function getOneRecipePage(client, recipeId) {
       unit
     FROM recipes
     JOIN recipe_ingredients USING (recipe_id)
-    JOIN ingredients USING (ingredient_id)    
-    WHERE recipe_id = $1; 
-    `, [recipeId])
-  
+    JOIN ingredients USING (ingredient_id)
+    WHERE recipe_id = $1;
+    `,
+    [recipeId]
+  );
+  return res.rows.map(row => ({
+     id: row.ingredient_id,
+     name: row.name,
+     quantity: row.quantity,
+     unit: row.unit
+   }));
+}
+
+async function getRecipeTags(client, recipeId) {
+  const res = await client.query(
+    `SELECT name
+     FROM recipe_tags
+     JOIN tags USING (tag_id)
+     WHERE recipe_id = $1;
+    `,
+    [recipeId]
+  );
+  return res.rows.map(row => row.name);
+}
+
+export async function getOneRecipePage(client, recipeId) {
+  const recipeInfo  = await getRecipeInfo(client, recipeId);
+
+  if (!recipeInfo) {
+   return null;
+  }
+
+  const { title, description } = recipeInfo;
+  const instructions = await getRecipeInstructions(client, recipeId);
+  const ingredients = await getRecipeIngredients(pool, recipeId);
+  const tags = await getRecipeTags(client, recipeId);
+
   return {
     id: recipeId,
     title: title,
+    description: description,
+    ingredients: ingredients,
     instructions: instructions,
-    ingredients: res.rows.map(row => ({
-      id: row.ingredient_id,
-      name: row.name,
-      quantity: row.quantity,
-      unit: row.unit
-    })),
-    instructions: instructionsRes.rows.map(row => row.text)
+    tags: tags
   }
 }

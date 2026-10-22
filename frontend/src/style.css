@@ -75,13 +75,21 @@ button.danger:hover {
 
 input, textarea {
     width: 100%;
-    padding: 10px 10px;
+    padding: 10px;
+    font-family: inherit;
     font-size: 14px;
+    line-height:  normal;
+    box-sizing: border-box;
     border: 2px solid #dfe2e5;
     outline: none;
     transition: box-shadow 1.3s ease;
     border-radius: 8px;
+}
 
+textarea {
+    display: block;
+    resize: none;
+    overflow: hidden;
 }
 
 

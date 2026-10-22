@@ -8,7 +8,7 @@ try {
 
 // ================= inserting =========================
 // ================= inserting =========================
-creation.insertCompleteRecipe(client, 'Spaghetti Carbonara', 
+creation.insertCompleteRecipe(client, 'Spaghetti Carbonara', "Un classique italien à base de pâtes, lardons et sauce à l'œuf.", 
   [
     { name: 'spaghetti', quantity: 400, unit: 'g' },
     { name: 'bacon', quantity: 200, unit: 'g' },
@@ -28,7 +28,7 @@ creation.insertCompleteRecipe(client, 'Spaghetti Carbonara',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Chocolate Cake', 
+creation.insertCompleteRecipe(client, 'Chocolate Cake', "Un gâteau moelleux au cacao, parfait pour les amateurs de chocolat.", 
   [
     { name: 'flour', quantity: 200, unit: 'g' },
     { name: 'sugar', quantity: 200, unit: 'g' },
@@ -47,7 +47,7 @@ creation.insertCompleteRecipe(client, 'Chocolate Cake',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Avocado Toast', 
+creation.insertCompleteRecipe(client, 'Avocado Toast', "Un petit-déjeuner sain et gourmand à base d'avocat et de pain grillé.", 
   [
     { name: 'bread', quantity: 2, unit: 'tranches' },
     { name: 'avocado', quantity: 1, unit: 'fruit' },
@@ -63,7 +63,7 @@ creation.insertCompleteRecipe(client, 'Avocado Toast',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Margherita Pizza', 
+creation.insertCompleteRecipe(client, 'Margherita Pizza', "Une pizza italienne traditionnelle avec sauce tomate, mozzarella et basilic.", 
   [
     { name: 'pizza dough', quantity: 1, unit: 'pâte' },
     { name: 'tomato sauce', quantity: 200, unit: 'g' },
@@ -80,7 +80,7 @@ creation.insertCompleteRecipe(client, 'Margherita Pizza',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Greek Salad', 
+creation.insertCompleteRecipe(client, 'Greek Salad', "Une salade fraîche et colorée avec tomates, concombres, oignon rouge et feta.", 
   [
     { name: 'cucumber', quantity: 1, unit: 'concombre' },
     { name: 'tomato', quantity: 2, unit: 'tomates' },
@@ -97,7 +97,7 @@ creation.insertCompleteRecipe(client, 'Greek Salad',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Baba au rhum', 
+creation.insertCompleteRecipe(client, 'Baba au rhum', "Un dessert traditionnel alsacien imbibé de rhum.", 
   [
     { name: 'farine', quantity: 50, unit: 'g' },
     { name: 'rhum', quantity: 1.5, unit: 'L'},
@@ -127,7 +127,7 @@ creation.insertCompleteRecipe(client, 'Baba au rhum',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Beef Bourguignon', 
+creation.insertCompleteRecipe(client, 'Beef Bourguignon', "Un ragoût français riche en viande de bœuf mijotée dans du vin rouge.", 
   [
     { name: 'beef chuck', quantity: 1.5, unit: 'kg' },
     { name: 'red wine', quantity: 750, unit: 'ml' },
@@ -145,7 +145,7 @@ creation.insertCompleteRecipe(client, 'Beef Bourguignon',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Tiramisu', 
+creation.insertCompleteRecipe(client, 'Tiramisu', "Un dessert italien à base de mascarpone et de café expresso.", 
   [
     { name: 'ladyfingers', quantity: 200, unit: 'g' },
     { name: 'mascarpone cheese', quantity: 500, unit: 'g' },
@@ -164,7 +164,7 @@ creation.insertCompleteRecipe(client, 'Tiramisu',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Ratatouille', 
+creation.insertCompleteRecipe(client, 'Ratatouille', "Un plat provençal à base de légumes mijotés dans une sauce tomate.", 
   [
     { name: 'eggplant', quantity: 1, unit: 'courgette' },
     { name: 'zucchini', quantity: 2, unit: 'concombres' },
@@ -182,7 +182,7 @@ creation.insertCompleteRecipe(client, 'Ratatouille',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Croque Monsieur', 
+creation.insertCompleteRecipe(client, 'Croque Monsieur', "Un sandwich grillé au jambon et fromage, typique de la cuisine française.", 
   [
     { name: 'bread slices', quantity: 2, unit: 'tranches' },
     { name: 'ham', quantity: 4, unit: 'tranches' },
@@ -196,7 +196,7 @@ creation.insertCompleteRecipe(client, 'Croque Monsieur',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Paella', 
+creation.insertCompleteRecipe(client, 'Paella', "Un plat espagnol à base de riz, fruits de mer et safran.", 
   [
     { name: 'rice', quantity: 300, unit: 'g' },
     { name: 'chicken', quantity: 400, unit: 'g' },
@@ -212,7 +212,7 @@ creation.insertCompleteRecipe(client, 'Paella',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Quiche Lorraine', 
+creation.insertCompleteRecipe(client, 'Quiche Lorraine', "Une tarte salée française à base de lardons et crème.", 
   [
     { name: 'pâte brisée', quantity: 1, unit: 'pâte' },
     { name: 'cream', quantity: 250, unit: 'ml' },
@@ -228,7 +228,7 @@ creation.insertCompleteRecipe(client, 'Quiche Lorraine',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Moussaka', 
+creation.insertCompleteRecipe(client, 'Moussaka', "Un plat grec à base d'aubergines, viande hachée et sauce béchamel.", 
   [
     { name: 'eggplant', quantity: 2, unit: 'courgettes' },
     { name: 'ground beef', quantity: 500, unit: 'g' },
@@ -244,7 +244,7 @@ creation.insertCompleteRecipe(client, 'Moussaka',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Tajine', 
+creation.insertCompleteRecipe(client, 'Tajine', "Un plat marocain mijoté à base d'agneau et fruits secs.", 
   [
     { name: 'lamb', quantity: 800, unit: 'g' },
     { name: 'onions', quantity: 2, unit: 'oignons' },
@@ -261,7 +261,7 @@ creation.insertCompleteRecipe(client, 'Tajine',
   ]
 )
 
-creation.insertCompleteRecipe(client, 'Risotto', 
+creation.insertCompleteRecipe(client, 'Risotto', "Un plat italien à base de riz crémeux et bouillon.", 
   [
     { name: 'arborio rice', quantity: 300, unit: 'g' },
     { name: 'onion', quantity: 1, unit: 'oignon' },

@@ -5,12 +5,18 @@
   <p v-if="loading">Chargement...</p>
 
   <form v-else class="recipe-form" @submit.prevent="save">
-    <label>
+    <section>
       <h2>Titre</h2>
       <input type="text" v-model="recipe.title" placeholder="Titre" required>
-    </label>
+    </section>
 
-    <label>
+    <section>
+      <h2>Description</h2>
+      <AutoResizeTextarea placeholder="Description" v-model="recipe.description"></AutoResizeTextarea>
+    </section>
+
+
+    <section>
       <h2>Ingrédients</h2>
       <EditorList
         v-model="recipe.ingredients"
@@ -18,20 +24,16 @@
         @new-item="addIngredient"
         :disableDraggable="true"
       />
-    </label>
+    </section>
 
-    <!-- <label> -->
-    <!--   <span>Instructions</span> -->
-    <!--   <textarea placeholder="Instructions" v-model="recipe.instructions"></textarea> -->
-    <!-- </label> -->
-    <label>
+    <section>
       <h2>Instructions</h2>
        <EditorList
         v-model="recipe.instructions"
         :component="InstructionEditorRowComponent"
         @new-item="addInstruction"
       />
-    </label>
+    </section>
     
     <section class="actions">
       <button type="submit">Enregistrer</button>
@@ -45,13 +47,16 @@ import api from '../services/api'
 import { createEmptyRecipe } from '../models/emptyRecipe'
 import { createEmptyIngredient } from '../models/emptyIngredient'
 import { createEmptyInstruction } from '../models/emptyInstruction'
+import { createEmptyTag } from '../models/emptyTag'
 import { markRaw } from 'vue'
 import IngredientEditorRow from '../components/IngredientEditorRow.vue'
 import EditorList from '../components/EditorList.vue'
 import InstructionEditorRow from '../components/InstructionEditorRow.vue'
+import AutoResizeTextarea from '../components/AutoResizeTextarea.vue'
 
 export default {
   components: {  
+    AutoResizeTextarea,
     EditorList,
   },
   props: {
@@ -72,10 +77,10 @@ export default {
     if (this.id) {
       await api.get(`/recipes/${this.id}`).then((res) => {
         this.recipe.title = res.data.title
+        this.recipe.description = res.data.description
         this.recipe.instructions = res.data.instructions.map((instruction, idx) => {
-          let res = createEmptyInstruction()
+          let res = createEmptyInstruction(idx)
           res.text = instruction
-          res.key = idx
           return res
         })
         // to make the key unique for each ingredient entry, we create a new object for each ingredient
@@ -96,17 +101,12 @@ export default {
       const id = this.$route.params.id
 
       console.log(this.recipe.ingredients)
-      const payload = {
-        title: this.recipe.title,
-        instructions: this.recipe.instructions.map(instruction => instruction.text),
-        ingredients: this.recipe.ingredients
-      }
 
       if (this.id) {
-        await api.put(`/recipes/${id}`, payload)
+        await api.put(`/recipes/${id}`, this.recipe)
         this.$router.back()
       } else {
-        await api.post('/recipes/new', payload)
+        await api.post('/recipes/new', this.recipe)
         this.$router.back()
       }
     },

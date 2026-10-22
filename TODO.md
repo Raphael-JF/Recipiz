@@ -1,8 +1,9 @@
 to do list :
 
-- RecipeCard à compléter
-- "Ingrédients concernés" à chaque étape (du coup séparer les étapes de recette)
+- Description pour chaque recette
 - Tags de recette
+- "Ingrédients concernés" à chaque étape (du coup séparer les étapes de recette)
+- RecipeCard à compléter
 - Side bar pour filtrer avec les tags les plus mentionnés, et des tags pour chaque recette ("plat salé", "entrée", "sauce", "dessert"...)
 
 Done :

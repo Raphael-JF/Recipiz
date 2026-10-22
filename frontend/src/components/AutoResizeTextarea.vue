@@ -26,22 +26,22 @@ export default {
 
 
   methods: {
-    onInput(event) {
-      const textarea = event.target
+    resize() {
+      const textarea = this.$el
 
-      // Ajuste la hauteur au contenu
       textarea.style.height = 'auto'
-      textarea.style.height = textarea.scrollHeight + 'px'
+      textarea.style.height =
+        Math.max(textarea.scrollHeight + 4, 41) + 'px'
+    },
 
-      this.$emit('update:modelValue', textarea.value)
+    onInput(event) {
+      this.$emit('update:modelValue', event.target.value)
+      this.resize()
     }
   },
 
   mounted() {
-    // Ajuste aussi la hauteur au chargement initial
-    const textarea = this.$el
-    textarea.style.height = 'auto'
-    textarea.style.height =  textarea.scrollHeight+ 'px'
+    this.resize()
   }
 }
 </script>
@@ -50,7 +50,7 @@ export default {
 textarea {
   display: block;
   width: 100%;
-  min-height: 100%;
+  /* min-height: 100%; */
   box-sizing: border-box;
   resize: none;
   overflow: hidden;
