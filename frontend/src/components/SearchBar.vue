@@ -1,5 +1,5 @@
 <template>
-  <div class="search-bar">
+  <div class="search-bar" :class="className">
     <input
       ref="input"
       :value="search"
@@ -56,6 +56,10 @@ export default {
       type: String,
       default: 'Recherche...'
     },
+    className: {
+      type: String,
+      default: ''
+    }
   },
 
 data() {
