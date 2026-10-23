@@ -66,6 +66,7 @@ in
     environment = {
       RECIPIZ_FRONTEND_URL = cfg.frontendUrl;
       RECIPIZ_BACKEND_PORT = toString cfg.backendPort;
+      SESSION_SECRET = 
       
       PGUSER = "recipiz";
       PGNAME = "recipiz";
@@ -78,6 +79,8 @@ in
       Group = "recipiz";
 
       WorkingDirectory = backendDir;
+
+      EnvironmentFile = config.sops.templates."recipiz-secret-session".path;
 
       ExecStart =
         "${pkgs.nodejs}/bin/node ${backendDir}/index.js";

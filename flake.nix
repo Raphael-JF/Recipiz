@@ -18,6 +18,7 @@
           nodejs
           postgresql_18
           tmux
+          openssl
         ];
 
         shellHook = builtins.readFile ./devShell.sh;
@@ -31,6 +32,7 @@
             ./nixos/frontend.nix
             ./nixos/postgresql.nix
             ./nixos/users.nix
+            ./nixos/secret_session.nix
           ];
         };
 
