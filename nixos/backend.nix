@@ -79,7 +79,7 @@ in
 
       WorkingDirectory = backendDir;
 
-      EnvironmentFile = config.sops.templates."recipiz-session-session".path;
+      EnvironmentFile = config.sops.templates."recipiz-session-secret".path;
 
       ExecStart =
         "${pkgs.nodejs}/bin/node ${backendDir}/index.js";
