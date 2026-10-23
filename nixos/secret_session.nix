@@ -1,6 +1,6 @@
 { pkgs, config, ... }:
 {
-  sops.secrets.recipiz_session_secret = {
+  sops.secrets."recipiz-session-secret" = {
     owner = "recipiz";
     group = "recipiz";
     mode = "0400";
