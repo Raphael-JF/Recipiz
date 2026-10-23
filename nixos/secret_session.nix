@@ -5,7 +5,7 @@
     group = "recipiz";
     mode = "0400";
   };
-  sops.templates."recipiz-env" = {
+  sops.templates."recipiz-session-secret" = {
     content = ''
       SESSION_SECRET=${config.sops.placeholder."recipiz-session-secret"}
     '';
