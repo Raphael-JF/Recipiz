@@ -20,6 +20,13 @@ in
       Type = "oneshot";
       RemainAfterExit = true;
       User = "recipiz";
+      Environment = [
+        "PATH=${lib.makeBinPath [
+          pkgs.nodejs
+          pkgs.bash
+          pkgs.coreutils
+        ]}"
+      ];
     };
 
     script = ''
@@ -35,7 +42,7 @@ in
       chmod -R u+rwX ${backendDir}
 
       cd ${backendDir}
-      ${pkgs.nodejs}/bin/npm install --omit=dev
+      npm install --omit=dev
 
 
       echo "${backendSrc}" > "$stamp"
