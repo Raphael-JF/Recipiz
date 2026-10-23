@@ -1,4 +1,4 @@
-{ pkgs, ... }
+{ pkgs, ... }:
 {
   sops.templates."recipiz-env" = {
     content = ''
