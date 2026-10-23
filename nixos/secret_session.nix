@@ -7,7 +7,7 @@
   };
   sops.templates."recipiz-env" = {
     content = ''
-      SESSION_SECRET=${config.sops.placeholder.recipiz_session_secret}
+      SESSION_SECRET=${config.sops.placeholder."recipiz-session-secret"}
     '';
     owner = "recipiz";
     group = "recipiz";
