@@ -65,9 +65,10 @@ export async function getRecipesPage(search, page, pageSize) {
       [search, pageSize, offset]
     )
   }
+  const total_count = res.rows.length > 0 ? res.rows[0].total_count : 0
   return {
     recipes: res.rows.map(({ total, ...recipe }) => recipe),
-    totalPages: Math.ceil(res.rows[0].total_count / pageSize)
+    totalPages: Math.ceil(total_count / pageSize)
   }
 }
 
