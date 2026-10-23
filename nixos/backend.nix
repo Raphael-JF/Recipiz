@@ -66,7 +66,6 @@ in
     environment = {
       RECIPIZ_FRONTEND_URL = cfg.frontendUrl;
       RECIPIZ_BACKEND_PORT = toString cfg.backendPort;
-      SESSION_SECRET = 
       
       PGUSER = "recipiz";
       PGNAME = "recipiz";
