@@ -46,14 +46,16 @@ export async function bindRecipeInstructions(client, recipeId, instructions) {
     await client.query(
       `INSERT INTO recipe_instructions (recipe_id, step, text)
        VALUES ($1, $2, $3)`,
-      [recipeId, step, instructions[step].text]
+      [recipeId, step, instructions[step].text ? instructions[step].text : instructions[step]]
     )
   }
 }
 
 
 export async function bindRecipeTags(client, recipeId, tags) {
-  for (const { name } of tags) {
+  for (const tag of tags) {
+    const name = tag.name ? tag.name : tag
+    console.log('bindRecipeTags', name)
     const tagId = await upsertTag(client, name)
     await client.query(
       `INSERT INTO recipe_tags (recipe_id, tag_id)
@@ -96,8 +98,4 @@ export async function completeRecipeById(client, recipeId, recipe) {
   let r4 = bindRecipeTags(client, recipeId, tags)
   await Promise.all([r1, r2, r3, r4])
 }
-
-  
-  
-
 
