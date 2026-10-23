@@ -32,7 +32,7 @@
             ./nixos/frontend.nix
             ./nixos/postgresql.nix
             ./nixos/users.nix
-            ./nixos/secret_session.nix
+            ./nixos/session_session.nix
           ];
         };
 
