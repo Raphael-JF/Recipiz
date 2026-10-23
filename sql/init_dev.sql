@@ -7,4 +7,3 @@ DROP TABLE IF EXISTS recipe_tags         CASCADE;
 DROP TABLE IF EXISTS recipes             CASCADE; 
 DROP TABLE IF EXISTS tags                CASCADE; 
 \ir create_tables.sql
--- \ir insert_data.sql

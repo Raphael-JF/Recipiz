@@ -58,8 +58,8 @@ export default {
     },
     className: {
       type: String,
-      default: 'search-bar'
-    },   
+      default: ''
+    }
   },
 
 data() {

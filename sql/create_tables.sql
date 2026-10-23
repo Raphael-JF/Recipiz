@@ -2,7 +2,8 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 CREATE TABLE IF NOT EXISTS recipes (
     recipe_id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL
+    title VARCHAR(255) NOT NULL,
+    description TEXT
 );
 
 CREATE TABLE IF NOT EXISTS tags (

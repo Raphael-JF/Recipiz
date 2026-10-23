@@ -5,12 +5,27 @@
   <p v-if="loading">Chargement...</p>
 
   <form v-else class="recipe-form" @submit.prevent="save">
-    <label>
+    <section>
       <h2>Titre</h2>
       <input type="text" v-model="recipe.title" placeholder="Titre" required>
-    </label>
+    </section>
 
-    <label>
+    <section>
+      <h2>Tags</h2>
+      <EditorList
+        v-model="recipe.tags"
+        :component="TagEditorRowComponent"
+        @new-item="addTag"
+        :disableDraggable="true"
+      />
+    </section>
+
+    <section>
+      <h2>Description</h2>
+      <AutoResizeTextarea placeholder="Description" v-model="recipe.description"></AutoResizeTextarea>
+    </section>
+
+    <section>
       <h2>Ingrédients</h2>
       <EditorList
         v-model="recipe.ingredients"
@@ -18,20 +33,16 @@
         @new-item="addIngredient"
         :disableDraggable="true"
       />
-    </label>
+    </section>
 
-    <!-- <label> -->
-    <!--   <span>Instructions</span> -->
-    <!--   <textarea placeholder="Instructions" v-model="recipe.instructions"></textarea> -->
-    <!-- </label> -->
-    <label>
+    <section>
       <h2>Instructions</h2>
        <EditorList
         v-model="recipe.instructions"
         :component="InstructionEditorRowComponent"
         @new-item="addInstruction"
       />
-    </label>
+    </section>
     
     <section class="actions">
       <button type="submit">Enregistrer</button>
@@ -45,13 +56,17 @@ import api from '../services/api'
 import { createEmptyRecipe } from '../models/emptyRecipe'
 import { createEmptyIngredient } from '../models/emptyIngredient'
 import { createEmptyInstruction } from '../models/emptyInstruction'
+import { createEmptyTag } from '../models/emptyTag'
 import { markRaw } from 'vue'
 import IngredientEditorRow from '../components/IngredientEditorRow.vue'
 import EditorList from '../components/EditorList.vue'
 import InstructionEditorRow from '../components/InstructionEditorRow.vue'
+import AutoResizeTextarea from '../components/AutoResizeTextarea.vue'
+import TagEditorRow from '../components/TagEditorRow.vue'
 
 export default {
   components: {  
+    AutoResizeTextarea,
     EditorList,
   },
   props: {
@@ -64,6 +79,7 @@ export default {
       recipe: createEmptyRecipe(),
       IngredientEditorRowComponent: markRaw(IngredientEditorRow),
       InstructionEditorRowComponent: markRaw(InstructionEditorRow),
+      TagEditorRowComponent: markRaw(TagEditorRow),
       loading: true,
     }
   },
@@ -71,15 +87,7 @@ export default {
 
     if (this.id) {
       await api.get(`/recipes/${this.id}`).then((res) => {
-        this.recipe.title = res.data.title
-        this.recipe.instructions = res.data.instructions.map((instruction, idx) => {
-          let res = createEmptyInstruction()
-          res.text = instruction
-          res.key = idx
-          return res
-        })
-        // to make the key unique for each ingredient entry, we create a new object for each ingredient
-        this.recipe.ingredients = res.data.ingredients
+        this.recipe = res.data
       }).catch(() => {
         alert('Recette introuvable')
       })
@@ -95,23 +103,19 @@ export default {
     async save() {
       const id = this.$route.params.id
 
-      console.log(this.recipe.ingredients)
-      const payload = {
-        title: this.recipe.title,
-        instructions: this.recipe.instructions.map(instruction => instruction.text),
-        ingredients: this.recipe.ingredients
-      }
-
       if (this.id) {
-        await api.put(`/recipes/${id}`, payload)
+        await api.put(`/recipes/${id}`, this.recipe)
         this.$router.back()
       } else {
-        await api.post('/recipes/new', payload)
+        await api.post('/recipes/new', this.recipe)
         this.$router.back()
       }
     },
     addIngredient() {
       this.recipe.ingredients.push(createEmptyIngredient())
+    },
+    addTag() {
+      this.recipe.tags.push(createEmptyTag())
     },
     
     addInstruction() { 
@@ -130,7 +134,8 @@ h1 {
 }
 
 .recipe-form {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1.1rem;
 }
 
@@ -142,18 +147,6 @@ label {
   color: #334155;
 }
 
-/* input, */
-/* textarea { */
-/*   padding: 0.7rem 0.8rem; */
-/*   border-radius: 0.65rem; */
-/*   border: 1px solid #cbd5e1; */
-/*   font-size: 1rem; */
-/*   font-family: inherit; */
-/* } */
-/**/
-/* textarea { */
-/*   min-height: 180px; */
-/* } */
 
 .ingredient-grid {
   display: grid;
