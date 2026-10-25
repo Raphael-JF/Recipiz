@@ -43,6 +43,7 @@ registerGetRoutes(fastify)
 registerPostRoutes(fastify)
 registerPutRoutes(fastify)
 registerDeleteRoutes(fastify)
+registerUserRoutes(fastify)
 
 fastify.listen({ port: Number(process.env.RECIPIZ_BACKEND_PORT) }, err => {
     if (err) {

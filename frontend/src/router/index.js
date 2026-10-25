@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Recipes from '../views/Recipes.vue'
 import EditRecipe from '../views/EditRecipe.vue'
 import Recipe from '../views/Recipe.vue'
-import Ingredient from '../views/Ingredient.vue'
+// import Ingredient from '../views/Ingredient.vue'
+import Login from '@/views/Login.vue'
 
 export default createRouter({
   history: createWebHistory(),
@@ -11,6 +12,11 @@ export default createRouter({
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('../views/NotFound.vue')
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
     },
     { 
       path: '/', 
@@ -42,9 +48,9 @@ export default createRouter({
     //   name: 'Ingredients',
     //   component: Ingredients
     // },
-    { path: '/ingredients/:id', 
-      name: 'ShowIngredient', 
-      component: Ingredient 
-    }
+    // { path: '/ingredients/:id', 
+    //   name: 'ShowIngredient', 
+    //   component: Ingredient 
+    // }
   ]
 })

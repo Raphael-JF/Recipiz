@@ -45,4 +45,3 @@ export async function requireAuth(req, reply) {
   }
 }
 
-module.exports = { requireAuth };

@@ -9,7 +9,7 @@ export PGPORT=5432
 export PGDATABASE=recipiz
 export PGHOST="$PGDATA"
 
-export SESSION_SECRET= "$(openssl rand -base64 32)"
+export SESSION_SECRET="$(openssl rand -base64 32)"
 export RECIPIZ_FRONTEND_URL='http://localhost:5173'
 export RECIPIZ_BACKEND_PORT=3000;
       
