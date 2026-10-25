@@ -73,8 +73,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 70vh;
-  padding: 2rem 1rem;
+  /* min-height: 70vh; */
+  /* padding: 2rem 1rem; */
 }
 
 .user-form {
@@ -120,10 +120,5 @@ button:disabled {
 .error {
   margin: 0;
   color: #c62828;
-}
-
-.back-link {
-  margin-top: 0.5rem;
-  text-align: center;
 }
 </style>
