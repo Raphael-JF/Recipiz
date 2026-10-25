@@ -35,3 +35,14 @@ export function dbTransaction(behaviour) {
     }
   }
 }
+
+
+export async function requireAuth(req, reply) {
+  if (!req.session.userId) {
+    return reply.code(401).send({
+      error: 'Authentification requise'
+    });
+  }
+}
+
+module.exports = { requireAuth };
