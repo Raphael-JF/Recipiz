@@ -3,24 +3,28 @@
     <form class="login-form" @submit.prevent="login">
       <h1>Connexion</h1>
 
-      <label for="username">Nom d'utilisateur</label>
-      <input
-        id="username"
-        v-model.trim="username"
-        type="text"
-        autocomplete="username"
-        required
-        autofocus
-      />
+      <section>
+        <p class="subtitle">Nom d'utilisateur</p>
+        <input
+          id="username"
+          v-model.trim="username"
+          type="text"
+          autocomplete="username"
+          required
+          autofocus
+        />
+        </section>
 
-      <label for="password">Mot de passe</label>
-      <input
-        id="password"
-        v-model="password"
-        type="password"
-        autocomplete="current-password"
-        required
-      />
+      <section>
+        <p class="subtitle">Mot de passe</p>
+        <input
+          id="password"
+          v-model="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+      </section>
 
       <p v-if="error" class="error" role="alert">
         {{ error }}
@@ -30,10 +34,11 @@
         {{ loading ? 'Connexion...' : 'Se connecter' }}
       </button>
 
-      <RouterLink to="/register" class="back-link">
-        Je n'ai pas de compte
-      </RouterLink>
     </form>
+
+    <RouterLink to="/register" class="back-link">
+      Je n'ai pas de compte
+    </RouterLink>
   </main>
 </template>
 
@@ -42,6 +47,10 @@ import axios from 'axios'
 
 export default {
   name: 'Login',
+
+  components = {
+    
+  }, 
 
   data() {
     return {
@@ -65,6 +74,8 @@ export default {
           password: this.password
         })
 
+
+        // ===== if the user was doing something that requires authentication this parts allow to get back to it
         const redirect = this.$route.query.redirect
 
         this.$router.push(
@@ -73,6 +84,7 @@ export default {
           !redirect.startsWith('//')
             ? redirect
             : '/'
+        // =================
         )
       } catch (err) {
         if (err.response?.status === 401) {
@@ -105,18 +117,12 @@ export default {
   max-width: 380px;
 }
 
-h1 {
-  margin: 0;
-}
-
 .subtitle {
-  margin: 0 0 1rem;
-  opacity: 0.7;
+  margin-top: 0.5rem;
+  margin-bottom: 0.2rem;
+  /* opacity: 0.7; */
 }
 
-label {
-  font-weight: 600;
-}
 
 input {
   width: 100%;
