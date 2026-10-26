@@ -46,7 +46,7 @@
     
     <section class="actions">
       <button type="submit">Enregistrer</button>
-      <button type="button" class="secondary" @click="$router.back()">Annuler</button>
+      <button type="button" class="secondary" @click="$router.push(`/recipe/${id}`)">Annuler</button>
     </section>
   </form>
 </template>

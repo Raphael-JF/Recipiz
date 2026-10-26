@@ -21,6 +21,7 @@
 <script>
 import axios from 'axios'
 import UserForm from '../components/UserForm.vue'
+import { auth } from '../auth'
 
 export default {
   name: 'Login',
@@ -34,7 +35,8 @@ export default {
       username: '',
       password: '',
       error: '',
-      loading: false
+      loading: false,
+      auth: auth
     }
   },
 
@@ -46,11 +48,12 @@ export default {
       this.error = ''
 
       try {
-        await axios.post('/api/auth/login', {
+        const response = await axios.post('/api/auth/login', {
           username: username,
           password: password
         })
-
+        
+        this.auth.user = response.data
 
         // ===== if the user was doing something that requires authentication this parts allow to get back to it
         const redirect = this.$route.query.redirect

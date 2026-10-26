@@ -56,14 +56,9 @@ export default function registerUserRoutes(fastify) {
     // Nouveau SessionID après authentification :
     // évite de conserver un identifiant de session préexistant.
     await request.session.regenerate()
-
     request.session.userId = user.user_id
-    console.log('Login, session:', request.session.userId)
 
-    return reply.send({
-      id: user.user_id,
-      username: user.username
-    })
+    return reply.send({user_id: user.user_id, username: user.username})
   })
 
   fastify.get('/auth/logout', async (request, reply) => {

@@ -7,13 +7,38 @@
     <div class="navbar-right">
       <!-- <RouterLink to="/ingredients">Ingrédients</RouterLink> -->
       <RouterLink to="/">Recettes</RouterLink>
-      <RouterLink to="/recipe/new" class="cta">➕ Nouvelle</RouterLink>
+
+    <RouterLink v-if="!auth.user" to="/login">
+      Connexion
+    </RouterLink>
+
+    <button v-else @click="logout">
+      Déconnexion
+    </button>
     </div>
   </nav>
 </template>
 
-<script setup>
+<script>
 import { RouterLink } from 'vue-router'
+import { auth } from '@/auth'
+import api from '@/services/api'
+
+export default {
+  data() {
+    return {
+      auth,
+    }
+  },
+  methods: {
+    async logout() {
+      await api.get('/auth/logout')
+      this.auth.user = null
+      this.$router.push('/')
+    }
+  }
+}
+
 </script>
 
 <style scoped>

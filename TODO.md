@@ -1,6 +1,8 @@
 to do list :
 
 - Système de compte
+-- gérer erreur form
+- Support de Fail2ban 
 - "Ingrédients concernés" à chaque étape (du coup séparer les étapes de recette)
 - RecipeCard à compléter
 - Side bar pour filtrer avec les tags les plus mentionnés, et des tags pour chaque recette ("plat salé", "entrée", "sauce", "dessert"...)
