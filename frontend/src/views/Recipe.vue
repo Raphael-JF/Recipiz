@@ -3,7 +3,7 @@
   <div v-else class="recipe-view">
     <section class="actions">
       <button id="back" class="secondary" @click="$router.push('/')">← Retour</button>
-      <button class="secondary" @click="$router.push(`/recipe/${$route.params.id}/edit`)">Modifier</button>
+      <button class="secondary" @click=editRecipe>Modifier</button>
       <button class="danger" @click="deleteRecipe">Supprimer</button>
     </section>
 
@@ -63,8 +63,15 @@ export default {
       const id = this.$route.params.id
       await api.delete(`/recipes/${id}`)
       this.$router.push('/')
-    }
-  },
+    },
+    async editRecipe() {
+        const id = this.$route.params.id
+        await api.get('/auth/me', {
+          redirectTo: `/recipe/${id}/edit`
+        })
+        this.$router.push(`/recipe/${id}/edit`)
+      }
+    },
   mounted() {
     const id = this.$route.params.id
 

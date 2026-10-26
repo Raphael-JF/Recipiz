@@ -1,12 +1,20 @@
 <template>
-  <div class="login-form">
+  <div id="form">
     <UserForm
       @submit="login"
       :title="'Connexion'"
+      :buttonText="'Se connecter'"
     />
-    <RouterLink to="/register" class="link">
+    <RouterLink
+      :to="{
+        path: '/register',
+        query: { redirect: $route.query.redirect }
+      }"
+      class="link"
+    >
       Je n'ai pas de compte
     </RouterLink>
+
   </div>
 </template>
 
@@ -31,7 +39,7 @@ export default {
   },
 
   methods: {
-    async login() {
+    async login({ username, password }) {
       if (this.loading) return
 
       this.loading = true
@@ -39,8 +47,8 @@ export default {
 
       try {
         await axios.post('/api/auth/login', {
-          username: this.username,
-          password: this.password
+          username: username,
+          password: password
         })
 
 
@@ -70,12 +78,14 @@ export default {
 </script>
 
 <style scoped>
-.login-form {
- display: flex;
- flex-direction: column;
- gap : 1rem;
+#form {
+  display: flex;
+  flex-direction: column;
+  gap : 1rem;
+  width : 100%;
+  align-self: center;
+  max-width: 380px;
 }
-
 
 .link {
   text-align: center;

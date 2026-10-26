@@ -1,40 +1,38 @@
 <template>
-  <div class="user-page">
-    <form class="user-form" @submit.prevent="submit">
-      <h1>{{ title }}</h1>
+  <form class="user-form" @submit.prevent="submit">
+    <h1>{{ title }}</h1>
 
-      <section>
-        <p class="subtitle">Nom d'utilisateur</p>
-        <input
-          id="username"
-          v-model.trim="username"
-          type="text"
-          autocomplete="username"
-          required
-          autofocus
-        />
-        </section>
-
-      <section>
-        <p class="subtitle">Mot de passe</p>
-        <input
-          id="password"
-          v-model="password"
-          type="password"
-          autocomplete="current-password"
-          required
-        />
+    <section>
+      <p class="subtitle">Nom d'utilisateur</p>
+      <input
+        id="username"
+        v-model.trim="username"
+        type="text"
+        autocomplete="username"
+        required
+        autofocus
+      />
       </section>
 
-      <p v-if="error" class="error" role="alert">
-        {{ error }}
-      </p>
+    <section>
+      <p class="subtitle">Mot de passe</p>
+      <input
+        id="password"
+        v-model="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      />
+    </section>
 
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Connexion...' : 'Se connecter' }}
-      </button>
-    </form>
-  </div>
+    <p v-if="error" class="error" role="alert">
+      {{ error }}
+    </p>
+
+    <button type="submit" :disabled="loading">
+      {{ loading ? 'Chargement...' : buttonText }}
+    </button>
+  </form>
 </template>
 
 <script>
@@ -45,6 +43,9 @@ export default {
 
   props: {
     title : {
+      type : String
+    },
+    buttonText: {
       type : String
     }
   },
@@ -61,28 +62,23 @@ export default {
   },
 
   methods: {
-    async user() {
-      this.$emit("submit")
+    submit() {
+      this.$emit("submit", {
+        username: this.username,
+        password: this.password
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-.user-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* min-height: 70vh; */
-  /* padding: 2rem 1rem; */
-}
-
 .user-form {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  width: 100%;
-  max-width: 380px;
+  /* width:100%; */
+  
 }
 
 .subtitle {

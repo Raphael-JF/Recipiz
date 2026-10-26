@@ -105,10 +105,10 @@ export default {
 
       if (this.id) {
         await api.put(`/recipes/${id}`, this.recipe)
-        this.$router.back()
+        this.$router.push(`/recipe/${this.id}`)
       } else {
         await api.post('/recipes/new', this.recipe)
-        this.$router.back()
+        this.$router.push(`/`)
       }
     },
     addIngredient() {

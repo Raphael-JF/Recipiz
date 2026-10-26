@@ -1,3 +1,4 @@
+import { pool } from '../db/pool.js'
 import argon2 from 'argon2'
 
 export default function registerUserRoutes(fastify) { 
@@ -19,7 +20,7 @@ export default function registerUserRoutes(fastify) {
     const passwordHash = await argon2.hash(password)
 
     try {
-      await db.query(
+      await pool.query(
         `INSERT INTO users (username, password_hash)
          VALUES ($1, $2)`,
         [username, passwordHash]
@@ -41,8 +42,8 @@ export default function registerUserRoutes(fastify) {
       return reply.code(400).send({ error: 'Requête invalide' })
     }
 
-    const result = await db.query(
-      'SELECT id, username, password_hash FROM users WHERE username = $1',
+    const result = await pool.query(
+      'SELECT user_id, username, password_hash FROM users WHERE username = $1',
       [username]
     )
 
@@ -56,15 +57,16 @@ export default function registerUserRoutes(fastify) {
     // évite de conserver un identifiant de session préexistant.
     await request.session.regenerate()
 
-    request.session.userId = user.id
+    request.session.userId = user.user_id
+    console.log('Login, session:', request.session.userId)
 
     return reply.send({
-      id: user.id,
+      id: user.user_id,
       username: user.username
     })
   })
 
-  fastify.post('/auth/logout', async (request, reply) => {
+  fastify.get('/auth/logout', async (request, reply) => {
 
     await request.session.destroy()
 
@@ -73,12 +75,15 @@ export default function registerUserRoutes(fastify) {
 
 
   fastify.get('/auth/me', async (request, reply) => {
+    console.log('Session dans /me:', request.session)
+    console.log('userId:', request.session.userId)
+
     if (!request.session.userId) {
       return reply.code(401).send({ error: 'Non connecté' })
     }
 
-    const result = await db.query(
-      'SELECT id, username FROM users WHERE id = $1',
+    const result = await pool.query(
+      'SELECT user_id, username FROM users WHERE user_id = $1',
       [request.session.userId]
     )
 

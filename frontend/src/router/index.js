@@ -4,8 +4,9 @@ import EditRecipe from '../views/EditRecipe.vue'
 import Recipe from '../views/Recipe.vue'
 // import Ingredient from '../views/Ingredient.vue'
 import Login from '@/views/Login.vue'
+import Register from '@/views/Register.vue'
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
@@ -17,6 +18,10 @@ export default createRouter({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path : '/register',
+      component: Register
     },
     { 
       path: '/', 
@@ -54,3 +59,5 @@ export default createRouter({
     // }
   ]
 })
+
+export default router
