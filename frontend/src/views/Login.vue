@@ -53,7 +53,7 @@ export default {
           password: password
         })
         
-        this.auth.user = response.data
+        this.auth.user_data = response.data
 
         // ===== if the user was doing something that requires authentication this parts allow to get back to it
         const redirect = this.$route.query.redirect

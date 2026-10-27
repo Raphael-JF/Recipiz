@@ -2,6 +2,7 @@ to do list :
 
 - Système de compte
 -- gérer erreur form
+--- Le faire !!!
 - Support de Fail2ban 
 - "Ingrédients concernés" à chaque étape (du coup séparer les étapes de recette)
 - RecipeCard à compléter

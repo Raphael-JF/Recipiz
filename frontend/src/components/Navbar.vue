@@ -8,7 +8,7 @@
       <!-- <RouterLink to="/ingredients">Ingrédients</RouterLink> -->
       <RouterLink to="/">Recettes</RouterLink>
 
-    <RouterLink v-if="!auth.user" to="/login">
+    <RouterLink v-if="!auth.user_data" to="/login">
       Connexion
     </RouterLink>
 
@@ -33,7 +33,7 @@ export default {
   methods: {
     async logout() {
       await api.get('/auth/logout')
-      this.auth.user = null
+      this.auth.user_data = null
       this.$router.push('/')
     }
   }

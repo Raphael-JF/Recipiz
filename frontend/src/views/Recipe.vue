@@ -66,9 +66,6 @@ export default {
     },
     async editRecipe() {
         const id = this.$route.params.id
-        await api.get('/auth/me', {
-          redirectTo: `/recipe/${id}/edit`
-        })
         this.$router.push(`/recipe/${id}/edit`)
       }
     },

@@ -108,11 +108,6 @@ button {
   cursor: pointer;
 }
 
-button:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
 .error {
   margin: 0;
   color: #c62828;

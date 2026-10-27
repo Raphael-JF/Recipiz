@@ -2,6 +2,17 @@
   <h1 v-if="id">Modifier une recette</h1>
   <h1 v-else>Nouvelle recette</h1>
 
+  <div class="draft-actions">
+    <button
+      type="button"
+      class="secondary"
+      :disabled="!draftAvailable"
+      @click="loadDraft"
+    >
+      Récupérer le brouillon
+    </button>
+  </div>
+
   <p v-if="loading">Chargement...</p>
 
   <form v-else class="recipe-form" @submit.prevent="save">
@@ -76,6 +87,7 @@ export default {
   },
   data() {
     return {
+      draftAvailable: false,
       recipe: createEmptyRecipe(),
       IngredientEditorRowComponent: markRaw(IngredientEditorRow),
       InstructionEditorRowComponent: markRaw(InstructionEditorRow),
@@ -92,23 +104,42 @@ export default {
         alert('Recette introuvable')
       })
     }
+    
+    const draft = sessionStorage.getItem(
+     `recipeDraft:${this.$route.fullPath}`
+    )
+
+    this.draftAvailable = draft !== null
     this.loading = false
   },
 
+  watch: {
+    recipe: {
+      handler() {
+        if (!this.loading) {
+          this.saveDraft()
+        }
+      },
+      deep: true
+    }
+  },
   
   methods: {
     createEmptyIngredient,
     createEmptyInstruction,
 
     async save() {
+      const key = `recipeDraft:${this.$route.fullPath}`
       const id = this.$route.params.id
 
       if (this.id) {
         await api.put(`/recipes/${id}`, this.recipe)
+        sessionStorage.removeItem(key)
         this.$router.push(`/recipe/${this.id}`)
       } else {
         await api.post('/recipes/new', this.recipe)
-        this.$router.push(`/`)
+        sessionStorage.removeItem(key)
+        this.$router.push('/')
       }
     },
     addIngredient() {
@@ -123,6 +154,36 @@ export default {
       temp.key = this.recipe.instructions.length
       this.recipe.instructions.push(temp)
     },
+
+    loadDraft() {
+      const draft = sessionStorage.getItem(
+        `recipeDraft:${this.$route.fullPath}`
+      )
+
+      if (!draft) {
+        this.draftAvailable = false
+        return
+      }
+
+      try {
+        this.recipe = JSON.parse(draft)
+        this.draftAvailable = false
+      } catch {
+        sessionStorage.removeItem(
+          `recipeDraft:${this.$route.fullPath}`
+        )
+        this.draftAvailable = false
+      }
+    },
+
+
+    saveDraft() {
+      const key = `recipeDraft:${this.$route.fullPath}`
+
+      sessionStorage.setItem(key, JSON.stringify(this.recipe))
+      this.draftAvailable = true
+    },
+
   }
 }
 </script>

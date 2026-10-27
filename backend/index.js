@@ -20,11 +20,12 @@ await fastify.register(session, {
   cookie: {
     path: '/',
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: 'auto',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24 // 24 h, en secondes
+    maxAge: 60*1000 *60 // 1 h, en millisecondes
   },
-  saveUninitialized: false
+  saveUninitialized: false,
+  rolling: true,
 })
 
 fastify.register(cors, {

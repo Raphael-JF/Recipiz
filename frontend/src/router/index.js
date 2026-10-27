@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { auth, fetchUser } from '@/auth'
 import Recipes from '../views/Recipes.vue'
 import EditRecipe from '../views/EditRecipe.vue'
 import Recipe from '../views/Recipe.vue'
@@ -33,21 +34,23 @@ const router = createRouter({
       name: 'ShowRecipe',
       component: Recipe 
     },
-    { 
-      path: '/recipe/:id/edit', 
-      name: 'EditRecipe', 
+    {
+      path: '/recipe/:id/edit',
+      name: 'EditRecipe',
       component: EditRecipe,
       props: route => ({
-        id: route.params.id,
-      })
+        id: route.params.id
+      }),
+      meta: { requiresAuth: true }
     },
-    { 
-      path: '/recipe/new', 
-      name: 'NewRecipe', 
+    {
+      path: '/recipe/new',
+      name: 'NewRecipe',
       component: EditRecipe,
       props: {
-        id: null,
-      }
+        id: null
+      },
+      meta: { requiresAuth: true }
     },
     // { path: '/ingredients',
     //   name: 'Ingredients',
@@ -58,6 +61,25 @@ const router = createRouter({
     //   component: Ingredient 
     // }
   ]
+})
+
+
+router.beforeEach(async (to) => {
+  // Restaurer la session au premier accès
+  if (!auth.loaded) {
+    await fetchUser()
+  }
+
+  // Vérifier si la route nécessite une connexion
+  if (to.meta.requiresAuth && !auth.user_data) {
+    console.log("User not authenticated, redirecting to login")
+    return {
+      name: 'Login',
+      query: {
+        redirect: to.fullPath
+      }
+    }
+  }
 })
 
 export default router

@@ -57,6 +57,7 @@ export default function registerUserRoutes(fastify) {
     // évite de conserver un identifiant de session préexistant.
     await request.session.regenerate()
     request.session.userId = user.user_id
+    console.log('Session ID after login:', request.session.sessionId)
 
     return reply.send({user_id: user.user_id, username: user.username})
   })
@@ -70,8 +71,9 @@ export default function registerUserRoutes(fastify) {
 
 
   fastify.get('/auth/me', async (request, reply) => {
-    console.log('Session dans /me:', request.session)
-    console.log('userId:', request.session.userId)
+ console.log('Cookie reçu :', request.cookies['recipiz.sid'])
+  console.log('Session :', request.session)
+  console.log('User ID :', request.session.userId)
 
     if (!request.session.userId) {
       return reply.code(401).send({ error: 'Non connecté' })
