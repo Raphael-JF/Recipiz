@@ -1,8 +1,10 @@
 to do list :
 
 - Système de compte
--- Gérer les permissions
--- améliorer la navbar
+-- Gérer les propriétés de recettes
+-- filtrer 
+-- Rediriger vers un /my-recipes, puis vers login si pas connecté, puis vers /recipes?filter=...
+
 
 - Support de Fail2ban 
 

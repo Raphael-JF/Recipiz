@@ -20,17 +20,14 @@
         </button>
 
         <div class="dropdown" :class="{ 'is-open': recipesOpen }">
-          <RouterLink to="/" @click="closeMenus">
-            <Globe :size="20" />
-            Toutes les recettes
-          </RouterLink>
-          <RouterLink to="/my-recipes" @click="closeMenus">
-            <SquareLibrary :size="20" />
-            Mes recettes
-          </RouterLink>
-          <RouterLink to="/recipe/new" @click="closeMenus">
-            <NotebookPen :size="20" />
-            Créer une recette
+          <RouterLink
+            v-for="link in navigation[0].children"
+            :key="link.to"
+            :to="link.to"
+            @click="closeMenus"
+          >
+            <component :is="link.icon" :size="20" />
+            {{ link.label }}
           </RouterLink>
         </div>
       </div>
@@ -48,9 +45,14 @@
           </button>
 
           <div class="dropdown" :class="{ 'is-open': accountOpen }">
-            <button class="dropdown-action" @click="logout">
-              <LogOut :size="17" />
-              <span>Déconnexion</span>
+            <button
+              v-for="item in navigation[1].children"
+              :key="item.action"
+              class="dropdown-action"
+              @click="item.action === 'logout' && logout()"
+            >
+              <component :is="item.icon" :size="17" />
+              <span>{{ item.label }}</span>
             </button>
           </div>
         </template>
@@ -101,17 +103,22 @@
           :aria-expanded="recipesOpen"
           @click="toggleRecipes"
         >
-          Recettes
-          <span class="chevron">{{ recipesOpen ? '▴' : '▾' }}</span>
+          <BookOpen :size="20" />
+          <span>Recettes</span>
+          <ChevronUp v-if="recipesOpen" :size="15" />
+          <ChevronDown v-else :size="15" />
         </button>
 
         <div v-if="recipesOpen" class="mobile-submenu">
-          <RouterLink to="/" @click="closeMenus">
-            Toutes les recettes
-          </RouterLink>
-          <RouterLink to="/my-recipes" @click="closeMenus">
-            Mes recettes
-          </RouterLink>
+          <div v-for="link in navigation[0].children" :key="link.to">
+            <component :is="link.icon" :size="20" />
+            <RouterLink
+              :to="link.to"
+              @click="closeMenus"
+            >
+              {{ link.label }}
+            </RouterLink>
+          </div>
         </div>
       </div>
 
@@ -122,12 +129,15 @@
             :aria-expanded="accountOpen"
             @click="toggleAccount"
           >
-            {{ auth.user_data.username }}
-            <span class="chevron">{{ accountOpen ? '▴' : '▾' }}</span>
+            <UserRound :size="20" />
+            <span> {{ auth.user_data.username }} </span>
+            <ChevronUp v-if="accountOpen" :size="15" />
+            <ChevronDown v-else :size="15" />
           </button>
 
           <div v-if="accountOpen" class="mobile-submenu">
             <button class="dropdown-action" @click="logout">
+              <LogOut :size="20" />
               Déconnexion
             </button>
           </div>
@@ -139,6 +149,7 @@
           class="mobile-nav-button"
           @click="closeMenus"
         >
+          <LogIn :size="20" />
           Connexion
         </RouterLink>
       </div>
@@ -156,6 +167,7 @@ import {
   LogIn,
   LogOut,
   ChevronDown,
+  ChevronUp,
   ChefHat,
   NotebookPen,
   Globe,
@@ -169,6 +181,7 @@ export default {
     LogIn,
     LogOut,
     ChevronDown,
+    ChevronUp,
     ChefHat,
     NotebookPen,
     Globe,
@@ -230,12 +243,12 @@ export default {
 
     toggleRecipes() {
       this.recipesOpen = !this.recipesOpen
-      this.accountOpen = false
+      // this.accountOpen = false
     },
 
     toggleAccount() {
       this.accountOpen = !this.accountOpen
-      this.recipesOpen = false
+      // this.recipesOpen = false
     },
 
     closeMenus() {
@@ -251,7 +264,6 @@ export default {
         this.closeMenus()
         await this.$router.push('/')
       } catch (err) {
-        console.error('Erreur lors de la déconnexion :', err)
       }
     }
   }
@@ -312,6 +324,7 @@ export default {
 }
 
 .chevron {
+  align-self: end;
   font-size: 0.8rem;
   opacity: 0.8;
 }
@@ -455,7 +468,7 @@ export default {
 .mobile-nav-button {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
   padding: 1rem 0.3rem;
   border: 0;
@@ -476,7 +489,7 @@ export default {
 
 .mobile-submenu a,
 .mobile-submenu .dropdown-action {
-  padding: 0.75rem;
+  padding: 0.25rem;
   color: #cbd5e1;
   font: inherit;
   text-align: left;
@@ -486,11 +499,13 @@ export default {
 .nav-button,
 .login-button,
 .dropdown-action,
-.mobile-nav-button {
+.mobile-nav-button,
+.mobile-submenu div {
   display: flex;
   align-items: center;
   gap: 0.6rem;
 }
+
 
 .dropdown-action {
   width: 100%;
