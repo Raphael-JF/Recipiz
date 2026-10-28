@@ -92,12 +92,14 @@ export default {
 }
 
 #back {
-  self-align: flex-start;
+  position: absolute;
+  left: 0;
 }
 
 .actions {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  position: relative;
   width: 100%;
   gap: 0.6rem;
 }

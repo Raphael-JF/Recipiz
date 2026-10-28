@@ -72,7 +72,6 @@ router.beforeEach(async (to) => {
 
   // Vérifier si la route nécessite une connexion
   if (to.meta.requiresAuth && !auth.user_data) {
-    console.log("User not authenticated, redirecting to login")
     return {
       name: 'Login',
       query: {

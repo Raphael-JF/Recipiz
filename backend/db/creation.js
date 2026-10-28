@@ -15,7 +15,6 @@ export async function upsertIngredient(client, ingredientName) {
 }
 
 export async function upsertTag(client, tagName) {
-  console.log('upsertTag', tagName)
   const tagRes = await client.query(
     `INSERT INTO tags (name)
      VALUES ($1)
@@ -55,7 +54,6 @@ export async function bindRecipeInstructions(client, recipeId, instructions) {
 export async function bindRecipeTags(client, recipeId, tags) {
   for (const tag of tags) {
     const name = tag.name ? tag.name : tag
-    console.log('bindRecipeTags', name)
     const tagId = await upsertTag(client, name)
     await client.query(
       `INSERT INTO recipe_tags (recipe_id, tag_id)
@@ -97,5 +95,13 @@ export async function completeRecipeById(client, recipeId, recipe) {
   let r3 = bindRecipeInstructions(client, recipeId, instructions)
   let r4 = bindRecipeTags(client, recipeId, tags)
   await Promise.all([r1, r2, r3, r4])
+}
+
+export async function registerUser(client, username, passwordHash) {
+  await client.query(
+    `INSERT INTO users (username, password_hash)
+     VALUES ($1, $2)`,
+    [username, passwordHash]
+  )
 }
 

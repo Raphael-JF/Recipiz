@@ -17,19 +17,13 @@ export default function registerUserRoutes(fastify) {
       return reply.code(400).send({ error: 'Identifiants invalides' })
     }
 
-    const passwordHash = await argon2.hash(password)
-
     try {
-      await pool.query(
-        `INSERT INTO users (username, password_hash)
-         VALUES ($1, $2)`,
-        [username, passwordHash]
-      )
+      const passwordHash = await argon2.hash(password)
+      await creation.registerUser(client, username, passwordHash)
     } catch (err) {
       if (err.code === '23505') {
         return reply.code(409).send({ error: 'Nom déjà utilisé' })
       }
-      throw err
     }
 
     return reply.code(201).send({ message: 'Compte créé' })
@@ -57,7 +51,6 @@ export default function registerUserRoutes(fastify) {
     // évite de conserver un identifiant de session préexistant.
     await request.session.regenerate()
     request.session.userId = user.user_id
-    console.log('Session ID after login:', request.session.sessionId)
 
     return reply.send({user_id: user.user_id, username: user.username})
   })
@@ -71,9 +64,6 @@ export default function registerUserRoutes(fastify) {
 
 
   fastify.get('/auth/me', async (request, reply) => {
- console.log('Cookie reçu :', request.cookies['recipiz.sid'])
-  console.log('Session :', request.session)
-  console.log('User ID :', request.session.userId)
 
     if (!request.session.userId) {
       return reply.code(401).send({ error: 'Non connecté' })

@@ -86,7 +86,6 @@ export default {
 
     // in case a specific item changes i.e. the user edits it
     updateItem(index, updatedItem) {
-      console.log("Updating item at index", index, "with", updatedItem)
       const newItems = [...this.modelValue] // shallow copy
       newItems[index] = updatedItem
 

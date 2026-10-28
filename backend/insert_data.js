@@ -1,12 +1,15 @@
 import { pool } from './db/pool.js'
 import * as creation from './db/creation.js'
+import argon2 from 'argon2'
 
 const client = await pool.connect()
 
 try {
   await client.query('BEGIN')
 
-// ================= inserting =========================
+ 
+creation.registerUser(client, 'raph', await argon2.hash("_-gP%DA~D&8!j*H")) // just for dev
+
 // ================= inserting =========================
 creation.insertCompleteRecipe(client, {
     title: 'Spaghetti Carbonara', 

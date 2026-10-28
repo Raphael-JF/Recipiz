@@ -2,7 +2,7 @@
   <div id="form">
     <UserForm
       @submit="login"
-      :title="'Connexion'"
+      :title="$route.query.redirect ? 'Connexion requise': 'Connexion'"
       :buttonText="'Se connecter'"
     />
     <RouterLink

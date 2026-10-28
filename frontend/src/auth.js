@@ -9,11 +9,14 @@ export const auth = reactive({
 export async function fetchUser() {
   try {
     const response = await api.get('/auth/me')
-    console.log('User fetched:', response.data)
     auth.user_data = response.data
   } catch(err) {
-    console.log(err)
-    auth.user_data = null
+    if (err.response?.status === 401) {
+      auth.user_data = null
+    }
+    else {
+      throw err
+    }
   } finally {
     auth.loaded = true
   }
