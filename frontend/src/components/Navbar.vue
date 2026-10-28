@@ -1,6 +1,6 @@
 
 <template>
-  <nav class="navbar">
+  <nav class="navbar" @keydown.esc="closeMenus">
     <!-- Logo -->
     <RouterLink to="/" class="logo" @click="closeMenus">
       🍳 Recipiz
@@ -14,15 +14,23 @@
           :aria-expanded="recipesOpen"
           @click="toggleRecipes"
         >
-          Recettes <span class="chevron">▾</span>
+          <BookOpen :size="20" />
+          <span>Recettes</span>
+          <ChevronDown :size="15" />
         </button>
 
         <div class="dropdown" :class="{ 'is-open': recipesOpen }">
           <RouterLink to="/" @click="closeMenus">
+            <Globe :size="20" />
             Toutes les recettes
           </RouterLink>
           <RouterLink to="/my-recipes" @click="closeMenus">
+            <SquareLibrary :size="20" />
             Mes recettes
+          </RouterLink>
+          <RouterLink to="/recipe/new" @click="closeMenus">
+            <NotebookPen :size="20" />
+            Créer une recette
           </RouterLink>
         </div>
       </div>
@@ -34,18 +42,21 @@
             :aria-expanded="accountOpen"
             @click="toggleAccount"
           >
-            {{ auth.user_data.username }}
-            <span class="chevron">▾</span>
+            <UserRound :size="20" />
+            <span> {{ auth.user_data.username }} </span>
+            <ChevronDown :size="15" />
           </button>
 
           <div class="dropdown" :class="{ 'is-open': accountOpen }">
             <button class="dropdown-action" @click="logout">
-              Déconnexion
+              <LogOut :size="17" />
+              <span>Déconnexion</span>
             </button>
           </div>
         </template>
 
         <RouterLink v-else to="/login" class="login-button">
+          <LogIn :size="20" />
           Connexion
         </RouterLink>
       </div>
@@ -72,7 +83,7 @@
     ></div>
 
     <!-- Menu latéral mobile -->
-    <aside class="mobile-drawer" :class="{ 'is-open': menuOpen }">
+    <aside class="mobile-drawer" :class="{ 'is-open': menuOpen }" @keydown.esc="closeMenus">
       <div class="drawer-header">
         <span class="drawer-title">Menu</span>
         <button
@@ -139,9 +150,29 @@
 import { RouterLink } from 'vue-router'
 import { auth } from '@/auth'
 import api from '@/services/api'
+import {
+  BookOpen,
+  UserRound,
+  LogIn,
+  LogOut,
+  ChevronDown,
+  ChefHat,
+  NotebookPen,
+  Globe,
+  SquareLibrary
+} from 'lucide-vue-next'
 
 export default {
   components: {
+    BookOpen,
+    UserRound,
+    LogIn,
+    LogOut,
+    ChevronDown,
+    ChefHat,
+    NotebookPen,
+    Globe,
+    SquareLibrary,
     RouterLink
   },
 
@@ -150,15 +181,51 @@ export default {
       auth,
       menuOpen: false,
       recipesOpen: false,
-      accountOpen: false
+      accountOpen: false,
+
+      navigation: [
+        {
+          label: 'Recettes',
+          icon: BookOpen,
+          children: [
+            {
+              label: 'Toutes les recettes',
+              to: '/',
+              icon: Globe
+            },
+            {
+              label: 'Mes recettes',
+              to: '/my-recipes',
+              icon: SquareLibrary
+            },
+            {
+              label: 'Créer une recette',
+              to: '/recipe/new',
+              icon: NotebookPen
+            }
+          ]
+        },
+        {
+          label: 'Compte',
+          icon: UserRound,
+          requiresAuth: true,
+          children: [
+            {
+              label: 'Déconnexion',
+              action: 'logout',
+              icon: LogOut
+            }
+          ]
+        }
+      ]
     }
   },
 
   methods: {
     toggleMenu() {
       this.menuOpen = !this.menuOpen
-      this.recipesOpen = false
-      this.accountOpen = false
+      this.recipesOpen = true
+      this.accountOpen = true
     },
 
     toggleRecipes() {
@@ -199,7 +266,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85rem 1.5rem;
+  padding: 0.25rem 0.5rem;
   background: rgba(15, 23, 42, 0.97);
   backdrop-filter: blur(8px);
   color: #f8fafc;
@@ -216,7 +283,7 @@ export default {
 .desktop-nav {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.0rem;
 }
 
 .nav-item {
@@ -255,9 +322,7 @@ export default {
   right: 0;
   z-index: 10;
   display: none;
-  min-width: 190px;
   padding: 0.4rem;
-  /* margin-top: 0.3rem; */
   border: 1px solid #334155;
   border-radius: 8px;
   background: #1e293b;
@@ -273,8 +338,11 @@ export default {
 
 .dropdown a,
 .dropdown-action {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   width: 100%;
+  white-space: nowrap;
   padding: 0.7rem 0.8rem;
   border: 0;
   border-radius: 5px;
@@ -413,6 +481,19 @@ export default {
   font: inherit;
   text-align: left;
   text-decoration: none;
+}
+
+.nav-button,
+.login-button,
+.dropdown-action,
+.mobile-nav-button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dropdown-action {
+  width: 100%;
 }
 
 .mobile-submenu a:hover,

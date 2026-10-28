@@ -3,7 +3,6 @@
     <h1>📖</h1>
     <h1>Recettes</h1>
     <h1>📖</h1>
-    <button @click="$router.push('/recipe/new')">Ajouter</button>
   </section> 
 
   <section class="search-bar">
@@ -107,10 +106,6 @@ section.home-header h1 {
   margin: 0;
   font-size: clamp(1.6rem, 3vw, 2rem);
   color: #0f172a;
-}
-section.home-header button {
-  position: absolute;
-  right: 0;
 }
 
 section.search-bar {
