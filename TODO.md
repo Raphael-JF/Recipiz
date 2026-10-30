@@ -1,7 +1,7 @@
 to do list :
 
 - Système de compte
--- Gérer les propriétés de recettes
+-- Gérer le fait que les recettes soient privées en édition.
 -- filtrer 
 -- Rediriger vers un /my-recipes, puis vers login si pas connecté, puis vers /recipes?filter=...
 
@@ -12,7 +12,6 @@ to do list :
 
 - RecipeCard à compléter
 
-- Side bar pour filtrer avec les tags les plus mentionnés, et des tags pour chaque recette ("plat salé", "entrée", "sauce", "dessert"...)
 
 
 
