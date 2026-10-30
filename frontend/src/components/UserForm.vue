@@ -2,6 +2,10 @@
   <form class="user-form" @submit.prevent="submit">
     <h1>{{ title }}</h1>
 
+    <p class="error" v-if="error" role="alert">
+      {{ error }}
+    </p>
+
     <section>
       <p class="subtitle">Nom d'utilisateur</p>
       <input
@@ -25,10 +29,6 @@
       />
     </section>
 
-    <p v-if="error" class="error" role="alert">
-      {{ error }}
-    </p>
-
     <button type="submit" :disabled="loading">
       {{ loading ? 'Chargement...' : buttonText }}
     </button>
@@ -47,7 +47,10 @@ export default {
     },
     buttonText: {
       type : String
-    }
+    },
+    error: {
+      type : String
+    },
   },
 
   emits : [ "submit" ],
@@ -56,7 +59,6 @@ export default {
     return {
       username: '',
       password: '',
-      error: '',
       loading: false
     }
   },
@@ -106,10 +108,5 @@ button {
   color: white;
   font: inherit;
   cursor: pointer;
-}
-
-.error {
-  margin: 0;
-  color: #c62828;
 }
 </style>

@@ -6,6 +6,7 @@ import Recipe from '../views/Recipe.vue'
 // import Ingredient from '../views/Ingredient.vue'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,7 +14,7 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
-      component: () => import('../views/NotFound.vue')
+      component: NotFound
     },
     {
       path: '/login',
@@ -41,7 +42,10 @@ const router = createRouter({
       props: route => ({
         id: route.params.id
       }),
-      meta: { requiresAuth: true }
+      meta: { 
+        requiresAuth: true, 
+        authRedirect: to => `/recipe/${to.params.id}`
+      }
     },
     {
       path: '/recipe/new',
@@ -75,7 +79,7 @@ router.beforeEach(async (to) => {
     return {
       name: 'Login',
       query: {
-        redirect: to.fullPath
+        redirect: to.meta.authRedirect ? to.meta.authRedirect(to) : to.fullPath
       }
     }
   }

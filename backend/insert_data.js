@@ -8,12 +8,12 @@ try {
   await client.query('BEGIN')
 
  
-creation.registerUser(client, 'admin', await argon2.hash("raph")) // just for dev
-creation.registerUser(client, 'raph', await argon2.hash("_-gP%DA~D&8!j*H")) // just for dev
-
+  await creation.registerUser(client, 'admin', await argon2.hash("raph")) // just for dev
+  await creation.registerUser(client, 'raph', await argon2.hash("_-gP%DA~D&8!j*H")) // just for dev
+  await creation.registerUser(client, 'raph2', await argon2.hash("_-gP%DA~D&8!j*H")) // just for dev
 
 // ================= inserting =========================
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Spaghetti Carbonara', 
     description: "Un classique italien à base de pâtes, lardons et sauce à l'œuf.",
     ingredients: [
@@ -36,7 +36,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Chocolate Cake', 
     description: "Un gâteau moelleux au cacao, parfait pour les amateurs de chocolat.",
     ingredients: [
@@ -58,7 +58,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Avocado Toast', 
     description: "Un petit-déjeuner sain et gourmand à base d'avocat et de pain grillé.",
     ingredients: [
@@ -77,7 +77,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Margherita Pizza', 
     description: "Une pizza italienne traditionnelle avec sauce tomate, mozzarella et basilic.",
     ingredients: [
@@ -97,7 +97,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Greek Salad', 
     description: "Une salade fraîche et colorée avec tomates, concombres, oignon rouge et feta.",
     ingredients: [
@@ -117,7 +117,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Baba au rhum', 
     description: "Un dessert traditionnel alsacien imbibé de rhum.",
     ingredients: [
@@ -150,7 +150,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Beef Bourguignon', 
     description: "Un ragoût français riche en viande de bœuf mijotée dans du vin rouge.",
     ingredients: [
@@ -171,7 +171,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Tiramisu', 
     description: "Un dessert italien à base de mascarpone et de café expresso.",
     ingredients: [
@@ -193,7 +193,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Ratatouille', 
     description: "Un plat provençal à base de légumes mijotés dans une sauce tomate.",
     ingredients: [
@@ -214,7 +214,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Croque Monsieur', 
     description: "Un sandwich grillé au jambon et fromage, typique de la cuisine française.",
     ingredients: [
@@ -231,7 +231,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Paella', 
     description: "Un plat espagnol à base de riz, fruits de mer et safran.",
     ingredients: [
@@ -250,7 +250,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Quiche Lorraine', 
     description: "Une tarte salée française à base de lardons et crème.",
     ingredients: [
@@ -269,7 +269,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Moussaka', 
     description: "Un plat grec à base d'aubergines, viande hachée et sauce béchamel.",
     ingredients: [
@@ -288,7 +288,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Tajine', 
     description: "Un plat marocain mijoté à base d'agneau et fruits secs.",
     ingredients: [
@@ -308,7 +308,7 @@ creation.insertCompleteRecipe(client, {
     tags: []
   })
 
-creation.insertCompleteRecipe(client, {
+creation.insertCompleteRecipe(client, 2, {
     title: 'Risotto', 
     description: "Un plat italien à base de riz crémeux et bouillon.",
     ingredients: [

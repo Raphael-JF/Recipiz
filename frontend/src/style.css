@@ -7,7 +7,6 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
@@ -97,6 +96,13 @@ textarea {
     overflow: hidden;
 }
 
+
+
+
+p.error {
+  margin: 0;
+  color: #c62828;
+}
 
 #app {
   max-width: none;

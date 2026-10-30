@@ -1,8 +1,8 @@
 import {pool} from './pool.js'
 
 // Delete a recipe and all associated data from the database (thanks to ON DELETE CASCADE in the schema)
-export async function deleteRecipe(recipeId) {
-  await pool.query(
+export async function deleteRecipe(client, recipeId) {
+  await client.query(
     `DELETE FROM recipes WHERE recipe_id = $1`,
     [recipeId]
   )

@@ -5,7 +5,7 @@ export default function registerPostRoutes(fastify) {
 
   // Add a new recipe
   fastify.post('/recipes/new', utils.dbTransaction(async (req, reply, client) => {
-    await insertCompleteRecipe(client, req.body); 
+    await insertCompleteRecipe(client, req.session.userId, req.body); 
   })
 
 )}

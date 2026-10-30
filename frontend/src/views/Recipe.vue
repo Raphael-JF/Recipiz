@@ -3,8 +3,8 @@
   <div v-else class="recipe-view">
     <section class="actions">
       <button id="back" class="secondary" @click="$router.push('/')">← Retour</button>
-      <button class="secondary" @click=editRecipe>Modifier</button>
-      <button class="danger" @click="deleteRecipe">Supprimer</button>
+      <button v-if="recipe.isOwner" class="secondary" @click=editRecipe>Modifier</button>
+      <button v-if="recipe.isOwner" class="danger" @click="deleteRecipe">Supprimer</button>
     </section>
 
     <section>
@@ -91,17 +91,17 @@ export default {
   gap: 1.5rem;
 }
 
-#back {
-  position: absolute;
-  left: 0;
-}
 
 .actions {
   display: flex;
   justify-content: flex-end;
-  position: relative;
   width: 100%;
   gap: 0.6rem;
+}
+
+
+#back {
+  margin-right: auto;
 }
 
 .tags {

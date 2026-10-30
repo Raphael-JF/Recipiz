@@ -2,6 +2,7 @@
   <div id="form">
     <UserForm
       @submit="login"
+      :error="error"
       :title="$route.query.redirect ? 'Connexion requise': 'Connexion'"
       :buttonText="'Se connecter'"
     />

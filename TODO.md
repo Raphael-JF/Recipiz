@@ -1,10 +1,8 @@
 to do list :
 
 - Système de compte
--- Gérer le fait que les recettes soient privées en édition.
 -- filtrer 
 -- Rediriger vers un /my-recipes, puis vers login si pas connecté, puis vers /recipes?filter=...
-
 
 - Support de Fail2ban 
 

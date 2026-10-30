@@ -12,17 +12,16 @@ export default function registerPutRoutes(fastify) {
     const recipe = req.body;
     const recipeId = req.params.id;
     const recipeUserId = (await client.query(`
-      SELECT owner FROM recipes WHERE recipe_id = $1
-    `, [recipeId])).rows[0].user_id;
+      SELECT owner_id FROM recipes WHERE recipe_id = $1
+    `, [recipeId])).rows[0].owner_id;
     
     if (recipeUserId === req.session.userId || req.session.userId == 1) {
       await completeRecipeById(client, recipeId, recipe);
     }
     else {
       reply.code(403);
-      return { error: 'Vous n\'êtes pas le propriétaire de cette recette' }
+      return {error : "Not allowed to modify this recipe."}
     }
-
 
   }))
 }
