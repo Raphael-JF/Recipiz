@@ -1,5 +1,12 @@
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS recipes (
     recipe_id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -44,11 +51,6 @@ CREATE TABLE IF NOT EXISTS recipe_ingredients (
     PRIMARY KEY (recipe_id, ingredient_id)
 );
 
-CREATE TABLE IF NOT EXISTS users (
-    user_id SERIAL PRIMARY KEY,
-    username TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL
-);
 
 -- To make the search more efficient, we can create GIN indexes on the title and name columns using the pg_trgm extension.
 CREATE INDEX IF NOT EXISTS recipes_title_trgm_idx

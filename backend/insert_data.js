@@ -8,7 +8,9 @@ try {
   await client.query('BEGIN')
 
  
+creation.registerUser(client, 'admin', await argon2.hash("raph")) // just for dev
 creation.registerUser(client, 'raph', await argon2.hash("_-gP%DA~D&8!j*H")) // just for dev
+
 
 // ================= inserting =========================
 creation.insertCompleteRecipe(client, {

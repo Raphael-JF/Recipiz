@@ -9,9 +9,20 @@ export default function registerPutRoutes(fastify) {
               { preHandler: [utils.requireAuth] },
               utils.dbTransaction(async (req, reply, client) => {
 
-    let recipe = req.body;
+    const recipe = req.body;
     const recipeId = req.params.id;
+    const recipeUserId = (await client.query(`
+      SELECT owner FROM recipes WHERE recipe_id = $1
+    `, [recipeId])).rows[0].user_id;
+    
+    if (recipeUserId === req.session.userId || req.session.userId == 1) {
+      await completeRecipeById(client, recipeId, recipe);
+    }
+    else {
+      reply.code(403);
+      return { error: 'Vous n\'êtes pas le propriétaire de cette recette' }
+    }
 
-    await completeRecipeById(client, recipeId, recipe);
+
   }))
 }
