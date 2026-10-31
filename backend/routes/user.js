@@ -1,5 +1,6 @@
 import { pool } from '../db/pool.js'
 import argon2 from 'argon2'
+import * as creation from '../db/creation.js'
 
 export default function registerUserRoutes(fastify) { 
 
@@ -11,7 +12,6 @@ export default function registerUserRoutes(fastify) {
       username.length < 3 ||
       username.length > 30 ||
       typeof password !== 'string' ||
-      password.length < 12 ||
       password.length > 128
     ) {
       return reply.code(400).send({ error: 'Identifiants invalides' })
@@ -19,11 +19,12 @@ export default function registerUserRoutes(fastify) {
 
     try {
       const passwordHash = await argon2.hash(password)
-      await creation.registerUser(client, username, passwordHash)
+      await creation.registerUser(pool, username, passwordHash)
     } catch (err) {
       if (err.code === '23505') {
         return reply.code(409).send({ error: 'Nom déjà utilisé' })
       }
+      console.log(err);
     }
 
     return reply.code(201).send({ message: 'Compte créé' })
