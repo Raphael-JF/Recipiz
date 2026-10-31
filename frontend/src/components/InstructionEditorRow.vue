@@ -40,6 +40,7 @@ export default {
 }
 
 #instruction {
+  flex: 1;
 }
 
 

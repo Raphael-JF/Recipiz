@@ -37,7 +37,8 @@
     </ul>
 
     <button type="button" class="secondary" @click="addItem">
-      ➕ ajouter
+      <SquarePlus :size="20"/>
+      <span>ajouter</span>
     </button>
   </div>
 </template>
@@ -45,10 +46,12 @@
 <script>
 import draggable from 'vuedraggable'
 import DeleteButton from './DeleteButton.vue'
+import { SquarePlus } from 'lucide-vue-next'
 export default {
   components: {
     draggable,
-    DeleteButton
+    DeleteButton,
+    SquarePlus
   },
 
   props: {

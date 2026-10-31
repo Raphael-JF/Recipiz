@@ -9,7 +9,9 @@
       :disabled="!draftAvailable"
       @click="loadDraft"
     >
-      Récupérer le brouillon
+      <History :size="20"/>
+      <span>Récupérer le brouillon</span>
+
     </button>
   </div>
   <h1 v-if="id">Modifier une recette</h1>
@@ -58,7 +60,10 @@
     </section>
     
     <section class="actions">
-      <button type="submit">Enregistrer</button>
+      <button type="submit">
+        <Save :size="20"/>
+        <span>Enregistrer</span>
+      </button>
       <button type="button" class="secondary" @click="$router.push(`/recipe/${id}`)">Annuler</button>
     </section>
   </form>
@@ -76,11 +81,14 @@ import EditorList from '../components/EditorList.vue'
 import InstructionEditorRow from '../components/InstructionEditorRow.vue'
 import AutoResizeTextarea from '../components/AutoResizeTextarea.vue'
 import TagEditorRow from '../components/TagEditorRow.vue'
+import { History, Save } from 'lucide-vue-next'
 
 export default {
   components: {  
     AutoResizeTextarea,
     EditorList,
+    History,
+    Save
   },
   props: {
     id: {

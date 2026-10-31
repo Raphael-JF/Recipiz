@@ -3,8 +3,11 @@
   <div v-else class="recipe-view">
     <section class="actions">
       <button id="back" class="secondary" @click="$router.push('/')">← Retour</button>
-      <button v-if="recipe.isOwner" class="secondary" @click=editRecipe>Modifier</button>
-      <button v-if="recipe.isOwner" class="danger" @click="deleteRecipe">Supprimer</button>
+      <button v-if="recipe.isOwner" class="secondary" @click=editRecipe>
+        <SquarePen :size="20" /> 
+        <span>Modifier</span>
+      </button>
+      <DeleteButton v-if="recipe.isOwner" @click="deleteRecipe" doText />
     </section>
 
     <section>
@@ -45,10 +48,14 @@
 <script>
 import api from '../services/api'
 import IngredientList from '../components/IngredientList.vue'
+import DeleteButton from '../components/DeleteButton.vue' 
+import { SquarePen } from 'lucide-vue-next'
 
 export default {
   components: {
     IngredientList,
+    DeleteButton,
+    SquarePen
   },
   data() {
     return {
