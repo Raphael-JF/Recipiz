@@ -17,7 +17,7 @@
 
     <div class="message"  >
       <p> <b>Information</b></p>
-      <p>Pour des raisons de sécurité associées à ce site, il est recommandé d'utiliser un mot de passe différent de ceux que vous utilisez d'habitude.</p>
+      <p>Pour votre sécurité, les mots de passe ne sont jamais stockés en clair dans la base de données.</p>
     </div>
   </div>
 </template>

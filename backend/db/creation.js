@@ -45,7 +45,7 @@ export async function bindRecipeInstructions(client, recipeId, instructions) {
     await client.query(
       `INSERT INTO recipe_instructions (recipe_id, step, text)
        VALUES ($1, $2, $3)`,
-      [recipeId, step, instructions[step].text ? instructions[step].text : instructions[step]]
+      [recipeId, step, instructions[step].text !== undefined ? instructions[step].text : instructions[step]]
     )
   }
 }
@@ -53,7 +53,7 @@ export async function bindRecipeInstructions(client, recipeId, instructions) {
 
 export async function bindRecipeTags(client, recipeId, tags) {
   for (const tag of tags) {
-    const name = tag.name ? tag.name : tag
+    const name = tag.name !== undefined ? tag.name : tag
     const tagId = await upsertTag(client, name)
     await client.query(
       `INSERT INTO recipe_tags (recipe_id, tag_id)

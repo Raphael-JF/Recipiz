@@ -16,8 +16,7 @@
             :model-value="item"
             @update:model-value="updateItem(index, $event)"
           />
-          <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
-
+          <DeleteButton @click="removeItem(index)"/>
         </li>
       </template>
     </draggable>
@@ -33,7 +32,7 @@
           :model-value="item"
           @update:model-value="updateItem(index, $event)"
         />
-        <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
+        <DeleteButton @click="removeItem(index)"/>
       </li>
     </ul>
 
@@ -45,10 +44,11 @@
 
 <script>
 import draggable from 'vuedraggable'
-
+import DeleteButton from './DeleteButton.vue'
 export default {
   components: {
-    draggable
+    draggable,
+    DeleteButton
   },
 
   props: {

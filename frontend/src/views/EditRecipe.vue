@@ -1,8 +1,8 @@
 <template>
-  <h1 v-if="id">Modifier une recette</h1>
-  <h1 v-else>Nouvelle recette</h1>
 
-  <div class="draft-actions">
+
+  <div class="actions">
+    <button id="back" class="secondary" @click="$router.push('/')">← Retour</button>
     <button
       type="button"
       class="secondary"
@@ -12,6 +12,8 @@
       Récupérer le brouillon
     </button>
   </div>
+  <h1 v-if="id">Modifier une recette</h1>
+  <h1 v-else>Nouvelle recette</h1>
 
   <p v-if="loading">Chargement...</p>
 
@@ -209,14 +211,14 @@ label {
 }
 
 
+#back {
+  margin-right: auto;
+}
+
 .ingredient-grid {
   display: grid;
   gap: 0.6rem;
   margin-bottom: 0.8rem;
 }
 
-.actions {
-  display: flex;
-  gap: 0.6rem;
-}
 </style>

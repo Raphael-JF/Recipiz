@@ -92,13 +92,6 @@ export default {
 }
 
 
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  gap: 0.6rem;
-}
-
 
 #back {
   margin-right: auto;
@@ -119,14 +112,5 @@ export default {
 
 .tags a:hover {
   background-color: #cbd5e1;
-}
-
- h1 {
-  margin-top: 0;
-  color: #0f172a;
-}
-
-h2 {
-  color: #1e293b;
 }
 </style>
