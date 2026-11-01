@@ -1,50 +1,37 @@
 <template>
-  <div class="search-bar" :class="className">
-    <input
-      ref="input"
-      :value="search"
-      type="text"
-      :placeholder="placeholder"
-      @keydown="handleKeydown"
-      @input="handleInput"
-      @blur="selectedIndex = -1; showSuggestions = false"
-      @focus="showSuggestions = true"
-      :class="{ 'has-suggestions': showSuggestions && suggestions.length && search.length }"
-    >
+  <SuggestionBar
+    ref="SuggestionBar"
 
-    <!-- Suggestions -->
-    <ul
-      v-if="showSuggestions && suggestions.length && search.length"
-      class="suggestions-list"
-    >
-      <li
-        v-for="(item, index) in suggestions"
-        :key="item.id"
-        :class="{ selected: index === selectedIndex }"
-        @mousedown.prevent="clickSuggestion(index)"
-      >
-        {{ getLabel(item) }}
-        <div
-          class="insert-suggestion"
-          @mousedown.stop.prevent="insertSuggestion(index)"
-        >
-        ↖
-        </div>
-      </li>
-    </ul>
+    :setInputText="setSearch" 
+    :apiURL = "apiURL"
+    placeholder="Rechercher"
+    className="search-bar-mode" 
+    @inputTextReceived="$emit('search', $event)"
+    buttonText="Rechercher"
+    :buttonLogo="SearchLogo"
+  />
 
-  </div>
 </template>
 
 
 
 <script>
 import api from '../services/api'
+import SuggestionBar from './SuggestionBar.vue'
+import { Search } from 'lucide-vue-next'
 
 export default {
   name: 'SearchBar',
+
+  emits: ['search'],
+
+  components: {
+    SuggestionBar,
+    Search
+  },
+
   props: {
-    modelValue: {
+    setSearch: {
       type: String,
       default: ''
     },
@@ -52,215 +39,18 @@ export default {
       type: String,
       required: true
     },
-    placeholder: {
-      type: String,
-      default: 'Recherche...'
-    },
-    className: {
-      type: String,
-      default: ''
+  },
+  methods: {
+    focus() {
+      this.$refs.SuggestionBar.focus()
     }
   },
 
-data() {
-  return {
-    search: this.modelValue,
-    suggestionSearch: '',
-    suggestions: [],
-    selectedIndex: -1,
-    showSuggestions: true
-  }
-},
-
-  watch: {
-    modelValue(value) {
-      this.search = value
-    },
-
-    search(value) {
-      this.$emit('update:modelValue', value)
+  data() {
+    return {
+      SearchLogo: Search
     }
-  },  
-
-
-  // we should do that, but it only works with v-model
-  // computed: {
-  //   search: {
-  //     get() {
-  //       return this.modelValue
-  //     },
-  //     set(value) {
-  //       this.$emit('update:modelValue', value)
-  //     }
-  //   }
-  // },  
-
-  methods: {
-    focus() {
-      this.$refs.input.focus()
-    },
-
-    handleInput(event) {
-      this.search = event.target.value
-      this.$emit('change', this.search)
-      this.suggestionSearch = this.search
-      api.get(this.apiURL, {
-        params: {
-          suggestionSearch: this.suggestionSearch
-        }
-      }).then((res) => {
-        this.suggestions = res.data
-      })
-    },
-
-    getLabel(item) {
-      return item.title ?? item.name ?? item.id
-    },
-
-    handleKeydown(event) {
-      if (event.key === 'ArrowDown') {
-        event.preventDefault()
-
-      if (!this.suggestions.length) {
-          return
-        }
-
-        this.selectedIndex =
-          (this.selectedIndex + 1) % this.suggestions.length
-
-        this.search = this.getLabel(
-          this.suggestions[this.selectedIndex]
-        )
-      }
-
-      else if (event.key === 'ArrowUp') {
-        event.preventDefault()
-        if (!this.suggestions.length) {
-          return
-        }
-
-        this.selectedIndex =
-          this.selectedIndex <= 0
-            ? this.suggestions.length - 1
-            : this.selectedIndex - 1
-
-        this.search = this.getLabel(
-          this.suggestions[this.selectedIndex]
-        )
-      }
-
-      else if (event.key === 'Enter') {
-        event.preventDefault()
-        if (this.selectedIndex === -1) {
-          this.sendSearch()
-        } else {
-          this.clickSuggestion(this.selectedIndex)
-        }
-      }
-      
-    },
-
-    insertSuggestion(index) {
-      this.search = this.getLabel(this.suggestions[index])
-      this.focus()
-    },
-
-    clickSuggestion(index) {
-      this.search = this.getLabel(this.suggestions[index])
-      this.selectedIndex = index
-      this.showSuggestions = false
-      this.sendSearch()
-    },
-
-    sendSearch() {
-      this.$emit('search', this.search)
-      this.$refs.input.blur()
-    }
-  }
+  },
 }
 </script>
-<style>  
-  .search-bar {
-    --search-border-radius: 8px;
-    position: relative;
-  }
 
-  .recipe-search-bar {
-    --search-border-radius: 24px;
-  }
-
-
-  .search-bar input {
-    border-radius: var(--search-border-radius);
-  }
-
-  .recipe-search-bar input {
-    font-size: 17px;
-    padding: 13px 16px;
-  }
-
-
-
-  .search-bar input.has-suggestions {
-    border-radius: var(--search-border-radius) var(--search-border-radius) 0px 0px;
-  }
-
-    
-  .suggestions-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-
-    list-style: none;
-    padding: 0px 0px 4px 0px;
-    margin: 0px;
-    max-height: 300px;
-    overflow-y: auto;
-    background-color: white;
-    border-radius: 0px 0px var(--search-border-radius) var(--search-border-radius);
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .suggestions-list li {
-    padding: 7px 16px;
-    display: block;
-    cursor:  default;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .suggestions-list li:hover,
-  .suggestions-list li.selected {
-    background-color: #f1f2ff;
-    /* color: #2a73e8; */
-  }
-
-
-  .insert-suggestion {
-    width: 25px;
-    height: 25px;
-    /* padding: 1; */
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 2px solid #1a73e8;
-    border-radius: 51%;
-    background: transparent;
-
-    color: #2a73e8;
-    font-size: 15px;
-    line-height: 2;
-    cursor: pointer;
-  }
-
-  .insert-suggestion:hover {
-    background: #e9f0fe;
-  }
-</style>

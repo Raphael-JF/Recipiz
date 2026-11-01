@@ -1,4 +1,5 @@
 <template>
+  <!-- Change needed  -->
   <SearchBar
     id="name"
     apiURL="/matchingTags"

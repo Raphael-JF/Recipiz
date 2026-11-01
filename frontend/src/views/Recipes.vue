@@ -10,7 +10,6 @@
        ref="SearchBar"
        apiURL = "/matchingRecipes"
        placeholder="Rechercher une recette..."
-       className="recipe-search-bar"
        @search="getRecipesPage"
     />
   </section>
