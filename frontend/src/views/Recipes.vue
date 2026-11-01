@@ -14,27 +14,42 @@
        @search="getRecipesPage"
     />
   </section>
-  
-  <section class="recipe-list">
-    <p v-if="loading">Chargement...</p>
-    <p v-else-if="!recipes.length">Aucune recette trouvée</p>
-    <RecipeCard 
-      v-else 
-      v-for="(recipe, index) in recipes" 
-      :key="index" 
-      :id="recipe.recipe_id"
-      :title="recipe.title" 
-    />
+
+  <p v-if="loading">Chargement...</p>
+  <section class="recipes-view">
+    <div class="recipe-filter">
+      <div class="filter-submenu">
+        <h2>Filtres</h2>
+        <p>Filtrer les recettes par :</p>
+        <ul>
+          <li>Type de plat</li>
+          <li>Ingrédients</li>
+          <li>Temps de préparation</li>
+          <li>Difficulté</li>
+        </ul>
+      </div>
+    </div>
+    <div class="recipe-results">
+      <p v-if="!recipes.length">Aucune recette trouvée</p>
+      <div class="recipe-list" v-else>
+        <RecipeCard 
+          v-for="(recipe, index) in recipes" 
+          :key="index" 
+          :id="recipe.recipe_id"
+          :title="recipe.title" 
+        />
+      </div>
+      <PageSelector
+        v-if="totalPages > 1"
+        :current-page="page"
+        :total-pages="totalPages"
+        :has-next-page="hasNextPage"
+        @page-change="updatePage"
+      />
+    </div>
   </section>
   <section class="pagination"> 
     <!-- Ajout du composant PageSelector pour la pagination -->
-    <PageSelector
-      v-if="totalPages > 1"
-      :current-page="page"
-      :total-pages="totalPages"
-      :has-next-page="hasNextPage"
-      @page-change="updatePage"
-    />
   </section>
 </template>
 
@@ -112,13 +127,29 @@ section.search-bar {
   width: 100%;
 }
 
-section.recipe-list {
+.recipe-list {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   align-items: stretch;
-
 }
+
+.recipe-results {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 1rem;
+  width: 100%;
+}
+
+.recipe-filter {
+  border: 1px solid black;
+}
+
+.recipes-view {
+  display:flex;
+}
+
 
 </style>
