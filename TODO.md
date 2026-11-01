@@ -2,6 +2,9 @@ to do list :
 
 - Système de compte
 -- filtrer 
+--- Tags
+--- auteurs
+--- ingrédients
 -- Rediriger vers un /my-recipes, puis vers login si pas connecté, puis vers /recipes?filter=...
 
 - Support de Fail2ban 
