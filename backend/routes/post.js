@@ -9,6 +9,6 @@ export default function registerPostRoutes(fastify) {
               { preHandler: [utils.requireAuth] },
               utils.dbTransaction(async (req, reply, client) => {
     await insertCompleteRecipe(client, req.session.userId, req.body); 
-  })
+  }))
 
-)}
+}
