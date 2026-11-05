@@ -110,6 +110,7 @@ export default {
   padding: 0;
   margin: 0;
   width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 }
 
@@ -118,7 +119,13 @@ export default {
   align-items: center;
   gap: 0.5rem;
   width: 100%;
+  min-width: 0;
+  flex-wrap: wrap;
   box-sizing: border-box;
+}
+
+.editor-row > * {
+  min-width: 0;
 }
 
 .drag-handle {
@@ -133,7 +140,8 @@ export default {
 }
 
 .editor-list-container {
-  width : 100%;
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap : 0.6rem;
