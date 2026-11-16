@@ -60,6 +60,7 @@ export default {
 <style scoped>
 .page-selector {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
 }

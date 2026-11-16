@@ -1,9 +1,22 @@
 to do list :
 
 - Système de compte
+-- filtrer 
+--- Tags
+--- auteurs
+--- ingrédients
+-- Rediriger vers un /my-recipes, puis vers login si pas connecté, puis vers /recipes?filter=...
+
+- Support de Fail2ban 
+
 - "Ingrédients concernés" à chaque étape (du coup séparer les étapes de recette)
+
 - RecipeCard à compléter
-- Side bar pour filtrer avec les tags les plus mentionnés, et des tags pour chaque recette ("plat salé", "entrée", "sauce", "dessert"...)
+
+
+
+
+
 
 Done :
 

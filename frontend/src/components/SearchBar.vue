@@ -244,7 +244,7 @@ data() {
   .insert-suggestion {
     width: 25px;
     height: 25px;
-    padding: 1;
+    /* padding: 1; */
 
     display: flex;
     align-items: center;

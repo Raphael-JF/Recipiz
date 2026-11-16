@@ -15,7 +15,6 @@ export async function upsertIngredient(client, ingredientName) {
 }
 
 export async function upsertTag(client, tagName) {
-  console.log('upsertTag', tagName)
   const tagRes = await client.query(
     `INSERT INTO tags (name)
      VALUES ($1)
@@ -46,14 +45,15 @@ export async function bindRecipeInstructions(client, recipeId, instructions) {
     await client.query(
       `INSERT INTO recipe_instructions (recipe_id, step, text)
        VALUES ($1, $2, $3)`,
-      [recipeId, step, instructions[step].text]
+      [recipeId, step, instructions[step].text !== undefined ? instructions[step].text : instructions[step]]
     )
   }
 }
 
 
 export async function bindRecipeTags(client, recipeId, tags) {
-  for (const { name } of tags) {
+  for (const tag of tags) {
+    const name = tag.name !== undefined ? tag.name : tag
     const tagId = await upsertTag(client, name)
     await client.query(
       `INSERT INTO recipe_tags (recipe_id, tag_id)
@@ -63,14 +63,14 @@ export async function bindRecipeTags(client, recipeId, tags) {
   }
 }
 
-export async function insertCompleteRecipe(client, recipe) {
+export async function insertCompleteRecipe(client, sessionUserId, recipe) {
   const { title, description, ingredients, instructions, tags } = recipe
 
   const recipeId = (await client.query(
-    `INSERT INTO recipes (title, description)
-      VALUES ($1, $2)
+    `INSERT INTO recipes (title, description, owner_id)
+      VALUES ($1, $2, $3)
      RETURNING recipe_id`,
-    [title, description]
+    [title, description, sessionUserId]
   )).rows[0].recipe_id
 
 
@@ -97,7 +97,11 @@ export async function completeRecipeById(client, recipeId, recipe) {
   await Promise.all([r1, r2, r3, r4])
 }
 
-  
-  
-
+export async function registerUser(client, username, passwordHash) {
+  await client.query(
+    `INSERT INTO users (username, password_hash)
+     VALUES ($1, $2)`,
+    [username, passwordHash]
+  )
+}
 

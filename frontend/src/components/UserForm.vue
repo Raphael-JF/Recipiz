@@ -1,0 +1,112 @@
+<template>
+  <form class="user-form" @submit.prevent="submit">
+    <h1>{{ title }}</h1>
+
+    <p class="error" v-if="error" role="alert">
+      {{ error }}
+    </p>
+
+    <section>
+      <p class="subtitle">Nom d'utilisateur</p>
+      <input
+        id="username"
+        v-model.trim="username"
+        type="text"
+        autocomplete="username"
+        required
+        autofocus
+      />
+      </section>
+
+    <section>
+      <p class="subtitle">Mot de passe</p>
+      <input
+        id="password"
+        v-model="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      />
+    </section>
+
+    <button type="submit" :disabled="loading">
+      {{ loading ? 'Chargement...' : buttonText }}
+    </button>
+  </form>
+</template>
+
+<script>
+import axios from 'axios'
+
+export default {
+  name: 'UserForm',
+
+  props: {
+    title : {
+      type : String
+    },
+    buttonText: {
+      type : String
+    },
+    error: {
+      type : String
+    },
+  },
+
+  emits : [ "submit" ],
+
+  data() {
+    return {
+      username: '',
+      password: '',
+      loading: false
+    }
+  },
+
+  methods: {
+    submit() {
+      this.$emit("submit", {
+        username: this.username,
+        password: this.password
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  /* width:100%; */
+  
+}
+
+.subtitle {
+  margin-top: 0.5rem;
+  margin-bottom: 0.2rem;
+  /* opacity: 0.7; */
+}
+
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem;
+  border: 1px solid #888;
+  border-radius: 5px;
+  font: inherit;
+}
+
+button {
+  margin-top: 0.5rem;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 5px;
+  background: #356b45;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+</style>

@@ -21,7 +21,7 @@ export default function registerRecipeGetRoutes(fastify) {
     async (request, reply, client) => {
       const { id } = request.params
 
-      const result = await getOneRecipePage(client, id);
+      const result = await getOneRecipePage(client, request.session.userId, id);
       if (result === null) {
         reply.code(404)
         return { error: 'Recipe not found' }

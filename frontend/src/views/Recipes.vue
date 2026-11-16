@@ -1,8 +1,8 @@
 <template>
   <section class="home-header">
-    <div></div>
-    <h1>📖 Mes recettes</h1>
-    <button @click="$router.push('/recipe/new')">Ajouter</button>
+    <h1>📖</h1>
+    <h1>Recettes</h1>
+    <h1>📖</h1>
   </section> 
 
   <section class="search-bar">
@@ -16,18 +16,17 @@
   </section>
   
   <section class="recipe-list">
-    <div class="item-list">
-      <p v-if="loading">Chargement...</p>
-      <p v-else-if="!recipes.length">Aucune recette trouvée</p>
-      <RecipeCard 
-        v-else 
-        v-for="(recipe, index) in recipes" 
-        :key="index" 
-        :id="recipe.recipe_id"
-        :title="recipe.title" 
-      />
-    </div>
-    
+    <p v-if="loading">Chargement...</p>
+    <p v-else-if="!recipes.length">Aucune recette trouvée</p>
+    <RecipeCard 
+      v-else 
+      v-for="(recipe, index) in recipes" 
+      :key="index" 
+      :id="recipe.recipe_id"
+      :title="recipe.title" 
+    />
+  </section>
+  <section class="pagination"> 
     <!-- Ajout du composant PageSelector pour la pagination -->
     <PageSelector
       v-if="totalPages > 1"
@@ -98,8 +97,8 @@ export default {
 <style scoped>
 section.home-header {
   display: flex;
-  /* align-items: center; */
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
   gap: 1rem;
 }
 
@@ -117,7 +116,9 @@ section.recipe-list {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 0.25rem;
+  align-items: stretch;
+
 }
 
 </style>

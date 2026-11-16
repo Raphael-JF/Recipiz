@@ -1,5 +1,8 @@
+import router from '@/router'
 import axios from 'axios'
 
-export default axios.create({
+const api = axios.create({
   baseURL: '/api'
 })
+
+export default api

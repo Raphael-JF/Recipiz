@@ -16,8 +16,7 @@
             :model-value="item"
             @update:model-value="updateItem(index, $event)"
           />
-          <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
-
+          <DeleteButton @click="removeItem(index)"/>
         </li>
       </template>
     </draggable>
@@ -33,22 +32,26 @@
           :model-value="item"
           @update:model-value="updateItem(index, $event)"
         />
-        <button type="button" class="danger" @click="removeItem(index)">Supprimer</button>
+        <DeleteButton @click="removeItem(index)"/>
       </li>
     </ul>
 
     <button type="button" class="secondary" @click="addItem">
-      ➕ ajouter
+      <SquarePlus :size="20"/>
+      <span>ajouter</span>
     </button>
   </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
-
+import DeleteButton from './DeleteButton.vue'
+import { SquarePlus } from 'lucide-vue-next'
 export default {
   components: {
-    draggable
+    draggable,
+    DeleteButton,
+    SquarePlus
   },
 
   props: {
@@ -86,7 +89,6 @@ export default {
 
     // in case a specific item changes i.e. the user edits it
     updateItem(index, updatedItem) {
-      console.log("Updating item at index", index, "with", updatedItem)
       const newItems = [...this.modelValue] // shallow copy
       newItems[index] = updatedItem
 
@@ -108,6 +110,7 @@ export default {
   padding: 0;
   margin: 0;
   width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 }
 
@@ -116,7 +119,13 @@ export default {
   align-items: center;
   gap: 0.5rem;
   width: 100%;
+  min-width: 0;
+  flex-wrap: wrap;
   box-sizing: border-box;
+}
+
+.editor-row > * {
+  min-width: 0;
 }
 
 .drag-handle {
@@ -131,7 +140,8 @@ export default {
 }
 
 .editor-list-container {
-  width : 100%;
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap : 0.6rem;

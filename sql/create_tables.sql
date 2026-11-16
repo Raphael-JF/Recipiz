@@ -1,9 +1,17 @@
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS recipes (
     recipe_id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    description TEXT
+    description TEXT,
+    owner_id INT REFERENCES users(user_id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS tags (
@@ -42,6 +50,7 @@ CREATE TABLE IF NOT EXISTS recipe_ingredients (
     ingredient_id INT NOT NULL REFERENCES ingredients(ingredient_id) ON DELETE CASCADE,
     PRIMARY KEY (recipe_id, ingredient_id)
 );
+
 
 -- To make the search more efficient, we can create GIN indexes on the title and name columns using the pg_trgm extension.
 CREATE INDEX IF NOT EXISTS recipes_title_trgm_idx

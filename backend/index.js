@@ -1,13 +1,32 @@
 import Fastify from 'fastify'
+import cookie from '@fastify/cookie'
+import session from '@fastify/session'
+
 import cors from '@fastify/cors'
 import rateLimit from '@fastify/rate-limit'
 import registerGetRoutes from './routes/get/index.js'
 import registerPostRoutes from './routes/post.js'
 import registerPutRoutes from './routes/put.js'
 import registerDeleteRoutes from './routes/delete.js'
+import registerUserRoutes from './routes/user.js'
 
 const fastify = Fastify({ logger: true })
 
+await fastify.register(cookie)
+
+await fastify.register(session, {
+  secret: process.env.SESSION_SECRET,
+  cookieName: 'recipiz.sid',
+  cookie: {
+    path: '/',
+    httpOnly: true,
+    secure: 'auto',
+    sameSite: 'lax',
+    maxAge: 60*1000 *60 // 1 h, en millisecondes
+  },
+  saveUninitialized: false,
+  rolling: true,
+})
 
 fastify.register(cors, {
     origin: process.env.RECIPIZ_FRONTEND_URL,
@@ -25,6 +44,7 @@ registerGetRoutes(fastify)
 registerPostRoutes(fastify)
 registerPutRoutes(fastify)
 registerDeleteRoutes(fastify)
+registerUserRoutes(fastify)
 
 fastify.listen({ port: Number(process.env.RECIPIZ_BACKEND_PORT) }, err => {
     if (err) {

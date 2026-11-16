@@ -3,8 +3,11 @@
   <div v-else class="recipe-view">
     <section class="actions">
       <button id="back" class="secondary" @click="$router.push('/')">← Retour</button>
-      <button class="secondary" @click="$router.push(`/recipe/${$route.params.id}/edit`)">Modifier</button>
-      <button class="danger" @click="deleteRecipe">Supprimer</button>
+      <button v-if="recipe.isOwner" class="secondary" @click=editRecipe>
+        <SquarePen :size="20" /> 
+        <span>Modifier</span>
+      </button>
+      <DeleteButton v-if="recipe.isOwner" @click="deleteRecipe" doText />
     </section>
 
     <section>
@@ -45,10 +48,14 @@
 <script>
 import api from '../services/api'
 import IngredientList from '../components/IngredientList.vue'
+import DeleteButton from '../components/DeleteButton.vue' 
+import { SquarePen } from 'lucide-vue-next'
 
 export default {
   components: {
     IngredientList,
+    DeleteButton,
+    SquarePen
   },
   data() {
     return {
@@ -63,8 +70,12 @@ export default {
       const id = this.$route.params.id
       await api.delete(`/recipes/${id}`)
       this.$router.push('/')
-    }
-  },
+    },
+    async editRecipe() {
+        const id = this.$route.params.id
+        this.$router.push(`/recipe/${id}/edit`)
+      }
+    },
   mounted() {
     const id = this.$route.params.id
 
@@ -87,15 +98,10 @@ export default {
   gap: 1.5rem;
 }
 
-#back {
-  self-align: flex-start;
-}
 
-.actions {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  gap: 0.6rem;
+
+#back {
+  margin-right: auto;
 }
 
 .tags {
@@ -113,14 +119,5 @@ export default {
 
 .tags a:hover {
   background-color: #cbd5e1;
-}
-
- h1 {
-  margin-top: 0;
-  color: #0f172a;
-}
-
-h2 {
-  color: #1e293b;
 }
 </style>

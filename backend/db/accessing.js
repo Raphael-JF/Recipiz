@@ -69,16 +69,17 @@ export async function getRecipesPage(search, page, pageSize) {
       [search, pageSize, offset]
     )
   }
+  const total_count = res.rows.length > 0 ? res.rows[0].total_count : 0
   return {
     recipes: res.rows.map(({ total, ...recipe }) => recipe),
-    totalPages: Math.ceil(res.rows[0].total_count / pageSize)
+    totalPages: Math.ceil(total_count / pageSize)
   }
 }
 
 
 async function getRecipeInfo(client, recipeId) {
   const res = await client.query(
-    `SELECT title, description FROM recipes WHERE recipe_id = $1`,
+    `SELECT title, description, owner_id FROM recipes WHERE recipe_id = $1`,
     [recipeId]
   )
 
@@ -137,23 +138,25 @@ async function getRecipeTags(client, recipeId) {
   return res.rows;
 }
 
-export async function getOneRecipePage(client, recipeId) {
+export async function getOneRecipePage(client, sessionUserId, recipeId) {
   const recipeInfo  = await getRecipeInfo(client, recipeId);
 
   if (!recipeInfo) {
    return null;
   }
 
-  const { title, description } = recipeInfo;
+  const { title, description, owner_id} = recipeInfo;
   const instructions = await getRecipeInstructions(client, recipeId);
   const ingredients = await getRecipeIngredients(pool, recipeId);
   const tags = await getRecipeTags(client, recipeId);
+  console.log("userID:", sessionUserId, "ownerID:", owner_id)
 
   return {
     title: title,
     description: description,
     ingredients: ingredients,
     instructions: instructions,
-    tags: tags
+    tags: tags,
+    isOwner: !sessionUserId || sessionUserId === owner_id || sessionUserId === 1
   }
 }

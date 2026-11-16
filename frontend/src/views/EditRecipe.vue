@@ -1,4 +1,19 @@
 <template>
+
+
+  <div class="actions">
+    <button id="back" class="secondary" @click="$router.push('/')">← Retour</button>
+    <button
+      type="button"
+      class="secondary"
+      :disabled="!draftAvailable"
+      @click="loadDraft"
+    >
+      <History :size="20"/>
+      <span>Récupérer le brouillon</span>
+
+    </button>
+  </div>
   <h1 v-if="id">Modifier une recette</h1>
   <h1 v-else>Nouvelle recette</h1>
 
@@ -45,8 +60,11 @@
     </section>
     
     <section class="actions">
-      <button type="submit">Enregistrer</button>
-      <button type="button" class="secondary" @click="$router.back()">Annuler</button>
+      <button type="submit">
+        <Save :size="20"/>
+        <span>Enregistrer</span>
+      </button>
+      <button type="button" class="secondary" @click="$router.push(`/recipe/${id}`)">Annuler</button>
     </section>
   </form>
 </template>
@@ -63,11 +81,14 @@ import EditorList from '../components/EditorList.vue'
 import InstructionEditorRow from '../components/InstructionEditorRow.vue'
 import AutoResizeTextarea from '../components/AutoResizeTextarea.vue'
 import TagEditorRow from '../components/TagEditorRow.vue'
+import { History, Save } from 'lucide-vue-next'
 
 export default {
   components: {  
     AutoResizeTextarea,
     EditorList,
+    History,
+    Save
   },
   props: {
     id: {
@@ -76,6 +97,7 @@ export default {
   },
   data() {
     return {
+      draftAvailable: false,
       recipe: createEmptyRecipe(),
       IngredientEditorRowComponent: markRaw(IngredientEditorRow),
       InstructionEditorRowComponent: markRaw(InstructionEditorRow),
@@ -92,23 +114,42 @@ export default {
         alert('Recette introuvable')
       })
     }
+    
+    const draft = sessionStorage.getItem(
+     `recipeDraft:${this.$route.fullPath}`
+    )
+
+    this.draftAvailable = draft !== null
     this.loading = false
   },
 
+  watch: {
+    recipe: {
+      handler() {
+        if (!this.loading) {
+          this.saveDraft()
+        }
+      },
+      deep: true
+    }
+  },
   
   methods: {
     createEmptyIngredient,
     createEmptyInstruction,
 
     async save() {
+      const key = `recipeDraft:${this.$route.fullPath}`
       const id = this.$route.params.id
 
       if (this.id) {
         await api.put(`/recipes/${id}`, this.recipe)
-        this.$router.back()
+        sessionStorage.removeItem(key)
+        this.$router.push(`/recipe/${this.id}`)
       } else {
         await api.post('/recipes/new', this.recipe)
-        this.$router.back()
+        sessionStorage.removeItem(key)
+        this.$router.push('/')
       }
     },
     addIngredient() {
@@ -123,6 +164,36 @@ export default {
       temp.key = this.recipe.instructions.length
       this.recipe.instructions.push(temp)
     },
+
+    loadDraft() {
+      const draft = sessionStorage.getItem(
+        `recipeDraft:${this.$route.fullPath}`
+      )
+
+      if (!draft) {
+        this.draftAvailable = false
+        return
+      }
+
+      try {
+        this.recipe = JSON.parse(draft)
+        this.draftAvailable = false
+      } catch {
+        sessionStorage.removeItem(
+          `recipeDraft:${this.$route.fullPath}`
+        )
+        this.draftAvailable = false
+      }
+    },
+
+
+    saveDraft() {
+      const key = `recipeDraft:${this.$route.fullPath}`
+
+      sessionStorage.setItem(key, JSON.stringify(this.recipe))
+      this.draftAvailable = true
+    },
+
   }
 }
 </script>
@@ -148,14 +219,14 @@ label {
 }
 
 
+#back {
+  margin-right: auto;
+}
+
 .ingredient-grid {
   display: grid;
   gap: 0.6rem;
   margin-bottom: 0.8rem;
 }
 
-.actions {
-  display: flex;
-  gap: 0.6rem;
-}
 </style>
