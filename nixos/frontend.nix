@@ -58,7 +58,7 @@ in
     '';
   };
 
-  services.nginx.virtualHosts."recipiz.82.126.172.121.nip.io" = {
+  services.nginx.virtualHosts.${cfg.frontendUrl} = {
     enableACME = true;
     forceSSL = true;
 
