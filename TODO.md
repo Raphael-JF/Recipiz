@@ -13,6 +13,7 @@ to do list :
 
 - RecipeCard à compléter
 
+- Idée : avoir un graphe des instructions, pour paralléliser des étapes. ça s'y prête mieux.
 
 
 
